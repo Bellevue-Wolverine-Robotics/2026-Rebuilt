@@ -28,7 +28,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public SwerveSubsystem() {
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
-        File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
+        File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swervePractice");
         Pose2d startingPose = new Pose2d(new Translation2d(8, 4), Rotation2d.fromDegrees(0));
 
         try {
