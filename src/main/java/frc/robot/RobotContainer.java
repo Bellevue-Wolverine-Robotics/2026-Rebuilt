@@ -12,13 +12,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.util.FlippingUtil;
 
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
-    SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
     private final CommandXboxController driverController = new CommandXboxController(DriverStationConstants.DRIVER_CONTROLLER_PORT);
 
     public RobotContainer() {
@@ -27,14 +28,16 @@ public class RobotContainer {
 
     private void configureBindings() {
         swerveSubsystem.setDefaultCommand(swerveSubsystem.driveCommand(
-            () -> -driverController.getLeftX(),
             () -> -driverController.getLeftY(),
+            () -> -driverController.getLeftX(),
             () -> -driverController.getRightX()
         ));
-    } 
+
+        driverController.start().onTrue(swerveSubsystem.zeroGyro());
+    }
 
     public Command getAutonomousCommand() {
-        Pose2d targetPose = new Pose2d(6, 4, Rotation2d.fromDegrees(0));
+        Pose2d targetPose = new Pose2d(5, 3, Rotation2d.fromDegrees(0));
         PathConstraints constraints = new PathConstraints(3, 4,  Units.degreesToRadians(540), Units.degreesToRadians(720));
         return AutoBuilder.pathfindToPose(targetPose, constraints, 0);
     }

@@ -4,9 +4,12 @@ import java.io.File;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,10 +32,9 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveSubsystem() {
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
         File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swervePractice");
-        Pose2d startingPose = new Pose2d(new Translation2d(8, 4), Rotation2d.fromDegrees(0));
 
         try {
-            swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(SwerveConstants.MAXIMUM_SPEED_METERS, startingPose);
+            swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(SwerveConstants.MAXIMUM_SPEED_METERS, new Pose2d(6, 4, Rotation2d.fromDegrees(0)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -93,5 +95,19 @@ public class SwerveSubsystem extends SubsystemBase {
                 false
             );
         });
+    }
+
+    public Command zeroGyro() {
+        return runOnce(() -> {
+            swerveDrive.zeroGyro();
+        });
+    }
+
+    public void addVisionMeasurement(Pose2d estimatedPose, double timestampSeconds, Matrix<N3, N1> stdDevs) {
+        swerveDrive.addVisionMeasurement(estimatedPose, timestampSeconds, stdDevs);
+    }
+
+    public Pose2d getSimulationPose() {
+        return swerveDrive.getSimulationDriveTrainPose().get();
     }
 }
