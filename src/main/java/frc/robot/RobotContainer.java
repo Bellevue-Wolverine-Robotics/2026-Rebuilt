@@ -20,7 +20,9 @@ import frc.robot.subsystems.VisionSubsystem;
 public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
+
     private final CommandXboxController driverController = new CommandXboxController(DriverStationConstants.DRIVER_CONTROLLER_PORT);
+    private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
     public RobotContainer() {
         configureBindings();
