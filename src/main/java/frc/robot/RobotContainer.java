@@ -34,6 +34,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return swerveSubsystem.driveToPoseCommand(SwerveConstants.AUTONOMOUS_POSE);
+        return swerveSubsystem.alignToPoseCommand(SwerveConstants.AUTONOMOUS_POSE);
     }
 }

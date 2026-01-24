@@ -6,8 +6,8 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -27,10 +27,11 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import swervelib.SwerveDrive;
 
+import frc.robot.commands.AlignPoseCommand;
 import frc.robot.constants.SwerveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
-    SwerveDrive swerveDrive;
+    private SwerveDrive swerveDrive;
 
     public SwerveSubsystem() {
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -79,6 +80,13 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /**
+     * Drives the robot with a specified robot relative velocity.
+     */
+    public void drive(ChassisSpeeds chassisSpeeds) {
+        swerveDrive.drive(chassisSpeeds);
+    }
+
+    /**
      * Command to drive the robot using translative values and heading as angular velocity.
      *
      * @param translationX     Translation in the X direction.
@@ -106,16 +114,34 @@ public class SwerveSubsystem extends SubsystemBase {
         });
     }
 
+    /**
+     * Uses PathPlanner to drive to the desired position on the field, while avoiding obstacles.
+     * This is not accurate enough for full automatic alignment.
+     */
     public Command driveToPoseCommand(Pose2d pose) {
         PathConstraints constraints = new PathConstraints(0.5, 4,  Units.degreesToRadians(540), Units.degreesToRadians(720));
         return AutoBuilder.pathfindToPose(pose, constraints, 0);
+    }
+
+
+    /*
+     * Uses a PID controller to percisely hold the robot in a desired posiiton.
+     */
+    public Command alignToPoseCommand(Pose2d pose) {
+        return new AlignPoseCommand(this, pose);
     }
 
     public void addVisionMeasurement(Pose2d estimatedPose, double timestampSeconds, Matrix<N3, N1> stdDevs) {
         swerveDrive.addVisionMeasurement(estimatedPose, timestampSeconds, stdDevs);
     }
 
+    /* Gets the simulated drivetrain position */
     public Pose2d getSimulationPose() {
         return swerveDrive.getSimulationDriveTrainPose().get();
+    }
+
+    /* Gets the position of the robot on the field */
+    public Pose2d getPose() {
+        return swerveDrive.getPose();
     }
 }
