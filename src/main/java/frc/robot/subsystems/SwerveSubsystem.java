@@ -61,8 +61,16 @@ public class SwerveSubsystem extends SubsystemBase {
                     );
                 },
                 new PPHolonomicDriveController(
-                    new PIDConstants(5.0, 0.0, 0.0),
-                    new PIDConstants(5.0, 0.0, 0.0)
+                    new PIDConstants(
+                        SwerveConstants.PATHPLANNER_TRANSLATIONAL_PID_KP,
+                        SwerveConstants.PATHPLANNER_TRANSLATIONAL_PID_KI,
+                        SwerveConstants.PATHPLANNER_TRANSLATIONAL_PID_KD
+                    ),
+                    new PIDConstants(
+                        SwerveConstants.PATHPLANNER_ROTATIONAL_PID_KP,
+                        SwerveConstants.PATHPLANNER_ROTATIONAL_PID_KI,
+                        SwerveConstants.PATHPLANNER_ROTATIONAL_PID_KD
+                    )
                 ),
                 config,
                 () -> {
@@ -119,8 +127,13 @@ public class SwerveSubsystem extends SubsystemBase {
      * This is not accurate enough for full automatic alignment.
      */
     public Command driveToPoseCommand(Pose2d pose) {
-        PathConstraints constraints = new PathConstraints(0.5, 4,  Units.degreesToRadians(540), Units.degreesToRadians(720));
-        return AutoBuilder.pathfindToPose(pose, constraints, 0);
+        PathConstraints constraints = new PathConstraints(
+            SwerveConstants.PATHPLANNER_MAXIMUM_SPEED_METERS,
+            SwerveConstants.PATHPLANNER_MAXIMUM_ACCELERATION_METERS,
+            SwerveConstants.PATHPLANNER_MAXIMUM_SPEED_RADIANS,
+            SwerveConstants.PATHPLANNER_MAXIMUM_ACCELERATION_RADIANS
+        );
+        return AutoBuilder.pathfindToPose(pose, constraints, 0.0);
     }
 
 

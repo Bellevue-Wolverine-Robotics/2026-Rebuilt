@@ -8,13 +8,30 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import frc.robot.constants.SwerveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class AlignPoseCommand extends Command {
     private final HolonomicDriveController controller = new HolonomicDriveController(
-        new PIDController(5.0, 0.0, 0.0),
-        new PIDController(5.0, 0.0, 0.0),
-        new ProfiledPIDController(5.0, 0.0, 0.0, new TrapezoidProfile.Constraints(6.28, 3.14))
+        new PIDController(
+            SwerveConstants.PATHPLANNER_TRANSLATIONAL_PID_KP,
+            SwerveConstants.PATHPLANNER_TRANSLATIONAL_PID_KI,
+            SwerveConstants.PATHPLANNER_TRANSLATIONAL_PID_KD
+        ),
+        new PIDController(
+            SwerveConstants.PATHPLANNER_TRANSLATIONAL_PID_KP,
+            SwerveConstants.PATHPLANNER_TRANSLATIONAL_PID_KI,
+            SwerveConstants.PATHPLANNER_TRANSLATIONAL_PID_KD
+        ),
+        new ProfiledPIDController(
+            SwerveConstants.PATHPLANNER_ROTATIONAL_PID_KP,
+            SwerveConstants.PATHPLANNER_ROTATIONAL_PID_KI,
+            SwerveConstants.PATHPLANNER_ROTATIONAL_PID_KD,
+            new TrapezoidProfile.Constraints(
+                SwerveConstants.PATHPLANNER_MAXIMUM_SPEED_RADIANS,
+                SwerveConstants.PATHPLANNER_MAXIMUM_ACCELERATION_RADIANS
+            )
+        )
     );
 
     private SwerveSubsystem swerveSubsystem;
