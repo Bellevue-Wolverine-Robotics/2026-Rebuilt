@@ -14,10 +14,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
 import frc.robot.constants.DriverStationConstants;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
+    private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
 
@@ -36,6 +38,9 @@ public class RobotContainer {
         ));
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
+
+        operatorController.pov(0).whileTrue(climberSubsystem.extend());
+        operatorController.pov(90).whileTrue(climberSubsystem.extend());
     }
 
     public Command getAutonomousCommand() {
