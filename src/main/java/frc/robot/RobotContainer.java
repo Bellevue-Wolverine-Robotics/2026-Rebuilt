@@ -14,10 +14,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
 import frc.robot.constants.DriverStationConstants;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
 
@@ -36,6 +38,10 @@ public class RobotContainer {
         ));
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
+
+        operatorController.leftTrigger().whileTrue(intakeSubsystem.intake());
+        operatorController.leftBumper().onTrue(intakeSubsystem.retract());
+        operatorController.rightBumper().onTrue(intakeSubsystem.extend());
     }
 
     public Command getAutonomousCommand() {
