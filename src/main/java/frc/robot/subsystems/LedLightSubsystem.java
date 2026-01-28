@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.LedConstants;
@@ -13,17 +14,9 @@ public class LedLightSubsystem extends SubsystemBase {
     // Animation variables
     private int animationOffset = 0;
     private int loopCounter = 0;
-    private AnimationMode currentMode = AnimationMode.GRADIENT_FLOW;
 
-    // Animation modes
-    public enum AnimationMode {
-        GRADIENT_FLOW,    // Smooth gradient flowing
-        BLOCK_FLOW,       // Blocks of colors flowing
-        WAVE_FLOW,        // Wave pattern
-        SOLID_BLUE,       // Static blue
-        SOLID_YELLOW,     // Static yellow
-        OFF               // All off
-    }
+    // Alignment state
+    private boolean alignmentStatus = false;
 
     public LedLightSubsystem() {
         // Initialize the LED strip
@@ -38,7 +31,24 @@ public class LedLightSubsystem extends SubsystemBase {
         // Start the LED output
         led.start();
 
-        System.out.println("LED Subsystem initialized with flowing blue/yellow pattern");
+        System.out.println("LED Subsystem initialized - Flowing when disabled, alignment when enabled");
+    }
+
+    /**
+     * Set the alignment status and update LED color
+     * @param isAligned true = green LEDs, false = red LEDs
+     */
+    public void isAligned(boolean isAligned) {
+        alignmentStatus = isAligned;
+
+        // Immediately update LEDs if robot is enabled
+        if (!DriverStation.isDisabled()) {
+            if (isAligned) {
+                setGreen();
+            } else {
+                setRed();
+            }
+        }
     }
 
     /**
@@ -73,103 +83,83 @@ public class LedLightSubsystem extends SubsystemBase {
     }
 
     /**
-     * Creates alternating blue and yellow blocks that flow
+     * Sets all LEDs to solid green (aligned)
      */
-    private void updateBlockFlow() {
+    private void setGreen() {
         for (int i = 0; i < ledBuffer.getLength(); i++) {
-            // Calculate which block we're in
-            int blockIndex = ((i + animationOffset) / LedConstants.BLOCK_SIZE) % 2;
-
-            if (blockIndex == 0) {
-                // Blue block
-                ledBuffer.setRGB(i,
-                        LedConstants.COLOR_BLUE[0],
-                        LedConstants.COLOR_BLUE[1],
-                        LedConstants.COLOR_BLUE[2]);
-            } else {
-                // Yellow block
-                ledBuffer.setRGB(i,
-                        LedConstants.COLOR_YELLOW[0],
-                        LedConstants.COLOR_YELLOW[1],
-                        LedConstants.COLOR_YELLOW[2]);
-            }
+            ledBuffer.setRGB(i, 0, 255, 0);
         }
     }
 
     /**
-     * Creates a wave pattern with blue and yellow
+     * Sets all LEDs to solid red (not aligned)
      */
-    private void updateWaveFlow() {
+    private void setRed() {
         for (int i = 0; i < ledBuffer.getLength(); i++) {
-            // Create a sine wave pattern
-            double angle = ((i + animationOffset) * 2 * Math.PI) / LedConstants.PATTERN_LENGTH;
-            double wave = (Math.sin(angle) + 1.0) / 2.0; // Normalize to 0.0-1.0
-
-            // Interpolate between blue and yellow based on wave
-            int red = (int) (LedConstants.COLOR_YELLOW[0] * wave);
-            int green = (int) (LedConstants.COLOR_YELLOW[1] * wave);
-            int blue = (int) (LedConstants.COLOR_BLUE[2] * (1 - wave) + LedConstants.COLOR_YELLOW[2] * wave);
-
-            ledBuffer.setRGB(i, red, green, blue);
+            ledBuffer.setRGB(i, 255, 0, 0);
         }
     }
 
     /**
-     * Updates the LED pattern based on current mode
+     * Sets all LEDs to solid blue
      */
-    private void updatePattern() {
-        switch (currentMode) {
-            case GRADIENT_FLOW:
-                updateGradientFlow();
-                break;
-            case BLOCK_FLOW:
-                updateBlockFlow();
-                break;
-            case WAVE_FLOW:
-                updateWaveFlow();
-                break;
-            case SOLID_BLUE:
-                setSolidColor(LedConstants.COLOR_BLUE);
-                break;
-            case SOLID_YELLOW:
-                setSolidColor(LedConstants.COLOR_YELLOW);
-                break;
-            case OFF:
-                setSolidColor(new int[]{0, 0, 0});
-                break;
+    public void setBlue() {
+        for (int i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i,
+                    LedConstants.COLOR_BLUE[0],
+                    LedConstants.COLOR_BLUE[1],
+                    LedConstants.COLOR_BLUE[2]);
         }
     }
 
     /**
-     * Sets all LEDs to a solid color
+     * Sets all LEDs to solid yellow
      */
-    private void setSolidColor(int[] color) {
+    public void setYellow() {
         for (int i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, color[0], color[1], color[2]);
+            ledBuffer.setRGB(i,
+                    LedConstants.COLOR_YELLOW[0],
+                    LedConstants.COLOR_YELLOW[1],
+                    LedConstants.COLOR_YELLOW[2]);
+        }
+    }
+
+    /**
+     * Turns off all LEDs
+     */
+    public void turnOff() {
+        for (int i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, 0, 0, 0);
         }
     }
 
     @Override
     public void periodic() {
-        // Update animation based on speed setting
-        loopCounter++;
-        if (loopCounter >= LedConstants.ANIMATION_SPEED) {
-            loopCounter = 0;
+        // Check robot state and display appropriate pattern
+        if (DriverStation.isDisabled()) {
+            // Robot is DISABLED - show flowing blue/yellow animation
+            loopCounter++;
+            if (loopCounter >= LedConstants.ANIMATION_SPEED) {
+                loopCounter = 0;
 
-            // Only update offset for flowing modes
-            if (currentMode == AnimationMode.GRADIENT_FLOW ||
-                    currentMode == AnimationMode.BLOCK_FLOW ||
-                    currentMode == AnimationMode.WAVE_FLOW) {
+                // Move the pattern forward
                 animationOffset++;
 
                 // Reset offset to prevent overflow
                 if (animationOffset >= LedConstants.PATTERN_LENGTH * 10) {
                     animationOffset = 0;
                 }
-            }
 
-            // Update the LED pattern
-            updatePattern();
+                // Update the flowing pattern
+                updateGradientFlow();
+            }
+        } else {
+            // Robot is ENABLED (Teleop, Auto, or Test) - show alignment status
+            if (alignmentStatus) {
+                setGreen();  // Aligned
+            } else {
+                setRed();    // Not aligned
+            }
         }
 
         // Always send data to keep LEDs lit
@@ -178,68 +168,15 @@ public class LedLightSubsystem extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        // In simulation, still update the animation
+        // In simulation, still update the pattern
         periodic();
     }
 
-    // Public methods to control the LEDs
-
     /**
-     * Sets the animation mode
+     * Gets current alignment status
+     * @return true if aligned, false otherwise
      */
-    public void setMode(AnimationMode mode) {
-        currentMode = mode;
-        animationOffset = 0; // Reset animation
-        updatePattern();
-        led.setData(ledBuffer);
-    }
-
-    /**
-     * Sets flowing gradient pattern (default)
-     */
-    public void setFlowingGradient() {
-        setMode(AnimationMode.GRADIENT_FLOW);
-    }
-
-    /**
-     * Sets flowing block pattern
-     */
-    public void setFlowingBlocks() {
-        setMode(AnimationMode.BLOCK_FLOW);
-    }
-
-    /**
-     * Sets flowing wave pattern
-     */
-    public void setFlowingWave() {
-        setMode(AnimationMode.WAVE_FLOW);
-    }
-
-    /**
-     * Sets all LEDs to solid blue
-     */
-    public void setBlue() {
-        setMode(AnimationMode.SOLID_BLUE);
-    }
-
-    /**
-     * Sets all LEDs to solid yellow
-     */
-    public void setYellow() {
-        setMode(AnimationMode.SOLID_YELLOW);
-    }
-
-    /**
-     * Turns off all LEDs
-     */
-    public void turnOff() {
-        setMode(AnimationMode.OFF);
-    }
-
-    /**
-     * Gets current animation mode
-     */
-    public AnimationMode getCurrentMode() {
-        return currentMode;
+    public boolean getAlignmentStatus() {
+        return alignmentStatus;
     }
 }

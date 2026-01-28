@@ -41,38 +41,61 @@ public class RobotContainer {
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
 
-        // LED Animation Controls (Operator Controller)
-        // Default mode is already flowing gradient (set automatically in constructor)
+        // ====== LED TEST BUTTONS (for testing alignment function) ======
+        // These buttons simulate alignment status for testing purposes
 
-        // A button - Flowing Gradient (smooth blue/yellow wave)
+        // A button - Simulate ALIGNED (green)
         operatorController.a().onTrue(
-                Commands.runOnce(() -> ledLightSubsystem.setFlowingGradient())
+                Commands.runOnce(() -> ledLightSubsystem.isAligned(true))
         );
 
-        // B button - Flowing Blocks (alternating blue/yellow blocks)
+        // B button - Simulate NOT ALIGNED (red)
         operatorController.b().onTrue(
-                Commands.runOnce(() -> ledLightSubsystem.setFlowingBlocks())
+                Commands.runOnce(() -> ledLightSubsystem.isAligned(false))
         );
 
-        // X button - Flowing Wave (sine wave pattern)
-        operatorController.x().onTrue(
-                Commands.runOnce(() -> ledLightSubsystem.setFlowingWave())
-        );
+        // ====== REAL USAGE EXAMPLE ======
+        // In actual use, you would call isAligned() from your subsystem
+        // based on real sensor data or calculations. Examples:
 
-        // Y button - Solid Blue
-        operatorController.y().onTrue(
-                Commands.runOnce(() -> ledLightSubsystem.setBlue())
-        );
+        /*
+        // Example 1: Update LEDs based on vision alignment in a command
+        Command alignToTarget = Commands.run(() -> {
+            // Your alignment logic here
+            boolean aligned = checkIfAlignedToTarget(); // Your method
+            ledLightSubsystem.isAligned(aligned);
+        });
 
-        // Left Bumper - Solid Yellow
-        operatorController.leftBumper().onTrue(
-                Commands.runOnce(() -> ledLightSubsystem.setYellow())
-        );
+        // Example 2: Continuous alignment check in another subsystem's periodic
+        // In your VisionSubsystem.periodic() or SwerveSubsystem.periodic():
+        // ledLightSubsystem.isAligned(Math.abs(angleError) < 2.0);
 
-        // Right Bumper - Turn Off
-        operatorController.rightBumper().onTrue(
-                Commands.runOnce(() -> ledLightSubsystem.turnOff())
+        // Example 3: Check alignment on button hold
+        driverController.rightTrigger().whileTrue(
+            Commands.run(() -> {
+                boolean aligned = isRobotAlignedToTarget();
+                ledLightSubsystem.isAligned(aligned);
+            })
         );
+        */
+    }
+
+    /**
+     * Example method showing how to check alignment
+     * Replace this with your actual alignment logic
+     */
+    private boolean checkIfAlignedToTarget() {
+        // Example: Check if robot is pointed at target within tolerance
+        // This is just a placeholder - use your actual alignment logic
+
+        // Example using vision:
+        // return Math.abs(visionSubsystem.getAngleToTarget()) < 2.0;
+
+        // Example using pose:
+        // Pose2d currentPose = swerveSubsystem.getPose();
+        // return currentPose.getRotation().getDegrees() < 5.0;
+
+        return false; // Placeholder
     }
 
     public Command getAutonomousCommand() {
