@@ -11,6 +11,7 @@ public class LEDSubsystem {
     private final AddressableLED LED;
     private final AddressableLEDBuffer LEDBuffer;
     private LEDPattern pattern;
+
     public LEDSubsystem() {
         LED = new AddressableLED(LEDConstants.PWM);
         LEDBuffer = new AddressableLEDBuffer(LEDConstants.LED_BUFFER);
@@ -19,10 +20,11 @@ public class LEDSubsystem {
         pattern = LEDPattern.solid(Color.kRed);
         LED.start();
     }
+
     public void isAligned (boolean isAlign) {
-        if(isAlign){
+        if (isAlign) {
             pattern = LEDPattern.solid(Color.kGreen);
-        }else{
+        } else {
             pattern = LEDPattern.solid(Color.kRed);
         }
     }
@@ -32,12 +34,14 @@ public class LEDSubsystem {
         gradient.applyTo(LEDBuffer);
         LED.setData(LEDBuffer);
     }
+
     public void periodic() {
         if (DriverStation.isDisabled()) {
             setBlueYellow();
-        }else{
+        } else {
             pattern.applyTo(LEDBuffer);
             LED.setData(LEDBuffer);
         }
     }
+
 }
