@@ -27,7 +27,6 @@ public class VisionSubsystem extends SubsystemBase {
     private final PhotonCamera camera = new PhotonCamera(VisionConstants.CAMERA_NAME);
     private final PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(VisionConstants.TAG_LAYOUT, VisionConstants.ROBOT_TO_CAMERA);
 
-    private Matrix<N3, N1> curStdDevs;
     private VisionSystemSim visionSim;
     private PhotonCameraSim cameraSim;
 
@@ -37,13 +36,13 @@ public class VisionSubsystem extends SubsystemBase {
         if (Robot.isSimulation()) {
             visionSim = new VisionSystemSim("main");
             visionSim.addAprilTags(VisionConstants.TAG_LAYOUT);
-            
+
             SimCameraProperties cameraProp = new SimCameraProperties();
-            cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
+            cameraProp.setCalibration(1280, 720, Rotation2d.fromDegrees(68.5));
             cameraProp.setCalibError(0.35, 0.10);
-            cameraProp.setFPS(15);
-            cameraProp.setAvgLatencyMs(50);
-            cameraProp.setLatencyStdDevMs(15);
+            cameraProp.setFPS(30);
+            cameraProp.setAvgLatencyMs(80);
+            cameraProp.setLatencyStdDevMs(20);
 
             cameraSim = new PhotonCameraSim(camera, cameraProp);
             visionSim.addCamera(cameraSim, VisionConstants.ROBOT_TO_CAMERA);
@@ -51,17 +50,17 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
 
-        /**
-     * Calculates new standard deviations This algorithm is a heuristic that creates dynamic standard
+    /**
+     * Calculates standard deviations. This algorithm is a heuristic that creates dynamic standard
      * deviations based on number of tags, estimation strategy, and distance from the tags.
      *
      * @param estimatedPose The estimated pose to guess standard deviations for.
      * @param targets All targets in this camera frame
      */
-    private void updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
+    private Matrix<N3, N1> calculateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
         if (estimatedPose.isEmpty()) {
             // No pose input. Default to single-tag std devs
-            curStdDevs = VisionConstants.SINGLE_TAG_STD_DEVS;
+            return VisionConstants.SINGLE_TAG_STD_DEVS;
 
         } else {
             // Pose present. Start running Heuristic
@@ -84,7 +83,7 @@ public class VisionSubsystem extends SubsystemBase {
 
             if (numTags == 0) {
                 // No tags visible. Default to single-tag std devs
-                curStdDevs = VisionConstants.SINGLE_TAG_STD_DEVS;
+                return VisionConstants.SINGLE_TAG_STD_DEVS;
             } else {
                 // One or more tags visible, run the full heuristic.
                 avgDist /= numTags;
@@ -94,27 +93,34 @@ public class VisionSubsystem extends SubsystemBase {
                 if (numTags == 1 && avgDist > 4)
                     estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
                 else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
-                curStdDevs = estStdDevs;
+                return estStdDevs;
             }
         }
     }
 
     @Override
     public void periodic() {
-        Optional<EstimatedRobotPose> visionEstimate = Optional.empty();  
+        List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
-        for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
-            visionEstimate = poseEstimator.estimateCoprocMultiTagPose(result);
-
-            if (visionEstimate.isEmpty()) {
-                visionEstimate = poseEstimator.estimateLowestAmbiguityPose(result);
-            }
-
-            updateEstimationStdDevs(visionEstimate, result.getTargets());
+        if (results.isEmpty()) {
+            return;
         }
 
+        PhotonPipelineResult result = results.get(results.size() - 1);
+        Optional<EstimatedRobotPose> visionEstimate = poseEstimator.estimateCoprocMultiTagPose(result);
+
+        if (visionEstimate.isEmpty()) {
+            visionEstimate = poseEstimator.estimateLowestAmbiguityPose(result);
+        }
+
+         Matrix<N3, N1> stdDevs = calculateEstimationStdDevs(visionEstimate, result.getTargets());
+
         visionEstimate.ifPresent(estimate -> {
-            swerveSubsystem.addVisionMeasurement(estimate.estimatedPose.toPose2d(), estimate.timestampSeconds, curStdDevs);
+            swerveSubsystem.addVisionMeasurement(
+                estimate.estimatedPose.toPose2d(),
+                estimate.timestampSeconds,
+                stdDevs
+            );
         });
     }
 

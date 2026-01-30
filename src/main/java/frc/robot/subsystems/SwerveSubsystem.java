@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.io.File;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -10,9 +11,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -26,8 +27,9 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import swervelib.SwerveDrive;
-
+import frc.robot.commands.AimPoseCommand;
 import frc.robot.commands.AlignPoseCommand;
+import frc.robot.commands.DriveAlignPoseCommand;
 import frc.robot.constants.SwerveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -35,16 +37,20 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public SwerveSubsystem() {
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
-        File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swervePractice");
+
+        File swerveJsonDirectory = new File(
+            Filesystem.getDeployDirectory(),
+            Preferences.getString("swerveDirectory", "swervePractice")
+        );
 
         try {
-            swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(SwerveConstants.MAXIMUM_SPEED_METERS, SwerveConstants.STARTING_POSE);
+            swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(
+                SwerveConstants.MAXIMUM_SPEED_METERS,
+                SwerveConstants.STARTING_POSE
+            );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        swerveDrive.setHeadingCorrection(false);
-        swerveDrive.setCosineCompensator(false);
 
         try {
             RobotConfig config = RobotConfig.fromGUISettings();
@@ -89,71 +95,134 @@ public class SwerveSubsystem extends SubsystemBase {
 
     /**
      * Drives the robot with a specified robot relative velocity.
+     * 
+     * @param chassisSpeeds The translative and rotational velocity to the drive at.
      */
     public void drive(ChassisSpeeds chassisSpeeds) {
         swerveDrive.drive(chassisSpeeds);
     }
 
     /**
-     * Command to drive the robot using translative values and heading as angular velocity.
-     *
+     * Drives the robot using field relative translative values and heading as angular velocity.
+     * 
      * @param translationX     Translation in the X direction.
      * @param translationY     Translation in the Y direction.
      * @param angularRotationX Rotation of the robot to set
-     * @return Drive command.
      */
-    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX) {
-        return run(() -> {
-            swerveDrive.drive(
-                new Translation2d(
-                    translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
-                    translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()
-                ),
-                angularRotationX.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity(),
-                true,
-                false
-            );
-        });
-    }
-
-    public Command zeroGyro() {
-        return runOnce(() -> {
-            swerveDrive.zeroGyro();
-        });
+    public void drive(double translationX, double translationY, double angularRotationX) {
+        swerveDrive.drive(
+            new Translation2d(
+                translationX * swerveDrive.getMaximumChassisVelocity(),
+                translationY * swerveDrive.getMaximumChassisVelocity()
+            ),
+            angularRotationX * swerveDrive.getMaximumChassisAngularVelocity(),
+            true,
+            false
+        );
     }
 
     /**
-     * Uses PathPlanner to drive to the desired position on the field, while avoiding obstacles.
-     * This is not accurate enough for full automatic alignment.
+     * Provides a command to drive the robot using  field relative translative values and heading as angular velocity.
+     *
+     * @param translationX     Translation in the X direction.
+     * @param translationY     Translation in the Y direction.
+     * @param angularRotationX Rotation of the robot to set.
+     * @return Drive command.
      */
-    public Command driveToPoseCommand(Pose2d pose) {
+    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX) {
+        return run(() -> drive(
+            translationX.getAsDouble(),
+            translationY.getAsDouble(),
+            angularRotationX.getAsDouble()
+        ));
+    }
+
+    /**
+     * Provides a command to drive the robot using field relative translative values and heading as a target to point at.
+     *
+     * @param translationX     Translation in the X direction.
+     * @param translationY     Translation in the Y direction.
+     * @param aimTarget        The target to turn the front of the robot towards.
+     * @return Drive command.
+     */
+    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Pose2d> aimTarget) {
+        return new AimPoseCommand(this, translationX, translationY, aimTarget);
+    }
+
+    /**
+     * Provies a command that resets the gyro.
+     * This causes the current heading to be considered the forward direction for field relative driving purposes.
+     * 
+     * @return Command that zeros the gyro.
+     */
+    public Command zeroGyro() {
+        return runOnce(swerveDrive::zeroGyro);
+    }
+
+    /**
+     * Provides a command that navigates to a pose on the field using PathPlanner.
+     * This is different than {@link #alignPoseCommand(Supplier<Pose2d>)}, which is more accurate, but cannot navigate obstacles.
+     * 
+     * @param pose The pose to go to.
+     * @return Command that drives to the pose.
+     */
+    public Command drivePoseCommand(Supplier<Pose2d> pose) {
         PathConstraints constraints = new PathConstraints(
             SwerveConstants.PATHPLANNER_MAXIMUM_SPEED_METERS,
             SwerveConstants.PATHPLANNER_MAXIMUM_ACCELERATION_METERS,
             SwerveConstants.PATHPLANNER_MAXIMUM_SPEED_RADIANS,
             SwerveConstants.PATHPLANNER_MAXIMUM_ACCELERATION_RADIANS
         );
-        return AutoBuilder.pathfindToPose(pose, constraints, 0.0);
+        return defer(() -> AutoBuilder.pathfindToPose(pose.get(), constraints, 0.0));
     }
 
 
-    /*
-     * Uses a PID controller to percisely hold the robot in a desired posiiton.
+    /**
+     * Moves the robot to a specific pose on the field
+     *
+     * @param pose The pose to go to.
+     * @return Command that aligns with the pose.
      */
-    public Command alignToPoseCommand(Pose2d pose) {
+    public Command alignPoseCommand(Supplier<Pose2d> pose) {
         return new AlignPoseCommand(this, pose);
     }
 
+    /**
+     * Drives to a pose on the field and then percisely lines up with it.
+     * This is the same as using {@link #drivePoseCommand(Supplier<Pose2d>)} and {@link #alignPoseCommand(Supplier<Pose2d>)} sequentially.
+     *
+     * @param pose The pose to go to. 
+     * @return Command that drives to and aligns with the pose.
+     */
+    public Command driveAlignPoseCommand(Supplier<Pose2d> pose) {
+        return new DriveAlignPoseCommand(this, pose);
+    }
+
+    /**
+     * Adds a measurement from vision pose estimation to the odometry.
+     * 
+     * @param estimatedPose The pose estimated by the coprocessor.
+     * @param timestampSecond The time at which the processed frame was captured.
+     * @param stdDevs The estimated standard deviation for the pose estimate, in meters and radians.
+     */
     public void addVisionMeasurement(Pose2d estimatedPose, double timestampSeconds, Matrix<N3, N1> stdDevs) {
         swerveDrive.addVisionMeasurement(estimatedPose, timestampSeconds, stdDevs);
     }
 
-    /* Gets the simulated drivetrain position */
+    /**
+     * Provides the simulated drivetrain pose to update simulated cameras.
+     *
+     * @return Simulated pose.
+     */
     public Pose2d getSimulationPose() {
         return swerveDrive.getSimulationDriveTrainPose().get();
     }
 
-    /* Gets the position of the robot on the field */
+    /**
+     * Provides the pose of the drivetrain on the field from the odometry.
+     * 
+     * @return Odometry pose.
+     */
     public Pose2d getPose() {
         return swerveDrive.getPose();
     }

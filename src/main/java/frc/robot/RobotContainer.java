@@ -7,8 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import frc.robot.constants.DriverStationConstants;
-import frc.robot.constants.SwerveConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -20,20 +22,24 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
     public RobotContainer() {
-        configureBindings();
-    }
-
-    private void configureBindings() {
         swerveSubsystem.setDefaultCommand(swerveSubsystem.driveCommand(
             () -> -driverController.getLeftY(),
             () -> -driverController.getLeftX(),
             () -> -driverController.getRightX()
         ));
 
+        driverController.rightTrigger().whileTrue(swerveSubsystem.driveCommand(
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getLeftX(),
+            VisionConstants.HUB_POSE_SUPPLIER
+        ));
+
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
+        driverController.y().whileTrue(swerveSubsystem.driveAlignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
+        driverController.b().whileTrue(swerveSubsystem.driveAlignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
     }
 
     public Command getAutonomousCommand() {
-        return swerveSubsystem.alignToPoseCommand(SwerveConstants.AUTONOMOUS_POSE);
+        return new PathPlannerAuto("Basic");
     }
 }
