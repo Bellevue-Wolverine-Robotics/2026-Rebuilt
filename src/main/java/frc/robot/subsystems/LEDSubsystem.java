@@ -10,31 +10,24 @@ import frc.robot.constants.LEDConstants;
 public class LEDSubsystem {
     private final AddressableLED LED;
     private final AddressableLEDBuffer LEDBuffer;
+    private LEDPattern pattern;
     public LEDSubsystem() {
         LED = new AddressableLED(LEDConstants.PWM);
         LEDBuffer = new AddressableLEDBuffer(LEDConstants.LED_BUFFER);
         LED.setLength(LEDBuffer.getLength());
         LED.setData(LEDBuffer);
+        pattern = LEDPattern.solid(Color.kRed);
         LED.start();
     }
-    public void isAligned(boolean isAlign){
+    public void isAligned (boolean isAlign) {
         if(isAlign){
-            setGreeen();
+            pattern = LEDPattern.solid(Color.kGreen);
         }else{
-            setRed();
+            pattern = LEDPattern.solid(Color.kRed);
         }
     }
-    private void setGreeen(){
-        LEDPattern green = LEDPattern.solid(Color.kGreen);
-        green.applyTo(LEDBuffer);
-        LED.setData(LEDBuffer);
-    }
-    private void setRed(){
-        LEDPattern red = LEDPattern.solid(Color.kRed);
-        red.applyTo(LEDBuffer);
-        LED.setData(LEDBuffer);
-    }
-    private void setBlueYellow(){
+
+    private void setBlueYellow() {
         LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kYellow, Color.kBlue);
         gradient.applyTo(LEDBuffer);
         LED.setData(LEDBuffer);
@@ -42,6 +35,9 @@ public class LEDSubsystem {
     public void periodic() {
         if (DriverStation.isDisabled()) {
             setBlueYellow();
+        }else{
+            pattern.applyTo(LEDBuffer);
+            LED.setData(LEDBuffer);
         }
     }
 }

@@ -38,13 +38,11 @@ public class SwerveSubsystem extends SubsystemBase {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
         swerveDrive.setHeadingCorrection(false);
         swerveDrive.setCosineCompensator(false);
 
         try {
             RobotConfig config = RobotConfig.fromGUISettings();
-
             AutoBuilder.configure(
                 swerveDrive::getPose,
                 swerveDrive::resetOdometry,
