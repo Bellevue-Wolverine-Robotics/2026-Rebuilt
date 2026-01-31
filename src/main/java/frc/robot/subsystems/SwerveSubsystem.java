@@ -32,8 +32,8 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveSubsystem() {
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
         File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swervePractice");
-
         try {
+
             swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(SwerveConstants.MAXIMUM_SPEED_METERS, new Pose2d(6, 4, Rotation2d.fromDegrees(0)));
         } catch (Exception e) {
             throw new RuntimeException(e);
