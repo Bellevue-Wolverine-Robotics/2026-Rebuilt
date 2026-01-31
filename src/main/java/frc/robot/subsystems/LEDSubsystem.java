@@ -7,29 +7,26 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.LEDConstants;
-
 import static edu.wpi.first.units.Units.Seconds;
 
 public class LEDSubsystem extends SubsystemBase {
     private final AddressableLED led;
     private final AddressableLEDBuffer ledBuffer;
-    private LEDPattern pattern;
+    private boolean tracking;
+    private boolean aligned;
 
     public LEDSubsystem() {
         led = new AddressableLED(LEDConstants.PWM);
         ledBuffer = new AddressableLEDBuffer(LEDConstants.LED_BUFFER);
         led.setLength(ledBuffer.getLength());
         led.setData(ledBuffer);
-        pattern = LEDPattern.solid(Color.kRed);
+        aligned = false;
+        tracking = false;
         led.start();
     }
 
-    public void isAligned (boolean isAlign) {
-        if (isAlign) {
-            pattern = LEDPattern.solid(Color.kGreen);
-        } else {
-            pattern = LEDPattern.solid(Color.kRed);
-        }
+    public void setAligned (boolean aligned) {
+        this.aligned = aligned;
     }
 
     private void setBlueYellow() {
@@ -38,20 +35,28 @@ public class LEDSubsystem extends SubsystemBase {
         led.setData(ledBuffer);
     }
 
-    public void isTracking(boolean on) {
-        if (on){
-            pattern = pattern.blink(Seconds.of(1));
-        }else {
-            pattern = LEDPattern.solid(Color.kRed);
-        }
+    public void setTracking(boolean tracking) {
+        this.tracking = tracking;
+    }
+
+    private void setColor(LEDPattern pattern) {
+        pattern.applyTo(ledBuffer);
+        led.setData(ledBuffer);
     }
 
     public void periodic() {
-        if (DriverStation.isDisabled()) {
-            setBlueYellow();
+        if (tracking) {
+            if (aligned) {
+                setColor(LEDPattern.solid(Color.kGreen).blink(Seconds.of(1)));
+            } else {
+                setColor(LEDPattern.solid(Color.kRed).blink(Seconds.of(1)));
+            }
         } else {
-            pattern.applyTo(ledBuffer);
-            led.setData(ledBuffer);
+            if (aligned) {
+                setColor(LEDPattern.solid(Color.kGreen));
+            } else {
+                setColor(LEDPattern.solid(Color.kRed));
+            }
         }
     }
 }

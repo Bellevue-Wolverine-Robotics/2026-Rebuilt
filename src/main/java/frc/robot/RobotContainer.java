@@ -21,7 +21,7 @@ import frc.robot.subsystems.VisionSubsystem;
 public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
-    public final LEDSubsystem ledsystem = new LEDSubsystem();
+    public final LEDSubsystem ledSubsystem = new LEDSubsystem();
     private final CommandXboxController driverController = new CommandXboxController(DriverStationConstants.DRIVER_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
