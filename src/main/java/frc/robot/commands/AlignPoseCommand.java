@@ -10,28 +10,28 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import frc.robot.constants.SwerveConstants;
+import frc.robot.constants.AlignmentConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class AlignPoseCommand extends Command {
     private final HolonomicDriveController controller = new HolonomicDriveController(
         new PIDController(
-            SwerveConstants.AUTOALIGN_TRANSLATIONAL_PID_KP,
-            SwerveConstants.AUTOALIGN_TRANSLATIONAL_PID_KI,
-            SwerveConstants.AUTOALIGN_TRANSLATIONAL_PID_KD
+            AlignmentConstants.TRANSLATIONAL_PID_KP,
+            AlignmentConstants.TRANSLATIONAL_PID_KI,
+            AlignmentConstants.TRANSLATIONAL_PID_KD
         ),
         new PIDController(
-            SwerveConstants.AUTOALIGN_TRANSLATIONAL_PID_KP,
-            SwerveConstants.AUTOALIGN_TRANSLATIONAL_PID_KI,
-            SwerveConstants.AUTOALIGN_TRANSLATIONAL_PID_KD
+            AlignmentConstants.TRANSLATIONAL_PID_KP,
+            AlignmentConstants.TRANSLATIONAL_PID_KI,
+            AlignmentConstants.TRANSLATIONAL_PID_KD
         ),
         new ProfiledPIDController(
-            SwerveConstants.AUTOALIGN_ROTATIONAL_PID_KP,
-            SwerveConstants.AUTOALIGN_ROTATIONAL_PID_KI,
-            SwerveConstants.AUTOALIGN_ROTATIONAL_PID_KD,
+            AlignmentConstants.ROTATIONAL_PID_KP,
+            AlignmentConstants.ROTATIONAL_PID_KI,
+            AlignmentConstants.ROTATIONAL_PID_KD,
             new TrapezoidProfile.Constraints(
-                SwerveConstants.AUTOALIGN_MAXIMUM_SPEED_RADIANS,
-                SwerveConstants.AUTOALIGN_MAXIMUM_ACCELERATION_RADIANS
+                AlignmentConstants.MAXIMUM_SPEED_RADIANS,
+                AlignmentConstants.MAXIMUM_ACCELERATION_RADIANS
             )
         )
     );
@@ -43,6 +43,13 @@ public class AlignPoseCommand extends Command {
         this.swerveSubsystem = swerveSubsystem;
         this.target = target;
         addRequirements(swerveSubsystem);
+    }
+
+    @Override
+    public void initialize() {
+        controller.getXController().reset();
+        controller.getYController().reset();
+        controller.getThetaController().reset(swerveSubsystem.getPose().getRotation().getRadians());
     }
 
     @Override

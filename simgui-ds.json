@@ -4,6 +4,11 @@
       "visible": false
     }
   },
+  "System Joysticks": {
+    "window": {
+      "visible": false
+    }
+  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
@@ -25,8 +30,8 @@
           "incKey": 265
         },
         {
-          "decKey": 262,
-          "incKey": 263
+          "decKey": 263,
+          "incKey": 262
         }
       ],
       "axisCount": 5,

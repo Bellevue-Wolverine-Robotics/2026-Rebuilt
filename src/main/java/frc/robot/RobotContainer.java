@@ -35,8 +35,9 @@ public class RobotContainer {
         ));
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
-        driverController.y().whileTrue(swerveSubsystem.driveAlignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
-        driverController.b().whileTrue(swerveSubsystem.driveAlignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
+        driverController.y().whileTrue(swerveSubsystem.driveAlignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
+        driverController.a().whileTrue(swerveSubsystem.driveAlignPoseCommand(VisionConstants.NEUTRAL_POSE_SUPPLIER));
+        driverController.b().whileTrue(swerveSubsystem.driveAlignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
     }
 
     public Command getAutonomousCommand() {

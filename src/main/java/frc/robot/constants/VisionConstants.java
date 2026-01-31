@@ -21,32 +21,37 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class VisionConstants {
     public static final String CAMERA_NAME = "main";
-    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 0.17);
-    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.25, 0.25, 0.085);
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 0.0872665);
+    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.25, 0.25, 0.0436332);
     public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-    public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(new Translation3d(0.381, -0.114, 0.3048), new Rotation3d(0, 0, 0));
+    public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(new Translation3d(0.3619, -0.09525, 0.3556), new Rotation3d()); // 0.3619, -0.09525, 0.3556
 
     private static final Pose3d ORIGIN_POSE = TAG_LAYOUT.getOrigin();
-    private static final Transform2d ROBOT_CENTER_TO_FRONT = new Transform2d(new Translation2d(0.6985, 0), new Rotation2d(0));
+    private static final Transform2d ROBOT_FRONT_TO_CENTER = new Transform2d(new Translation2d(-0.40005, 0), new Rotation2d(0));
 
-    private static final Pose2d getAllianceSpecificTagPose(int blueTagId, int redTagId, Transform2d transform) {
-        boolean isBlue = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue; 
-        Pose2d tagPose = TAG_LAYOUT.getTagPose(isBlue ? blueTagId: redTagId).orElse(ORIGIN_POSE).toPose2d();
+    private static final Pose2d getAllianceSpecificTagPose(int redTagId, int blueTagId, Transform2d transform) {
+        boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red; 
+        Pose2d tagPose = TAG_LAYOUT.getTagPose(isRed ? redTagId: blueTagId).orElse(ORIGIN_POSE).toPose2d();
         return tagPose.transformBy(transform);
     }
 
     public static final Supplier<Pose2d> CLIMB_POSE_SUPPLIER = () -> {
-        Transform2d transform = new Transform2d(new Translation2d(2.516, 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_CENTER_TO_FRONT);
-        return getAllianceSpecificTagPose(31, 15, transform);
+        Transform2d transform = new Transform2d(new Translation2d(1.1648, 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
+        return getAllianceSpecificTagPose(15, 31, transform);
     };
 
     public static final Supplier<Pose2d> SHOOT_POSE_SUPPLIER = () -> {
-        Transform2d transform = new Transform2d(new Translation2d(-2.58801, 0.0), new Rotation2d()).plus(ROBOT_CENTER_TO_FRONT);
-        return getAllianceSpecificTagPose(20, 4, transform);
+        Transform2d transform = new Transform2d(new Translation2d(0.1524, 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
+        return getAllianceSpecificTagPose(10, 26, transform);
     };
 
     public static final Supplier<Pose2d> HUB_POSE_SUPPLIER = () -> {
         Transform2d transform = new Transform2d(new Translation2d(-0.58801, 0.0), new Rotation2d());
-        return getAllianceSpecificTagPose(20, 4, transform);
+        return getAllianceSpecificTagPose(4, 20, transform);
+    };
+
+    public static final Supplier<Pose2d> NEUTRAL_POSE_SUPPLIER = () -> {
+        Transform2d transform = new Transform2d(new Translation2d(0.1524, 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
+        return getAllianceSpecificTagPose(4, 20, transform);
     };
 }
