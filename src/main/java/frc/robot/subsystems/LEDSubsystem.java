@@ -12,21 +12,26 @@ import static edu.wpi.first.units.Units.Seconds;
 public class LEDSubsystem extends SubsystemBase {
     private final AddressableLED led;
     private final AddressableLEDBuffer ledBuffer;
-    private boolean tracking;
-    private boolean aligned;
+
+    private boolean tracking = false;
+    private boolean aligned = false;
 
     public LEDSubsystem() {
-        led = new AddressableLED(LEDConstants.PWM);
-        ledBuffer = new AddressableLEDBuffer(LEDConstants.LED_BUFFER);
+        led = new AddressableLED(LEDConstants.PWM_PORT);
+
+        ledBuffer = new AddressableLEDBuffer(LEDConstants.LED_LENGTH);
         led.setLength(ledBuffer.getLength());
         led.setData(ledBuffer);
-        aligned = false;
-        tracking = false;
+
         led.start();
     }
 
     public void setAligned (boolean aligned) {
         this.aligned = aligned;
+    }
+
+    public void setTracking(boolean tracking) {
+        this.tracking = tracking;
     }
 
     private void setBlueYellow() {
@@ -35,27 +40,28 @@ public class LEDSubsystem extends SubsystemBase {
         led.setData(ledBuffer);
     }
 
-    public void setTracking(boolean tracking) {
-        this.tracking = tracking;
-    }
-
-    private void setColor(LEDPattern pattern) {
+    private void setPattern(LEDPattern pattern) {
         pattern.applyTo(ledBuffer);
         led.setData(ledBuffer);
     }
 
     public void periodic() {
+        if (DriverStation.isDisabled()) {
+            setBlueYellow();
+            return;
+        }
+
         if (tracking) {
             if (aligned) {
-                setColor(LEDPattern.solid(Color.kGreen).blink(Seconds.of(1)));
+                setPattern(LEDPattern.solid(Color.kGreen).blink(Seconds.of(1)));
             } else {
-                setColor(LEDPattern.solid(Color.kRed).blink(Seconds.of(1)));
+                setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(1)));
             }
         } else {
             if (aligned) {
-                setColor(LEDPattern.solid(Color.kGreen));
+                setPattern(LEDPattern.solid(Color.kGreen));
             } else {
-                setColor(LEDPattern.solid(Color.kRed));
+                setPattern(LEDPattern.solid(Color.kRed));
             }
         }
     }
