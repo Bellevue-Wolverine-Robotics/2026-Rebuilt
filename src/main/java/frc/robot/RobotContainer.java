@@ -11,17 +11,25 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.constants.VisionConstants;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-    private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
 
+    // Vision subsystem is automatically registered by command scheduler
+    @SuppressWarnings("unused")
+    private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
+    public final LEDSubsystem ledSubsystem = new LEDSubsystem();
     private final CommandXboxController driverController = new CommandXboxController(DriverStationConstants.DRIVER_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
     public RobotContainer() {
+        configureBindings();
+    }
+
+    private void configureBindings() {
         swerveSubsystem.setDefaultCommand(swerveSubsystem.driveCommand(
             () -> -driverController.getLeftY(),
             () -> -driverController.getLeftX(),

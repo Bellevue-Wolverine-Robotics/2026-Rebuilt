@@ -48,7 +48,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
         try {
             RobotConfig config = RobotConfig.fromGUISettings();
-
             AutoBuilder.configure(
                 swerveDrive::getPose,
                 swerveDrive::resetOdometry,
