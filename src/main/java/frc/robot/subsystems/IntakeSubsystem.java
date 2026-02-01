@@ -20,9 +20,8 @@ import frc.robot.Robot;
 import frc.robot.constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-    private final SparkMax leftIntakeMotor = new SparkMax(IntakeConstants.LEFT_INTAKE_MOTOR_CAN_ID, MotorType.kBrushless);
-    private final SparkMax rightIntakeMotor = new SparkMax(IntakeConstants.RIGHT_INTAKE_MOTOR_CAN_ID, MotorType.kBrushless);
-    private final SparkMaxConfig rightIntakeMotorConfig = new SparkMaxConfig();
+    private final SparkMax intakeMotor = new SparkMax(IntakeConstants.INTAKE_MOTOR_CAN_ID, MotorType.kBrushless);
+    private final SparkMaxConfig intakeMotorConfig = new SparkMaxConfig();
 
     private final SparkMax armMotor = new SparkMax(IntakeConstants.ARM_MOTOR_CAN_ID, MotorType.kBrushless);
     private final DutyCycleEncoder armEncoder = new DutyCycleEncoder(IntakeConstants.ARM_ENCODER_PWM_PORT);
@@ -33,8 +32,9 @@ public class IntakeSubsystem extends SubsystemBase {
     private DutyCycleEncoderSim armEncoderSim;
 
     public IntakeSubsystem() {
-        rightIntakeMotorConfig.follow(leftIntakeMotor, true).idleMode(IdleMode.kBrake);
-        rightIntakeMotor.configure(rightIntakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        intakeMotorConfig.idleMode(IdleMode.kBrake);
+        intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
         setDefaultCommand(idle());
 
         if (Robot.isSimulation()) {
@@ -76,10 +76,10 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command intake() {
-        return Commands.run(() -> leftIntakeMotor.set(IntakeConstants.INTAKE_SPEED), this);
+        return Commands.run(() -> intakeMotor.set(IntakeConstants.INTAKE_SPEED), this);
     }
 
     public Command idle() {
-        return Commands.run(() -> leftIntakeMotor.stopMotor(), this);
+        return Commands.run(() -> intakeMotor.stopMotor(), this);
     }
 }
