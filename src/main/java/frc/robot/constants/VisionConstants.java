@@ -21,10 +21,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class VisionConstants {
     public static final String CAMERA_NAME = "main";
-    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 0.0872665);
-    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.25, 0.25, 0.0436332);
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.0872665);
+    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.05, 0.05, 0.0436332);
     public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-    public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(new Translation3d(0.3619, -0.09525, 0.3556), new Rotation3d()); // 0.3619, -0.09525, 0.3556
+    public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(new Translation3d(0.40195, -0.108, 0.3556), new Rotation3d()); // -0.108
 
     private static final Pose3d ORIGIN_POSE = TAG_LAYOUT.getOrigin();
     private static final Transform2d ROBOT_FRONT_TO_CENTER = new Transform2d(new Translation2d(-0.40005, 0), new Rotation2d(0));

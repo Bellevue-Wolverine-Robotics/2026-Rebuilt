@@ -23,13 +23,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathConstraints;
 
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import frc.robot.commands.AimPoseCommand;
 import frc.robot.commands.AlignPoseCommand;
-import frc.robot.commands.DriveAlignPoseCommand;
 import frc.robot.constants.PathPlannerConstants;
 import frc.robot.constants.SwerveConstants;
 
@@ -142,7 +140,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Converts joystick inputs into a translation for field relative driving.
+     * Converts joystick inputs into a translational velocity for field relative driving.
      * 
      * @param xAxis The value of the joystick's X axis
      * @param yAxis The value of the joystick's Y axis
@@ -185,42 +183,13 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Provides a command that navigates to a pose on the field using PathPlanner.
-     * This is different than {@link #alignPoseCommand(Supplier<Pose2d>)}, which is more accurate, but cannot navigate obstacles.
-     * 
-     * @param pose The pose to go to.
-     * @return Command that drives to the pose.
-     */
-    public Command drivePoseCommand(Supplier<Pose2d> pose) {
-        PathConstraints constraints = new PathConstraints(
-            PathPlannerConstants.MAXIMUM_SPEED_METERS,
-            PathPlannerConstants.MAXIMUM_ACCELERATION_METERS,
-            PathPlannerConstants.MAXIMUM_SPEED_RADIANS,
-            PathPlannerConstants.MAXIMUM_ACCELERATION_RADIANS
-        );
-        return defer(() -> AutoBuilder.pathfindToPose(pose.get(), constraints, 0.0));
-    }
-
-
-    /**
-     * Moves the robot to a specific pose on the field
+     * Provides a command that drives the robot to a specific pose on the field.
      *
      * @param pose The pose to go to.
      * @return Command that aligns with the pose.
      */
     public Command alignPoseCommand(Supplier<Pose2d> pose) {
         return new AlignPoseCommand(this, pose);
-    }
-
-    /**
-     * Drives to a pose on the field and then percisely lines up with it.
-     * This is the same as using {@link #drivePoseCommand(Supplier<Pose2d>)} and {@link #alignPoseCommand(Supplier<Pose2d>)} sequentially.
-     *
-     * @param pose The pose to go to. 
-     * @return Command that drives to and aligns with the pose.
-     */
-    public Command driveAlignPoseCommand(Supplier<Pose2d> pose) {
-        return new DriveAlignPoseCommand(this, pose);
     }
 
     /**
