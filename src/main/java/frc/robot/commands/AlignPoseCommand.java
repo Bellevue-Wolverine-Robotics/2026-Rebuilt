@@ -11,6 +11,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.constants.AlignmentConstants;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class AlignPoseCommand extends Command {
@@ -36,12 +37,16 @@ public class AlignPoseCommand extends Command {
         )
     );
 
-    private SwerveSubsystem swerveSubsystem;
-    private Supplier<Pose2d> target;
+    private final SwerveSubsystem swerveSubsystem;
+    private final LEDSubsystem ledSubsystem;
+    private final Supplier<Pose2d> target;
 
-    public AlignPoseCommand(SwerveSubsystem swerveSubsystem, Supplier<Pose2d> target) {
+    public AlignPoseCommand(SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem, Supplier<Pose2d> target) {
         this.swerveSubsystem = swerveSubsystem;
+        this.ledSubsystem = ledSubsystem;
         this.target = target;
+
+        controller.setTolerance(AlignmentConstants.TOLERANCE);
         addRequirements(swerveSubsystem);
     }
 
@@ -56,6 +61,7 @@ public class AlignPoseCommand extends Command {
     public void execute() {
         Pose2d current = swerveSubsystem.getPose();
         ChassisSpeeds chassisSpeeds = controller.calculate(current, target.get(), 0.0, target.get().getRotation());
+        ledSubsystem.setAligned(controller.atReference());
         swerveSubsystem.drive(chassisSpeeds);
     }
 }

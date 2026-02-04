@@ -9,6 +9,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.constants.AlignmentConstants;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class AimPoseCommand extends Command {
@@ -22,17 +23,27 @@ public class AimPoseCommand extends Command {
         )
     );
 
-    private SwerveSubsystem swerveSubsystem;
-    private DoubleSupplier xAxis;
-    private DoubleSupplier yAxis;
-    private Supplier<Pose2d> target;
+    private final SwerveSubsystem swerveSubsystem;
+    private final LEDSubsystem ledSubsystem;
+    private final DoubleSupplier xAxis;
+    private final DoubleSupplier yAxis;
+    private final Supplier<Pose2d> target;
 
-    public AimPoseCommand(SwerveSubsystem swerveSubsystem, DoubleSupplier xAxis, DoubleSupplier yAxis, Supplier<Pose2d> target) {
+    public AimPoseCommand(
+        SwerveSubsystem swerveSubsystem,
+        LEDSubsystem ledSubsystem,
+        DoubleSupplier xAxis,
+        DoubleSupplier yAxis,
+        Supplier<Pose2d> target
+    ) {
         this.swerveSubsystem = swerveSubsystem;
+        this.ledSubsystem = ledSubsystem;
         this.xAxis = xAxis;
         this.yAxis = yAxis;
         this.target = target;
         addRequirements(swerveSubsystem);
+
+        thetaController.setTolerance(AlignmentConstants.ROTATIONAL_TOLERANCE_DISTANCE, AlignmentConstants.ROTATIONAL_TOLERANCE_VELOCITY);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
@@ -49,6 +60,8 @@ public class AimPoseCommand extends Command {
 
         double currentHeading = current.getRotation().getRadians();
         double desiredHeading = Math.atan2(y, x);
+
+        ledSubsystem.setAligned(thetaController.atGoal());
 
         swerveSubsystem.drive(
             swerveSubsystem.getVelocity(xAxis.getAsDouble(), yAxis.getAsDouble()),

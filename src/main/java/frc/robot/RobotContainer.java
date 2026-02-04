@@ -16,12 +16,11 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
-    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-
-    // Vision subsystem is automatically registered by command scheduler
-    @SuppressWarnings("unused")
+    private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(ledSubsystem);
+    @SuppressWarnings("unused")  // Subsystems automatically register themselves to command scheduler
     private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
-    public final LEDSubsystem ledSubsystem = new LEDSubsystem();
+
     private final CommandXboxController driverController = new CommandXboxController(DriverStationConstants.DRIVER_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 

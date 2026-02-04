@@ -1,5 +1,6 @@
 package frc.robot.constants;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -16,15 +17,31 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class VisionConstants {
-    public static final String CAMERA_NAME = "main";
-    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.0872665);
-    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.05, 0.05, 0.0436332);
+    public static class CameraProperties {
+        public final String name;
+        public final Transform3d robotToCamera;
+
+        public CameraProperties(String name, Transform3d robotToCamera) {
+            this.name = name;
+            this.robotToCamera = robotToCamera;
+        }
+    }
+
+    public static final List<CameraProperties> CAMERAS = List.of(
+        // new CameraProperties("primary", new Transform3d(new Translation3d(0.40005, Units.inchesToMeters(4), Units.inchesToMeters(21.75)), new Rotation3d(0, Units.degreesToRadians(0), 0)))
+       // new CameraProperties("main_old", new Transform3d(new Translation3d(0.40195, -0.108, 0.3556), new Rotation3d()))
+       new CameraProperties("secondary", new Transform3d(new Translation3d(0.40195, Units.inchesToMeters(-3.5), Units.inchesToMeters(14.5)), new Rotation3d(0, Units.degreesToRadians(-30), 0))),
+       new CameraProperties("primary", new Transform3d(new Translation3d(0.40195, Units.inchesToMeters(-5.25), Units.inchesToMeters(13.625)), new Rotation3d(0, Units.degreesToRadians(0), 0)))
+    );
+
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.25, 0.25, 0.0872665);
+    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.0436332);
     public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-    public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(new Translation3d(0.40195, -0.108, 0.3556), new Rotation3d()); // -0.108
 
     private static final Pose3d ORIGIN_POSE = TAG_LAYOUT.getOrigin();
     private static final Transform2d ROBOT_FRONT_TO_CENTER = new Transform2d(new Translation2d(-0.40005, 0), new Rotation2d(0));
@@ -36,22 +53,22 @@ public class VisionConstants {
     }
 
     public static final Supplier<Pose2d> CLIMB_POSE_SUPPLIER = () -> {
-        Transform2d transform = new Transform2d(new Translation2d(1.1648, 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
+        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(40), 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
         return getAllianceSpecificTagPose(15, 31, transform);
     };
 
     public static final Supplier<Pose2d> SHOOT_POSE_SUPPLIER = () -> {
-        Transform2d transform = new Transform2d(new Translation2d(0.1524, 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
+        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(36), 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
         return getAllianceSpecificTagPose(10, 26, transform);
     };
 
     public static final Supplier<Pose2d> HUB_POSE_SUPPLIER = () -> {
-        Transform2d transform = new Transform2d(new Translation2d(-0.58801, 0.0), new Rotation2d());
+        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(-23.5), 0.0), new Rotation2d());
         return getAllianceSpecificTagPose(4, 20, transform);
     };
 
     public static final Supplier<Pose2d> NEUTRAL_POSE_SUPPLIER = () -> {
-        Transform2d transform = new Transform2d(new Translation2d(0.1524, 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
+        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(36), 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
         return getAllianceSpecificTagPose(4, 20, transform);
     };
 }

@@ -32,9 +32,12 @@ import frc.robot.constants.PathPlannerConstants;
 import frc.robot.constants.SwerveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
-    private SwerveDrive swerveDrive;
+    private final LEDSubsystem ledSubsystem;
+    private final SwerveDrive swerveDrive;
 
-    public SwerveSubsystem() {
+    public SwerveSubsystem(LEDSubsystem ledSubsystem) {
+        this.ledSubsystem = ledSubsystem;
+
         File swerveJsonDirectory = new File(
             Filesystem.getDeployDirectory(),
             Preferences.getString("swerveDirectory", "swervePractice")
@@ -163,10 +166,14 @@ public class SwerveSubsystem extends SubsystemBase {
      * @return Drive command.
      */
     public Command driveCommand(DoubleSupplier xAxis, DoubleSupplier yAxis, DoubleSupplier rotationAxis) {
-        return run(() -> drive(
-            getVelocity(xAxis.getAsDouble(), yAxis.getAsDouble()),
-            Math.pow(rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT) * swerveDrive.getMaximumChassisAngularVelocity()
-        ));
+        return run(() -> {
+            ledSubsystem.setAligned(false);
+
+            drive(
+                getVelocity(xAxis.getAsDouble(), yAxis.getAsDouble()),
+                Math.pow(rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT) * swerveDrive.getMaximumChassisAngularVelocity()
+            );
+        });
     }
 
     /**
@@ -178,7 +185,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * @return Drive command.
      */
     public Command driveCommand(DoubleSupplier xAxis, DoubleSupplier yAxis, Supplier<Pose2d> aimTarget) {
-        return new AimPoseCommand(this, xAxis, yAxis, aimTarget);
+        return new AimPoseCommand(this, ledSubsystem, xAxis, yAxis, aimTarget);
     }
 
     /**
@@ -188,7 +195,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * @return Command that aligns with the pose.
      */
     public Command alignPoseCommand(Supplier<Pose2d> pose) {
-        return new AlignPoseCommand(this, pose);
+        return new AlignPoseCommand(this, ledSubsystem, pose);
     }
 
     /**
