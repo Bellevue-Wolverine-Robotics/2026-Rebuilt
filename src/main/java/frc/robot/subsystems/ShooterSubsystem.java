@@ -75,6 +75,7 @@ public class ShooterSubsystem extends SubsystemBase {
                     rollerMotor.set(ShooterConstants.ROLLER_VELOCITY);
                 }
             },
-            this);
+            this).finallyDo(
+                () -> flywheelMasterMotor.setControl(velocityRequest.withVelocity(0.0d)));
     }
 }
