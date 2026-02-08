@@ -33,14 +33,12 @@ public class VisionConstants {
     }
 
     public static final List<CameraProperties> CAMERAS = List.of(
-        // new CameraProperties("primary", new Transform3d(new Translation3d(0.40005, Units.inchesToMeters(4), Units.inchesToMeters(21.75)), new Rotation3d(0, Units.degreesToRadians(0), 0)))
-       // new CameraProperties("main_old", new Transform3d(new Translation3d(0.40195, -0.108, 0.3556), new Rotation3d()))
        new CameraProperties("secondary", new Transform3d(new Translation3d(0.40195, Units.inchesToMeters(-3.5), Units.inchesToMeters(14.5)), new Rotation3d(0, Units.degreesToRadians(-30), 0))),
        new CameraProperties("primary", new Transform3d(new Translation3d(0.40195, Units.inchesToMeters(-5.25), Units.inchesToMeters(13.625)), new Rotation3d(0, Units.degreesToRadians(0), 0)))
     );
 
-    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.25, 0.25, 0.0872665);
-    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.0436332);
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(1, 1, Units.degreesToRadians(15));
+    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(7.5));
     public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
     private static final Pose3d ORIGIN_POSE = TAG_LAYOUT.getOrigin();
