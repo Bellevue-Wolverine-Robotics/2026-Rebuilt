@@ -1,30 +1,28 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
-    private final SparkMax motor = new SparkMax(ClimberConstants.MOTOR_CAN_ID, MotorType.kBrushless);
+    private final DoubleSolenoid solenoid = new DoubleSolenoid(
+        PneumaticsModuleType.CTREPCM,
+        ClimberConstants.FORWARD_CHANNEL,
+        ClimberConstants.REVERSE_CHANNEL
+    );
 
-    public ClimberSubsystem() {
-        setDefaultCommand(idle());
-    }
-
-    public Command idle() {
-        return Commands.run(() -> motor.stopMotor(), this);
+    public Command stop() {
+        return runOnce(() -> solenoid.set(DoubleSolenoid.Value.kOff));
     }
 
     public Command extend() {
-        return Commands.run(() -> motor.set(ClimberConstants.EXTEND_SPEED), this);
+        return runOnce(() -> solenoid.set(DoubleSolenoid.Value.kForward));
     }
 
     public Command retract() {
-        return Commands.run(() -> motor.set(ClimberConstants.RETRACT_SPEED), this);
+        return runOnce(() -> solenoid.set(DoubleSolenoid.Value.kReverse));
     }
 }
