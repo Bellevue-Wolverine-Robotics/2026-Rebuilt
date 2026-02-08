@@ -2,13 +2,11 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -18,18 +16,14 @@ import frc.robot.constants.ShooterConstants;
 public class ShooterSubsystem extends SubsystemBase {
     private final VelocityVoltage velocityRequest = new VelocityVoltage(-1.0d).withSlot(0);
 
-    private final TalonFX rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
+    private final TalonFX flywheelMasterMotor = new TalonFX(ShooterConstants.RIGHT_MOTOR_ID);
+    private final TalonFX flywheelFollowerMotor = new TalonFX(ShooterConstants.LEFT_MOTOR_ID);
 
-    private final TalonFX flywheelMasterMotor = new TalonFX(ShooterConstants.LEFT_MOTOR_ID);
-    private final TalonFX flywheelFollowerMotor = new TalonFX(ShooterConstants.RIGHT_MOTOR_ID);
+    private final FeedingSubsystem feedingSubsystem;
 
-    public ShooterSubsystem() {
+    public ShooterSubsystem(FeedingSubsystem feedingSubsystem) {
+        this.feedingSubsystem = feedingSubsystem;
         configureFlywheelMotors(flywheelMasterMotor, flywheelFollowerMotor);
-
-        var brakeConfig = new TalonFXConfiguration()
-            .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
-
-        rollerMotor.getConfigurator().apply(brakeConfig);
     }
 
     private static boolean withinTolerance(double value, double goal, double tolerance) {
@@ -46,10 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         master.getConfigurator().apply(PIDConfig);
 
-        var invertedConfig = new TalonFXConfiguration();
-        invertedConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-
-        follower.getConfigurator().apply(invertedConfig);
+        follower.setControl(new Follower(master.getDeviceID(), MotorAlignmentValue.Opposed));
     }
 
     private void updateFlywheelMotorDesiredSpeed(double rotationsPerSecond) {
@@ -66,16 +57,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command shootCommand(DoubleSupplier distance) {
         return new RunCommand(
-            () -> {
-                updateFlywheelMotorDesiredSpeed(calculateFlywheelMotorSpeed(distance.getAsDouble()));
-                if (withinTolerance(
+            () -> updateFlywheelMotorDesiredSpeed(calculateFlywheelMotorSpeed(distance.getAsDouble())),
+            this)
+                .alongWith(feedingSubsystem.FeedFuelToShooter().onlyIf(() ->
+                    withinTolerance(
                         flywheelMasterMotor.getVelocity().getValueAsDouble(), 
                         velocityRequest.Velocity, 
-                        ShooterConstants.ACCEPTABLE_RPS_TOLERANCE)) {
-                    rollerMotor.set(ShooterConstants.ROLLER_VELOCITY);
-                }
-            },
-            this).finallyDo(
-                () -> flywheelMasterMotor.setControl(velocityRequest.withVelocity(0.0d)));
+                        ShooterConstants.ACCEPTABLE_RPS_TOLERANCE)))
+                .finallyDo(
+                    () -> flywheelMasterMotor.setControl(velocityRequest.withVelocity(0.0d)));
     }
 }

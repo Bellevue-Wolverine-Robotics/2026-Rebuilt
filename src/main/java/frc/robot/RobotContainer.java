@@ -14,6 +14,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
 import frc.robot.constants.DriverStationConstants;
+import frc.robot.subsystems.FeedingSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -21,10 +22,12 @@ import frc.robot.subsystems.VisionSubsystem;
 public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
-    // Vision subsystem is automatically registered by command scheduler
+    // Subsystems are automatically registered by command scheduler
     @SuppressWarnings("unused")
     private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
-    private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+
+    private final FeedingSubsystem feedingSubsystem = new FeedingSubsystem();
+    private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(feedingSubsystem);
 
     private final CommandXboxController driverController = new CommandXboxController(DriverStationConstants.DRIVER_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
