@@ -46,12 +46,14 @@ public class VisionConstants {
     public static final int CAMERA_LATENCY_MS = 100;
     public static final int CAMERA_LATENCY_STD_DEV_MS = 30;
 
-    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(1, 1, Units.degreesToRadians(15));
-    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(7.5));
-    public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(10));
+    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
+    public static final int SINGLE_TAG_DISTANCE_THRESHOLD = 4;
+    public static final int STD_DEVS_MULTI_TAG_SCALING_FACTOR = 6;
 
+    public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     private static final Pose3d ORIGIN_POSE = TAG_LAYOUT.getOrigin();
-    private static final Transform2d ROBOT_FRONT_TO_CENTER = new Transform2d(new Translation2d(-0.40005, 0), new Rotation2d(0));
+    private static final Transform2d BUMPER_TO_CENTER = new Transform2d(new Translation2d(-0.40005, 0), new Rotation2d(0));
 
     private static final Pose2d getAllianceSpecificTagPose(int redTagId, int blueTagId, Transform2d transform) {
         boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red; 
@@ -60,12 +62,12 @@ public class VisionConstants {
     }
 
     public static final Supplier<Pose2d> CLIMB_POSE_SUPPLIER = () -> {
-        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(40), 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
+        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(40), 0.0), Rotation2d.fromDegrees(180)).plus(BUMPER_TO_CENTER);
         return getAllianceSpecificTagPose(15, 31, transform);
     };
 
     public static final Supplier<Pose2d> SHOOT_POSE_SUPPLIER = () -> {
-        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(36), 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
+        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(36), 0.0), Rotation2d.fromDegrees(180)).plus(BUMPER_TO_CENTER);
         return getAllianceSpecificTagPose(10, 26, transform);
     };
 
@@ -75,7 +77,7 @@ public class VisionConstants {
     };
 
     public static final Supplier<Pose2d> NEUTRAL_POSE_SUPPLIER = () -> {
-        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(36), 0.0), Rotation2d.fromDegrees(180)).plus(ROBOT_FRONT_TO_CENTER);
+        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(36), 0.0), Rotation2d.fromDegrees(180)).plus(BUMPER_TO_CENTER);
         return getAllianceSpecificTagPose(4, 20, transform);
     };
 }

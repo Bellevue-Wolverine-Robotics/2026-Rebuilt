@@ -29,9 +29,6 @@ public class VisionSubsystem extends SubsystemBase {
         private final PhotonPoseEstimator photonPoseEstimator;
         private final VisionConstants.CameraProperties properties;
         private PhotonCameraSim cameraSim;
-    
-        private static final int STD_DEVS_MULTI_TAG_SCALING_THRESHOLD = 4;
-        private static final int STD_DEVS_MULTI_TAG_SCALING_FACTOR = 30;
 
         public Camera(VisionConstants.CameraProperties properties) {
             this.properties = properties;
@@ -116,11 +113,11 @@ public class VisionSubsystem extends SubsystemBase {
                     estStdDevs = VisionConstants.MULTI_TAG_STD_DEVS;
                 }
                 // Increase std devs based on (average) distance
-                if (numTags == 1 && avgDist > STD_DEVS_MULTI_TAG_SCALING_THRESHOLD) {
+                if (numTags == 1 && avgDist > VisionConstants.SINGLE_TAG_DISTANCE_THRESHOLD) {
                     estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
                 }
                 else {
-                    estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / STD_DEVS_MULTI_TAG_SCALING_FACTOR));
+                    estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEVS_MULTI_TAG_SCALING_FACTOR));
                 };
 
                 return estStdDevs;
