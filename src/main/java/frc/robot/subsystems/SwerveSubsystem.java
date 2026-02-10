@@ -99,10 +99,10 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Drives the robot using field relative translative and angular velocities
+     * Drives the robot using field relative translative and angular velocities.
      * 
      * @param translation The translational velocity of the robot in meters per second.
-     * @param rotation    The rotational velocity in radians per second
+     * @param rotation    The rotational velocity in radians per second.
      */
     public void drive(Translation2d translation, double angularRotation) {
         if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
@@ -144,8 +144,8 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
      * Converts joystick inputs into a translational velocity for field relative driving.
      * 
-     * @param xAxis The value of the joystick's X axis
-     * @param yAxis The value of the joystick's Y axis
+     * @param xAxis The value of the joystick's X axis.
+     * @param yAxis The value of the joystick's Y axis.
      */
     public Translation2d getVelocity(double xAxis, double yAxis) {
         double magnitude = Math.pow(Math.hypot(xAxis, yAxis), SwerveConstants.SMOOTHING_EXPONENT);
@@ -162,7 +162,7 @@ public class SwerveSubsystem extends SubsystemBase {
      *
      * @param xAxis     The input axis that corresponds to movement along to the X axis.
      * @param yAxis     The input axis that corresponds to movement along the Y axis.
-     * @param rotationAxis The input axis that corresponds to rotational movement
+     * @param rotationAxis The input axis that corresponds to rotational movement.
      * @return Drive command.
      */
     public Command driveCommand(DoubleSupplier xAxis, DoubleSupplier yAxis, DoubleSupplier rotationAxis) {

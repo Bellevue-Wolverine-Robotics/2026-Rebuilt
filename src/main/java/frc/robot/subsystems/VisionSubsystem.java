@@ -29,6 +29,9 @@ public class VisionSubsystem extends SubsystemBase {
         private final PhotonPoseEstimator photonPoseEstimator;
         private final VisionConstants.CameraProperties properties;
         private PhotonCameraSim cameraSim;
+    
+        private static final int STD_DEVS_MULTI_TAG_SCALING_THRESHOLD = 4;
+        private static final int STD_DEVS_MULTI_TAG_SCALING_FACTOR = 30;
 
         public Camera(VisionConstants.CameraProperties properties) {
             this.properties = properties;
@@ -38,11 +41,17 @@ public class VisionSubsystem extends SubsystemBase {
 
         public void setupSimulation(VisionSystemSim visionSim) {
             SimCameraProperties cameraProp = new SimCameraProperties();
-            cameraProp.setCalibration(1280, 720, Rotation2d.fromDegrees(68.5));
-            cameraProp.setCalibError(0.35, 0.10);
-            cameraProp.setFPS(30);
-            cameraProp.setAvgLatencyMs(80);
-            cameraProp.setLatencyStdDevMs(20);
+
+            cameraProp.setCalibration(
+                VisionConstants.CAMERA_RESOLUTION_WIDTH,
+                VisionConstants.CAMERA_RESOLUTION_HEIGHT,
+                Rotation2d.fromDegrees(VisionConstants.CAMERA_DIAGONAL_FOV)
+            );
+
+            cameraProp.setCalibError(VisionConstants.CAMERA_AVERAGE_ERROR_PIXEL, VisionConstants.CAMERA_ERROR_STD_DEV_PIXEL);
+            cameraProp.setFPS(VisionConstants.CAMERA_FPS);
+            cameraProp.setAvgLatencyMs(VisionConstants.CAMERA_LATENCY_MS);
+            cameraProp.setLatencyStdDevMs(VisionConstants.CAMERA_LATENCY_STD_DEV_MS);
 
             cameraSim = new PhotonCameraSim(photonCamera, cameraProp);
             visionSim.addCamera(cameraSim, properties.robotToCamera);
@@ -77,9 +86,9 @@ public class VisionSubsystem extends SubsystemBase {
          *
          * @param estimatedPose The estimated pose to guess standard deviations for.
          * @param targets All targets in this camera frame
+         * @return Estimated standard deviations.
          */
         private Matrix<N3, N1> calculateEstimationStdDevs(EstimatedRobotPose estimatedPose, List<PhotonTrackedTarget> targets) {
-            // Pose present. Start running Heuristic
             var estStdDevs = VisionConstants.SINGLE_TAG_STD_DEVS;
             int numTags = 0;
             double avgDist = 0;
@@ -87,14 +96,13 @@ public class VisionSubsystem extends SubsystemBase {
             // Precalculation - see how many tags we found, and calculate an average-distance metric
             for (var tgt : targets) {
                 var tagPose = photonPoseEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
-                if (tagPose.isEmpty()) continue;
+                if (tagPose.isEmpty()) {
+                    continue;
+                }
                 numTags++;
-                avgDist +=
-                        tagPose
-                                .get()
-                                .toPose2d()
-                                .getTranslation()
-                                .getDistance(estimatedPose.estimatedPose.toPose2d().getTranslation());
+                avgDist += tagPose.get().toPose2d().getTranslation().getDistance(
+                    estimatedPose.estimatedPose.toPose2d().getTranslation()
+                );
             }
 
             if (numTags == 0) {
@@ -104,11 +112,17 @@ public class VisionSubsystem extends SubsystemBase {
                 // One or more tags visible, run the full heuristic.
                 avgDist /= numTags;
                 // Decrease std devs if multiple targets are visible
-                if (numTags > 1) estStdDevs = VisionConstants.MULTI_TAG_STD_DEVS;
+                if (numTags > 1) {
+                    estStdDevs = VisionConstants.MULTI_TAG_STD_DEVS;
+                }
                 // Increase std devs based on (average) distance
-                if (numTags == 1 && avgDist > 4)
+                if (numTags == 1 && avgDist > STD_DEVS_MULTI_TAG_SCALING_THRESHOLD) {
                     estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-                else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+                }
+                else {
+                    estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / STD_DEVS_MULTI_TAG_SCALING_FACTOR));
+                };
+
                 return estStdDevs;
             }
         }

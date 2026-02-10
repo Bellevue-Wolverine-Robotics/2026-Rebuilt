@@ -37,6 +37,15 @@ public class VisionConstants {
        new CameraProperties("primary", new Transform3d(new Translation3d(0.40195, Units.inchesToMeters(-5.25), Units.inchesToMeters(13.625)), new Rotation3d(0, Units.degreesToRadians(0), 0)))
     );
 
+    public static final int CAMERA_RESOLUTION_WIDTH = 1280;
+    public static final int CAMERA_RESOLUTION_HEIGHT = 720;
+    public static final double CAMERA_DIAGONAL_FOV = 68.5;
+    public static final double CAMERA_AVERAGE_ERROR_PIXEL = 0.35;
+    public static final double CAMERA_ERROR_STD_DEV_PIXEL = 0.10;
+    public static final int CAMERA_FPS = 30;
+    public static final int CAMERA_LATENCY_MS = 100;
+    public static final int CAMERA_LATENCY_STD_DEV_MS = 30;
+
     public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(1, 1, Units.degreesToRadians(15));
     public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(7.5));
     public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
