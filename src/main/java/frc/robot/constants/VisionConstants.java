@@ -46,10 +46,10 @@ public class VisionConstants {
     public static final int CAMERA_LATENCY_MS = 100;
     public static final int CAMERA_LATENCY_STD_DEV_MS = 30;
 
-    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(10));
-    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(15));
+    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2.5));
     public static final int SINGLE_TAG_DISTANCE_THRESHOLD = 4;
-    public static final int STD_DEVS_MULTI_TAG_SCALING_FACTOR = 6;
+    public static final int STD_DEVS_MULTI_TAG_SCALING_FACTOR = 30;
 
     public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     private static final Pose3d ORIGIN_POSE = TAG_LAYOUT.getOrigin();
