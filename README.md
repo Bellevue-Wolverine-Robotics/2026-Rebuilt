@@ -21,7 +21,7 @@
 | Left Shooter  | 24  |
 | Right Shooter | 25  |
 
-### Other Devices (IDs 18)
+### Other Devices (ID 13)
 
 | Deivce | ID |
 |--------|----|
