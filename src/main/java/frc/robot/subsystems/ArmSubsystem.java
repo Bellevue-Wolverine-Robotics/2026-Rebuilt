@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
@@ -8,10 +7,17 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.ResetMode;
+import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -22,15 +28,35 @@ public class ArmSubsystem extends SubsystemBase {
     private final SparkMax motor = new SparkMax(ArmConstants.MOTOR_CAN_ID, MotorType.kBrushless);
     private final SparkMaxConfig motorConfig = new SparkMaxConfig();
 
-    private final DutyCycleEncoder encoder = new DutyCycleEncoder(ArmConstants.ENCODER_PWM_PORT);
-    private final PIDController controller = new PIDController(ArmConstants.PID_KP, ArmConstants.PID_KI, ArmConstants.PID_KD);
+    private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(ArmConstants.ENCODER_PWM_PORT);
+    private final SparkClosedLoopController controller = motor.getClosedLoopController();
 
     private SingleJointedArmSim sim;
-    private DutyCycleEncoderSim encoderSim;
+    private DutyCycleEncoderSim absoluteEncoderSim;
+    private SparkRelativeEncoderSim relativeEncoderSim;
 
     public ArmSubsystem() {
         motorConfig.idleMode(IdleMode.kBrake);
+
+        motorConfig.encoder.positionConversionFactor(1.0 /  ArmConstants.GEAR_RATIO);
+        motorConfig.encoder.velocityConversionFactor(1.0 / ArmConstants.GEAR_RATIO);
+
+        motorConfig.closedLoop
+            .p(ArmConstants.PID_KP)
+            .i(ArmConstants.PID_KI)
+            .d(ArmConstants.PID_KD);
+
+        motorConfig.closedLoop.feedForward
+            .kS(ArmConstants.FEEDFORWARD_KS)
+            .kV(ArmConstants.FEEDFORWARD_KV)
+            .kA(ArmConstants.FEEDFORWARD_KA)
+            .kCos(ArmConstants.FEEDFORWARD_KG)
+            .kCosRatio(1.0);
+
+        motorConfig.closedLoop.allowedClosedLoopError(ArmConstants.SETPOINT_ERROR_TOLERANCE, ClosedLoopSlot.kSlot0);
+
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        motor.getEncoder().setPosition(absoluteEncoder.get());
 
         if (Robot.isSimulation()) {
             sim = new SingleJointedArmSim(
@@ -41,36 +67,41 @@ public class ArmSubsystem extends SubsystemBase {
                 ArmConstants.MINIMUM_ANGLE_RADIANS,
                 ArmConstants.MAXIMUM_ANGLE_RADIANS,
                 false,
-                ArmConstants.RETRACTED_SETPOINT * (2.0 * Math.PI)
+                ArmConstants.MAXIMUM_ANGLE_RADIANS
             );
-            encoderSim = new DutyCycleEncoderSim(encoder);
+            absoluteEncoderSim = new DutyCycleEncoderSim(absoluteEncoder);
+            relativeEncoderSim = new SparkRelativeEncoderSim(motor);
         }
     }
 
-    private void movePosition(double setpoint) {
-        double position = encoder.get();
-        double speed = controller.calculate(position, setpoint);
-        motor.set(speed);
+    public Command retractCommand() {
+        return startEnd(
+            () -> controller.setSetpoint(ArmConstants.RETRACTED_SETPOINT, ControlType.kPosition),
+            () -> motor.stopMotor()
+        ).until(() -> controller.isAtSetpoint());
     }
 
-    public Command retract() {
+    public Command extendCommand() {
         return startEnd(
-            () -> movePosition(ArmConstants.RETRACTED_SETPOINT),
+            () -> controller.setSetpoint(ArmConstants.EXTENDED_SETPOINT, ControlType.kPosition),
             () -> motor.stopMotor()
-        );
+        ).until(() -> controller.isAtSetpoint());
     }
 
-    public Command extend() {
-        return startEnd(
-            () -> movePosition(ArmConstants.EXTENDED_SETPOINT),
-            () -> motor.stopMotor()
-        );
+    public Command moveCommand(DoubleSupplier speed) {
+        return run(() -> motor.set(speed.getAsDouble()));
     }
 
     @Override
     public void simulationPeriodic() {
-        sim.setInput(motor.get() * 12.0);
+        sim.setInputVoltage(motor.get() * 12.0);
         sim.update(0.02);
-        encoderSim.set(sim.getAngleRads() / (2.0 * Math.PI));
+
+        double position = sim.getAngleRads() / (2.0 * Math.PI);
+        double velocity = sim.getVelocityRadPerSec() / (2.0 * Math.PI) * 60;
+
+        absoluteEncoderSim.set(position);
+        relativeEncoderSim.setPosition(position);
+        relativeEncoderSim.setVelocity(velocity);
     }
 }

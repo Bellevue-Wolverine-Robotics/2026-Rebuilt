@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
+import frc.robot.commands.ExtendIntakeCommand;
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -41,9 +42,11 @@ public class RobotContainer {
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
 
-        operatorController.leftTrigger().whileTrue(intakeSubsystem.intake());
-        operatorController.leftBumper().onTrue(armSubsystem.retract());
-        operatorController.rightBumper().onTrue(armSubsystem.extend());
+        operatorController.leftTrigger().whileTrue(new ExtendIntakeCommand(armSubsystem, intakeSubsystem));
+        operatorController.rightTrigger().whileTrue(intakeSubsystem.unjamCommand());
+        operatorController.leftBumper().onTrue(armSubsystem.retractCommand());
+        operatorController.rightBumper().onTrue(armSubsystem.extendCommand());
+        operatorController.axisGreaterThan(1, 0.0).whileTrue(armSubsystem.moveCommand(operatorController::getLeftY));
     }
 
     public Command getAutonomousCommand() {

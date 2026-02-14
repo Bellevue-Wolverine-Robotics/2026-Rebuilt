@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -21,14 +22,14 @@ public class IntakeSubsystem extends SubsystemBase {
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public Command intake() {
+    public Command intakeCommand() {
         return startEnd(
             () -> motor.set(IntakeConstants.INTAKE_SPEED),
             () -> motor.stopMotor()
         );
     }
 
-    public Command unjam() {
+    public Command unjamCommand() {
         return startEnd(
             () -> motor.set(IntakeConstants.UNJAM_SPEED),
             () -> motor.stopMotor()
