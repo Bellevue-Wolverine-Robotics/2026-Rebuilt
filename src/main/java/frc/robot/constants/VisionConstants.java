@@ -33,10 +33,11 @@ public class VisionConstants {
     }
 
     public static final List<CameraProperties> CAMERAS = List.of(
-       new CameraProperties("secondary", new Transform3d(new Translation3d(0.40195, Units.inchesToMeters(-3.5), Units.inchesToMeters(14.5)), new Rotation3d(0, Units.degreesToRadians(-30), 0))),
-       new CameraProperties("primary", new Transform3d(new Translation3d(0.40195, Units.inchesToMeters(-5.25), Units.inchesToMeters(13.625)), new Rotation3d(0, Units.degreesToRadians(0), 0)))
+       new CameraProperties("secondary", new Transform3d(new Translation3d(Units.inchesToMeters(15.825), Units.inchesToMeters(-3.5), Units.inchesToMeters(14.5)), new Rotation3d(0, Units.degreesToRadians(-30), 0))),
+       new CameraProperties("primary", new Transform3d(new Translation3d(Units.inchesToMeters(15.825), Units.inchesToMeters(-5.25), Units.inchesToMeters(13.625)), new Rotation3d(0, Units.degreesToRadians(0), 0)))
     );
 
+    // Used for simulaiton
     public static final int CAMERA_RESOLUTION_WIDTH = 1280;
     public static final int CAMERA_RESOLUTION_HEIGHT = 720;
     public static final double CAMERA_DIAGONAL_FOV = 68.5;
@@ -48,8 +49,8 @@ public class VisionConstants {
 
     public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
     public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(1));
-    public static final int SINGLE_TAG_DISTANCE_THRESHOLD = 4;
-    public static final int STD_DEVS_MULTI_TAG_SCALING_FACTOR = 30;
+    public static final double SINGLE_TAG_DISTANCE_THRESHOLD = 4.0;
+    public static final double STD_DEVS_SCALING_FACTOR = 30.0;
 
     public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     private static final Pose3d ORIGIN_POSE = TAG_LAYOUT.getOrigin();
@@ -57,7 +58,7 @@ public class VisionConstants {
 
     private static final Pose2d getAllianceSpecificTagPose(int redTagId, int blueTagId, Transform2d transform) {
         boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red; 
-        Pose2d tagPose = TAG_LAYOUT.getTagPose(isRed ? redTagId: blueTagId).orElse(ORIGIN_POSE).toPose2d();
+        Pose2d tagPose = TAG_LAYOUT.getTagPose(isRed ? redTagId : blueTagId).orElse(ORIGIN_POSE).toPose2d();
         return tagPose.transformBy(transform);
     }
 

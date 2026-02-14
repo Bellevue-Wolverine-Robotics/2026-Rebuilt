@@ -147,7 +147,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param xAxis The value of the joystick's X axis.
      * @param yAxis The value of the joystick's Y axis.
      */
-    public Translation2d getVelocity(double xAxis, double yAxis) {
+    public Translation2d joystickToTranslation(double xAxis, double yAxis) {
         double magnitude = Math.pow(Math.hypot(xAxis, yAxis), SwerveConstants.SMOOTHING_EXPONENT);
         double angle = Math.atan2(yAxis, xAxis);
 
@@ -170,7 +170,7 @@ public class SwerveSubsystem extends SubsystemBase {
             ledSubsystem.setAligned(false);
 
             drive(
-                getVelocity(xAxis.getAsDouble(), yAxis.getAsDouble()),
+                joystickToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
                 Math.pow(rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT) * swerveDrive.getMaximumChassisAngularVelocity()
             );
         });

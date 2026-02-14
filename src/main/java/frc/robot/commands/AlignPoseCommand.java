@@ -64,4 +64,9 @@ public class AlignPoseCommand extends Command {
         ledSubsystem.setAligned(controller.atReference());
         swerveSubsystem.drive(chassisSpeeds);
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        ledSubsystem.setAligned(false);
+    }
 }

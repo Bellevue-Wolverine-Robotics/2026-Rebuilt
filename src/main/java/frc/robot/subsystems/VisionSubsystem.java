@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -67,11 +68,12 @@ public class VisionSubsystem extends SubsystemBase {
 
             if (estimatedPose.isEmpty()) {
                 estimatedPose = photonPoseEstimator.estimateLowestAmbiguityPose(result);
+
+                if (estimatedPose.isEmpty()) {
+                    return Optional.empty();
+                }
             }
 
-            if (estimatedPose.isEmpty()) {
-                return Optional.empty();
-            }
 
             Matrix<N3, N1> stdDevs = calculateEstimationStdDevs(estimatedPose.get(), result.getTargets());
             return Optional.of(new PoseEstimate(estimatedPose.get(), stdDevs));
@@ -92,7 +94,7 @@ public class VisionSubsystem extends SubsystemBase {
 
             // Precalculation - see how many tags we found, and calculate an average-distance metric
             for (var tgt : targets) {
-                var tagPose = photonPoseEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+                Optional<Pose3d> tagPose = photonPoseEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
                 if (tagPose.isEmpty()) {
                     continue;
                 }
@@ -103,25 +105,24 @@ public class VisionSubsystem extends SubsystemBase {
             }
 
             if (numTags == 0) {
-                // No tags visible. Default to single-tag std devs
-                return VisionConstants.SINGLE_TAG_STD_DEVS;
-            } else {
-                // One or more tags visible, run the full heuristic.
-                avgDist /= numTags;
-                // Decrease std devs if multiple targets are visible
-                if (numTags > 1) {
-                    estStdDevs = VisionConstants.MULTI_TAG_STD_DEVS;
-                }
-                // Increase std devs based on (average) distance
-                if (numTags == 1 && avgDist > VisionConstants.SINGLE_TAG_DISTANCE_THRESHOLD) {
-                    estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-                }
-                else {
-                    estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEVS_MULTI_TAG_SCALING_FACTOR));
-                };
-
                 return estStdDevs;
             }
+
+            // One or more tags visible, run the full heuristic.
+            avgDist /= numTags;
+            // Decrease std devs if multiple targets are visible
+            if (numTags > 1) {
+                estStdDevs = VisionConstants.MULTI_TAG_STD_DEVS;
+            }
+            // Increase std devs based on (average) distance
+            if (numTags == 1 && avgDist > VisionConstants.SINGLE_TAG_DISTANCE_THRESHOLD) {
+                estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+            }
+            else {
+                estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEVS_SCALING_FACTOR));
+            };
+
+            return estStdDevs;
         }
     }
 
