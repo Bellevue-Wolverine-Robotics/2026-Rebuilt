@@ -7,6 +7,7 @@ public class ShooterConstants {
 
     public static final int ROLLER_MOTOR_ID = -1;
 
+    // The acceptable difference in rps that is allowed for the motor to shoot
     public static final float ACCEPTABLE_RPS_TOLERANCE = -1;
 
     // Voltage per motor rotation per second, or V/RPS. Found using SysId.
