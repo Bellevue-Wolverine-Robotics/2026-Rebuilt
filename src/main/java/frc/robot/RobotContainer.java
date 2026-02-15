@@ -4,26 +4,26 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import frc.robot.commands.ExtendIntakeCommand;
 import frc.robot.constants.DriverStationConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
     private final ArmSubsystem armSubsystem = new ArmSubsystem();
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(ledSubsystem);
+    @SuppressWarnings("unused")  // Subsystems automatically register themselves to command scheduler
     private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
 
     private final CommandXboxController driverController = new CommandXboxController(DriverStationConstants.DRIVER_CONTROLLER_PORT);
@@ -40,7 +40,17 @@ public class RobotContainer {
             () -> -driverController.getRightX()
         ));
 
+        driverController.rightTrigger().whileTrue(swerveSubsystem.driveCommand(
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getLeftX(),
+            VisionConstants.HUB_POSE_SUPPLIER
+        ));
+
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
+
+        driverController.y().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.NEUTRAL_POSE_SUPPLIER));
+        driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
+        driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
 
         operatorController.leftTrigger().whileTrue(new ExtendIntakeCommand(armSubsystem, intakeSubsystem));
         operatorController.rightTrigger().whileTrue(intakeSubsystem.unjamCommand());
@@ -50,8 +60,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        Pose2d targetPose = new Pose2d(5, 3, Rotation2d.fromDegrees(0));
-        PathConstraints constraints = new PathConstraints(3, 4,  Units.degreesToRadians(540), Units.degreesToRadians(720));
-        return AutoBuilder.pathfindToPose(targetPose, constraints, 0);
+        return new PathPlannerAuto("Basic");
     }
 }
