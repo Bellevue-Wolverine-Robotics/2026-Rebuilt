@@ -8,21 +8,28 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
-    private final DoubleSolenoid solenoid = new DoubleSolenoid(
+    private final DoubleSolenoid leftSolenoid = new DoubleSolenoid(
         PneumaticsModuleType.CTREPCM,
-        ClimberConstants.FORWARD_CHANNEL,
-        ClimberConstants.REVERSE_CHANNEL
+        ClimberConstants.LEFT_FORWARD_CHANNEL,
+        ClimberConstants.LEFT_REVERSE_CHANNEL
     );
 
-    public Command stop() {
-        return runOnce(() -> solenoid.set(DoubleSolenoid.Value.kOff));
+    private final DoubleSolenoid rightSolenoid = new DoubleSolenoid(
+        PneumaticsModuleType.CTREPCM,
+        ClimberConstants.RIGHT_FORWARD_CHANNEL,
+        ClimberConstants.RIGHT_REVERSE_CHANNEL
+    );
+
+    private void set(DoubleSolenoid.Value value) {
+        leftSolenoid.set(value);
+        rightSolenoid.set(value);
     }
 
-    public Command extend() {
-        return runOnce(() -> solenoid.set(DoubleSolenoid.Value.kForward));
+    public Command extendCommand() {
+        return runOnce(() -> set(DoubleSolenoid.Value.kForward));
     }
 
-    public Command retract() {
-        return runOnce(() -> solenoid.set(DoubleSolenoid.Value.kReverse));
+    public Command retractCommand() {
+        return runOnce(() -> set(DoubleSolenoid.Value.kReverse));
     }
 }
