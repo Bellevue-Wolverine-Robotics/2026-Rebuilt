@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -26,18 +25,21 @@ public class AimPoseCommand extends Command {
 
     private final SwerveSubsystem swerveSubsystem;
     private final LEDSubsystem ledSubsystem;
-    private final Supplier<Translation2d> movementSupplier;
+    private final DoubleSupplier xAxis;
+    private final DoubleSupplier yAxis;
     private final Supplier<Pose2d> target;
 
     public AimPoseCommand(
         SwerveSubsystem swerveSubsystem,
         LEDSubsystem ledSubsystem,
-        Supplier<Translation2d> movement,
+        DoubleSupplier xAxis,
+        DoubleSupplier yAxis,
         Supplier<Pose2d> target
     ) {
         this.swerveSubsystem = swerveSubsystem;
         this.ledSubsystem = ledSubsystem;
-        this.movementSupplier = movement;
+        this.xAxis = xAxis;
+        this.yAxis = yAxis;
         this.target = target;
         addRequirements(swerveSubsystem);
 
@@ -62,7 +64,7 @@ public class AimPoseCommand extends Command {
         ledSubsystem.setAligned(thetaController.atGoal());
 
         swerveSubsystem.drive(
-            swerveSubsystem.movementToTranslation(movementSupplier.get()),
+            swerveSubsystem.joystickToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
             thetaController.calculate(currentHeading, desiredHeading)
         );
     }
