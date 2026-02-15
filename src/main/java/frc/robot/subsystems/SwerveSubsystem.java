@@ -26,6 +26,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
+import frc.robot.TranslationConversions;
 import frc.robot.commands.AimPoseCommand;
 import frc.robot.commands.AlignPoseCommand;
 import frc.robot.constants.PathPlannerConstants;
@@ -142,14 +143,16 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Converts joystick inputs into a translational velocity for field relative driving.
+     * Converts movement inputs into a translational velocity for field relative driving.
      * 
-     * @param xAxis The value of the joystick's X axis.
-     * @param yAxis The value of the joystick's Y axis.
+     * @param movement The movement input in robot coordinate space.
      */
-    public Translation2d joystickToTranslation(double xAxis, double yAxis) {
-        double magnitude = Math.pow(Math.hypot(xAxis, yAxis), SwerveConstants.SMOOTHING_EXPONENT);
-        double angle = Math.atan2(yAxis, xAxis);
+    public Translation2d movementToTranslation(Translation2d movement) {
+        double robotX = movement.getX();
+        double robotY = movement.getY();
+
+        double magnitude = Math.pow(Math.hypot(robotX, robotY), SwerveConstants.SMOOTHING_EXPONENT);
+        double angle = Math.atan2(robotY, robotX);
 
         return new Translation2d(
             Math.cos(angle) * magnitude * swerveDrive.getMaximumChassisVelocity(),
@@ -160,18 +163,17 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
      * Provides a command to drive the robot using field relative translative values and heading as angular velocity.
      *
-     * @param xAxis     The input axis that corresponds to movement along to the X axis.
-     * @param yAxis     The input axis that corresponds to movement along the Y axis.
+     * @param movementSupplier Input supplying the robot's movement.
      * @param rotationAxis The input axis that corresponds to rotational movement.
      * @return Drive command.
      */
-    public Command driveCommand(DoubleSupplier xAxis, DoubleSupplier yAxis, DoubleSupplier rotationAxis) {
+    public Command driveCommand(Supplier<Translation2d> movementSupplier, DoubleSupplier rotationAxis) {
         return run(() -> {
             ledSubsystem.setAligned(false);
 
             drive(
-                joystickToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
-                Math.pow(rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT) * swerveDrive.getMaximumChassisAngularVelocity()
+                movementToTranslation(TranslationConversions.xboxToRobot(movementSupplier.get())),
+                Math.pow(-rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT) * swerveDrive.getMaximumChassisAngularVelocity()
             );
         });
     }
@@ -179,13 +181,12 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
      * Provides a command to drive the robot using field relative translative values and heading as a target to point at.
      *
-     * @param translationX     Translation in the X direction.
-     * @param translationY     Translation in the Y direction.
+     * @param translation     Translation of the robot.
      * @param aimTarget        The target to turn the front of the robot towards.
      * @return Drive command.
      */
-    public Command driveCommand(DoubleSupplier xAxis, DoubleSupplier yAxis, Supplier<Pose2d> aimTarget) {
-        return new AimPoseCommand(this, ledSubsystem, xAxis, yAxis, aimTarget);
+    public Command driveCommand(Supplier<Translation2d> translation, Supplier<Pose2d> aimTarget) {
+        return new AimPoseCommand(this, ledSubsystem, translation, aimTarget);
     }
 
     /**
