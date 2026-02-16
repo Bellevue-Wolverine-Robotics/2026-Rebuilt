@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -26,13 +27,15 @@ import frc.robot.constants.VisionConstants;
 
 public class VisionSubsystem extends SubsystemBase {
     private static class Camera {
+        private final VisionConstants.CameraProperties properties;
+        private final BooleanSupplier usable;
         private final PhotonCamera photonCamera;
         private final PhotonPoseEstimator photonPoseEstimator;
-        private final VisionConstants.CameraProperties properties;
         private PhotonCameraSim cameraSim;
 
-        public Camera(VisionConstants.CameraProperties properties) {
+        public Camera(VisionConstants.CameraProperties properties, BooleanSupplier usable) {
             this.properties = properties;
+            this.usable = usable;
             photonCamera = new PhotonCamera(properties.name);
             photonPoseEstimator = new PhotonPoseEstimator(VisionConstants.TAG_LAYOUT, properties.robotToCamera);
         }
@@ -57,6 +60,10 @@ public class VisionSubsystem extends SubsystemBase {
         }
 
         public Optional<PoseEstimate> estimatePose() {
+            if (!usable.getAsBoolean()) {
+                return Optional.empty();
+            }
+
             List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
 
             if (results.isEmpty()) {
@@ -140,12 +147,11 @@ public class VisionSubsystem extends SubsystemBase {
     private final SwerveSubsystem swerveSubsystem;
     private VisionSystemSim visionSim;
 
-    public VisionSubsystem(SwerveSubsystem swerveSubsystem) {
+    public VisionSubsystem(ArmSubsystem armSubsystem, SwerveSubsystem swerveSubsystem) {
         this.swerveSubsystem = swerveSubsystem;
 
-        for (VisionConstants.CameraProperties cameraProperties : VisionConstants.CAMERAS) {
-            cameras.add(new Camera(cameraProperties));
-        }
+        cameras.add(new Camera(VisionConstants.HUB_CAMERA, () -> true));
+        cameras.add(new Camera(VisionConstants.TOWER_CAMERA, armSubsystem::extended));
 
         if (Robot.isSimulation()) {
             visionSim = new VisionSystemSim("main");

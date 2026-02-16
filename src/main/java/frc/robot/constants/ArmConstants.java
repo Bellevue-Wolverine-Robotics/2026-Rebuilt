@@ -1,5 +1,7 @@
 package frc.robot.constants;
 
+import edu.wpi.first.math.util.Units;
+
 public class ArmConstants {
     public static final int MOTOR_CAN_ID = 23;
     public static final int ENCODER_PWM_PORT = 0;
@@ -16,12 +18,11 @@ public class ArmConstants {
     public static final double RETRACTED_SETPOINT = 0.25; // TODO: Replace with actual offset
     public static final double EXTENDED_SETPOINT = 0; // TODO: Replace with actual offset
     public static final double SETPOINT_ERROR_TOLERANCE = 0.025; // TODO: Replace with actual tolerance 
+    public static final double VELOCITY_ERROR_TOLERANCE = 0.025; // TODO: Replace with actual velocity error tolerance
 
-    public static final double GEAR_RATIO = 20; // TODO: Replace with actual gear ratio
-    public static final double LENGTH_METERS = 0.5; // TODO Replace with actual intake width
-    public static final double MASS_KILOGRAMS = 2; // TODO: Replace with actual intake weight
-    public static final double MINIMUM_ANGLE_RADIANS = Math.toRadians(-10); // TODO: replace with actual extended position
-    public static final double MAXIMUM_ANGLE_RADIANS = Math.toRadians(100); // TODO: Replace with actual retracted position
-
-    public static double MANUAL_CONTROL_DEADBAND = 0.05;
+    public static final double GEAR_RATIO = 12;
+    public static final double LENGTH_METERS = Units.inchesToMeters(14.722102);
+    public static final double MASS_KILOGRAMS = 2.0675323998;
+    public static final double MINIMUM_ANGLE_RADIANS = Units.degreesToRadians(56.6712636);
+    public static final double MAXIMUM_ANGLE_RADIANS = Units.degreesToRadians(79.0541668);
 }
