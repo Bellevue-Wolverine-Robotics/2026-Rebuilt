@@ -38,6 +38,7 @@ public class ArmSubsystem extends SubsystemBase {
     private DutyCycleEncoderSim absoluteEncoderSim;
     private SparkRelativeEncoderSim relativeEncoderSim;
 
+    /** Constructs a new ArmSubsystem. */
     public ArmSubsystem() {
         motorConfig.idleMode(IdleMode.kBrake);
 
