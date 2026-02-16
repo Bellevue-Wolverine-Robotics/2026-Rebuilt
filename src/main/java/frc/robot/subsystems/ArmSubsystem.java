@@ -89,6 +89,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     /**
      * Provides whether the arm intake is extended.
+     *
      * @return Whether the arm is fully extended and not in motion.
      */
     public boolean extended() {
