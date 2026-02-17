@@ -64,7 +64,7 @@ public class AimPoseCommand extends Command {
         ledSubsystem.setAligned(thetaController.atGoal());
 
         swerveSubsystem.drive(
-            swerveSubsystem.joystickToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
+            swerveSubsystem.inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
             thetaController.calculate(currentHeading, desiredHeading)
         );
     }
