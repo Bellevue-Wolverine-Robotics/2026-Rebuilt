@@ -4,16 +4,14 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import frc.robot.constants.DriverStationConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -21,34 +19,42 @@ import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-
-    // Vision subsystem is automatically registered by command scheduler
-    @SuppressWarnings("unused")
+    private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(ledSubsystem);
+    @SuppressWarnings("unused")  // Subsystems automatically register themselves to command scheduler
     private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
-    public final LEDSubsystem ledSubsystem = new LEDSubsystem();
+
     private final CommandXboxController driverController = new CommandXboxController(DriverStationConstants.DRIVER_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
     public RobotContainer() {
         configureBindings();
     }
+
     private void configureBindings() {
         swerveSubsystem.setDefaultCommand(swerveSubsystem.driveCommand(
-            () -> -driverController.getLeftY(),
-            () -> -driverController.getLeftX(),
-            () -> -driverController.getRightX()
+            () -> -MathUtil.applyDeadband(driverController.getLeftY(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
+            () -> -MathUtil.applyDeadband(driverController.getLeftX(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
+            () -> -MathUtil.applyDeadband(driverController.getRightX(), DriverStationConstants.DRIVER_CONTROLLER_RIGHT_DEADBAND)
+        ));
+
+        driverController.rightTrigger().whileTrue(swerveSubsystem.driveCommand(
+            () -> -MathUtil.applyDeadband(driverController.getLeftY(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
+            () -> -MathUtil.applyDeadband(driverController.getLeftX(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
+            VisionConstants.HUB_POSE_SUPPLIER
         ));
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
+
+        driverController.y().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.NEUTRAL_POSE_SUPPLIER));
+        driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
+        driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
 
         operatorController.pov(0).onTrue(climberSubsystem.retractCommand());
         operatorController.pov(90).onTrue(climberSubsystem.extendCommand());
     }
 
     public Command getAutonomousCommand() {
-        Pose2d targetPose = new Pose2d(5, 3, Rotation2d.fromDegrees(0));
-        PathConstraints constraints = new PathConstraints(3, 4,  Units.degreesToRadians(540), Units.degreesToRadians(720));
-        return AutoBuilder.pathfindToPose(targetPose, constraints, 0);
+        return new PathPlannerAuto("Basic");
     }
 }
