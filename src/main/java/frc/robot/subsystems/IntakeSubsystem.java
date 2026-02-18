@@ -29,7 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return The intake command.
      */
     public Command intakeCommand() {
-        return startEnd(
+        return runEnd(
             () -> motor.set(IntakeConstants.INTAKE_SPEED),
             () -> motor.stopMotor()
         );
@@ -41,7 +41,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return The unjam command.
      */
     public Command unjamCommand() {
-        return startEnd(
+        return runEnd(
             () -> motor.set(IntakeConstants.UNJAM_SPEED),
             () -> motor.stopMotor()
         );

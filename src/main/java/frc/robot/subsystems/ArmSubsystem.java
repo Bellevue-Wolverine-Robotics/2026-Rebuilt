@@ -112,7 +112,7 @@ public class ArmSubsystem extends SubsystemBase {
      * @return The extension command.
      */
     public Command extendCommand() {
-        return startEnd(
+        return runEnd(
             () -> controller.setSetpoint(ArmConstants.EXTENDED_SETPOINT, ControlType.kPosition),
             () -> motor.stopMotor()
         ).until(this::extended);
@@ -125,7 +125,7 @@ public class ArmSubsystem extends SubsystemBase {
      * @return The retraction command.
      */
     public Command retractCommand() {
-        return startEnd(
+        return runEnd(
             () -> controller.setSetpoint(ArmConstants.RETRACTED_SETPOINT, ControlType.kPosition),
             () -> motor.stopMotor()
         ).until(this::retracted);
