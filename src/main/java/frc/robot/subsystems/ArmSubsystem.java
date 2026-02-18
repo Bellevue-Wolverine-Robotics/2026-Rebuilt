@@ -135,11 +135,14 @@ public class ArmSubsystem extends SubsystemBase {
      * Provides a command sets the arm's motor to a manual speed.
      * This is used in instances which the encoder is broken, so that the arm and intake are still usable.
      * 
-     * @param speed The speed to run the motor at as a percentage from -1.0 to 1.0.
+     * @param speed The speed to run the motor at as a percentage on [-1, 1].
      * @return The movement command.
      */
     public Command moveCommand(DoubleSupplier speed) {
-        return run(() -> motor.set(speed.getAsDouble()));
+        return runEnd(
+            () -> motor.set(speed.getAsDouble()),
+            () -> motor.stopMotor()
+        );
     }
 
     @Override

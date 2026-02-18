@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -57,7 +58,12 @@ public class RobotContainer {
         operatorController.rightTrigger().whileTrue(intakeSubsystem.unjamCommand());
         operatorController.leftBumper().onTrue(armSubsystem.retractCommand());
         operatorController.rightBumper().onTrue(armSubsystem.extendCommand());
-        operatorController.axisGreaterThan(1, 0.0).whileTrue(armSubsystem.moveCommand(operatorController::getLeftY));
+
+        new Trigger(
+            () -> Math.abs(operatorController.getLeftY()) > DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND
+        ).whileTrue(
+            armSubsystem.moveCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
+        );
     }
 
     public Command getAutonomousCommand() {
