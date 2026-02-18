@@ -42,8 +42,8 @@ public class RobotContainer {
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
 
-        operatorController.pov(0).whileTrue(climberSubsystem.retractCommand());
-        operatorController.pov(90).whileTrue(climberSubsystem.extendCommand());
+        operatorController.pov(0).onTrue(climberSubsystem.retractCommand());
+        operatorController.pov(90).onTrue(climberSubsystem.extendCommand());
     }
 
     public Command getAutonomousCommand() {
