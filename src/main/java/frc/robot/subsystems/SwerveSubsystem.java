@@ -176,16 +176,14 @@ public class SwerveSubsystem extends SubsystemBase {
         });
     }
 
-    /**
-     * Provides a command to drive the robot using field relative translative values and heading as a target to point at.
-     *
-     * @param translationX     Translation in the X direction.
-     * @param translationY     Translation in the Y direction.
-     * @param aimTarget        The target to turn the front of the robot towards.
-     * @return Drive command.
-     */
-    public Command driveCommand(DoubleSupplier xAxis, DoubleSupplier yAxis, Supplier<Pose2d> aimTarget) {
-        return new AimPoseCommand(this, ledSubsystem, xAxis, yAxis, aimTarget);
+    public ChassisSpeeds getFieldVelocity() {
+        return swerveDrive.getFieldVelocity();
+    }
+
+    public double getSpeedMagnitude() {
+        ChassisSpeeds velocities = swerveDrive.getFieldVelocity();
+        return Math.sqrt(velocities.vxMetersPerSecond * velocities.vxMetersPerSecond +
+                         velocities.vyMetersPerSecond * velocities.vyMetersPerSecond);
     }
 
     /**

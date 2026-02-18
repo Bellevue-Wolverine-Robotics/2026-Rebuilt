@@ -3,10 +3,12 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -38,6 +40,8 @@ public class ShooterSubsystem extends SubsystemBase {
         PIDConfig.kI = ShooterConstants.INTEGRAL_GAIN;
         PIDConfig.kD = ShooterConstants.DERIVATIVE_GAIN;
 
+        master.setNeutralMode(NeutralModeValue.Coast);
+
         master.getConfigurator().apply(PIDConfig);
 
         follower.setControl(new Follower(master.getDeviceID(), MotorAlignmentValue.Opposed));
@@ -65,6 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
                         velocityRequest.Velocity, 
                         ShooterConstants.ACCEPTABLE_RPS_TOLERANCE)))
                 .finallyDo(
-                    () -> flywheelMasterMotor.setControl(velocityRequest.withVelocity(0.0d)));
+                                                         // Make motor coast
+                    () -> flywheelMasterMotor.setControl(new DutyCycleOut(0.0)));
     }
 }

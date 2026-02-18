@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -72,5 +73,22 @@ public class AimPoseCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         ledSubsystem.setAligned(false);
+    }
+
+    public DoubleSupplier tagDist() {
+        return () -> getTagDist();
+    }
+
+    /**
+     * Gets the distance between the robot and the aimed tag.
+     * @return The distance between the aimed tag and the robot.
+     */
+    public double getTagDist() {
+        Transform2d difference = swerveSubsystem.getPose().minus(target.get());
+        return Math.sqrt(difference.getX() * difference.getX() + difference.getY() * difference.getY());
+    }
+
+    public boolean getAimed() {
+        return thetaController.atGoal();
     }
 }

@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import frc.robot.commands.AimPoseCommand;
 import frc.robot.constants.DriverStationConstants;
+import frc.robot.constants.ShootCommandConstants;
 import frc.robot.subsystems.FeedingSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.constants.VisionConstants;
@@ -19,6 +21,8 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
+    private AimPoseCommand aimCommand;
+
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(ledSubsystem);
     @SuppressWarnings("unused")  // Subsystems automatically register themselves to command scheduler
@@ -40,12 +44,19 @@ public class RobotContainer {
             () -> -MathUtil.applyDeadband(driverController.getLeftX(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
             () -> -MathUtil.applyDeadband(driverController.getRightX(), DriverStationConstants.DRIVER_CONTROLLER_RIGHT_DEADBAND)
         ));
+        
+        aimCommand = new AimPoseCommand(
+            swerveSubsystem, 
+            ledSubsystem, 
+            () -> -driverController.getLeftY(), 
+            () -> -driverController.getLeftX(), 
+            VisionConstants.HUB_POSE_SUPPLIER);
 
-        driverController.rightTrigger().whileTrue(swerveSubsystem.driveCommand(
-            () -> -MathUtil.applyDeadband(driverController.getLeftY(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
-            () -> -MathUtil.applyDeadband(driverController.getLeftX(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
-            VisionConstants.HUB_POSE_SUPPLIER
-        ));
+        driverController.rightTrigger().whileTrue(
+            aimCommand.alongWith(
+                shooterSubsystem.shootCommand(aimCommand.tagDist()).onlyIf(() -> 
+                swerveSubsystem.getSpeedMagnitude() < ShootCommandConstants.MAX_ACCEPTABLE_ROBOT_SPEED
+                && aimCommand.getAimed())));
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
         driverController.y().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.NEUTRAL_POSE_SUPPLIER));
