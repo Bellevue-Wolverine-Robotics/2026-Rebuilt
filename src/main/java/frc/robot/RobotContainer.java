@@ -50,8 +50,8 @@ public class RobotContainer {
         driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
         driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
 
-        operatorController.pov(0).onTrue(climberSubsystem.retractCommand());
-        operatorController.pov(90).onTrue(climberSubsystem.extendCommand());
+        operatorController.pov(0).onTrue(climberSubsystem.extendCommand());
+        operatorController.pov(180).onTrue(climberSubsystem.retractCommand());
     }
 
     public Command getAutonomousCommand() {
