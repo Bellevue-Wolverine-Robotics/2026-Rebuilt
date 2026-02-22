@@ -1,29 +1,26 @@
 package frc.robot.constants;
 
 public class ShooterConstants {
-    // TODO: Assign real values
-    public static final int LEFT_MOTOR_ID = -1;
-    public static final int RIGHT_MOTOR_ID = -1;
+    public static final int LEFT_MOTOR_ID = 24;
+    public static final int RIGHT_MOTOR_ID = 25;
 
-    public static final int ROLLER_MOTOR_ID = -1;
+    /** The gear ratio between the motor shaft and shooter shaft. */
+    public static final double GEAR_RATIO = 3.0;
 
-    // The acceptable difference in rps that is allowed for the motor to shoot
-    public static final float ACCEPTABLE_RPS_TOLERANCE = -1;
+    /** Acceptable tolerance between the target and current RPM in order to shoot. */
+    public static final double RPM_TOLERANCE = 50;
 
-    // Voltage per motor rotation per second, or V/RPS. Found using SysId.
-    // Not the mechanical rps! Just the motor's!
-    public static final float VOLTAGE_PER_MOTOR_RPS = -1;
+    /* The voltage required per RPM of the motor shaft. */
+    public static final double VOLTAGE_PER_MOTOR_RPM = 1 / 473.0; 
 
-    // Voltage to overcome the motor's static friction. Found using SysId
-    public static final float STATIC_FRICTION_OVERCOME_VOLTAGE = -1;
+    /* The voltage required to overcome the static friction of the shooter shaft. */
+    public static final double STATIC_FRICTION_VOLTAGE = 0.0;
 
-    public static final float PROPORTIONAL_GAIN = -1;
-    public static final float INTEGRAL_GAIN = -1;
-    public static final float DERIVATIVE_GAIN = -1;
+    public static final double PROPORTIONAL_GAIN = 0;
+    public static final double INTEGRAL_GAIN = 0;
+    public static final double DERIVATIVE_GAIN = 0;
 
-    public static final float DIST_KX2 = 0;
-    public static final float DIST_KX1 = 1;
-    public static final float DIST_KX0 = 0;
-
-    public static final float ROLLER_VELOCITY = -1;
+    public static final double DIST_KX2 = 1;
+    public static final double DIST_KX1 = 1;
+    public static final double DIST_KX0 = 0;
 }

@@ -26,7 +26,6 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
-import frc.robot.commands.AimPoseCommand;
 import frc.robot.commands.AlignPoseCommand;
 import frc.robot.constants.PathPlannerConstants;
 import frc.robot.constants.SwerveConstants;
@@ -176,14 +175,14 @@ public class SwerveSubsystem extends SubsystemBase {
         });
     }
 
-    public ChassisSpeeds getFieldVelocity() {
-        return swerveDrive.getFieldVelocity();
-    }
-
-    public double getSpeedMagnitude() {
+    public double getTranslationalVelocity() {
         ChassisSpeeds velocities = swerveDrive.getFieldVelocity();
         return Math.sqrt(velocities.vxMetersPerSecond * velocities.vxMetersPerSecond +
                          velocities.vyMetersPerSecond * velocities.vyMetersPerSecond);
+    }
+
+    public double getRotationalVelocity() {
+        return swerveDrive.getRobotVelocity().omegaRadiansPerSecond;
     }
 
     /**

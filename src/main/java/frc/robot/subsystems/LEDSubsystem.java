@@ -45,6 +45,7 @@ public class LEDSubsystem extends SubsystemBase {
         led.setData(ledBuffer);
     }
 
+    @Override
     public void periodic() {
         if (DriverStation.isDisabled()) {
             setBlueYellow();
