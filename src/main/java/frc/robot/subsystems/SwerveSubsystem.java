@@ -142,12 +142,12 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Converts joystick inputs into a translational velocity for field relative driving.
+     * Converts normalized inputs [-1, 1] into a translational velocity for field relative driving.
      * 
-     * @param xAxis The value of the joystick's X axis.
-     * @param yAxis The value of the joystick's Y axis.
+     * @param xAxis X axis normalized input.
+     * @param yAxis Y axis normalized input.
      */
-    public Translation2d joystickToTranslation(double xAxis, double yAxis) {
+    public Translation2d inputToTranslation(double xAxis, double yAxis) {
         double magnitude = Math.pow(Math.hypot(xAxis, yAxis), SwerveConstants.SMOOTHING_EXPONENT);
         double angle = Math.atan2(yAxis, xAxis);
 
@@ -170,7 +170,7 @@ public class SwerveSubsystem extends SubsystemBase {
             ledSubsystem.setAligned(false);
 
             drive(
-                joystickToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
+                inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
                 Math.pow(rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT) * swerveDrive.getMaximumChassisAngularVelocity()
             );
         });

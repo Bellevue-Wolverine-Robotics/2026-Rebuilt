@@ -36,6 +36,18 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        /* Robot Coordinate    Joystick Coordinate
+         *    Space:               Space:
+         * 
+         *       X+                  Y-
+         *       |                   |
+         *  Y+ ----- Y-         X- ----- X+
+         *       |                   | 
+         *       X-                  Y+
+         * 
+         * Therefore, the joystick's Y and X must be switched and
+         * their sign must be inverted to work in swerve's coordinate system.
+         */
         swerveSubsystem.setDefaultCommand(swerveSubsystem.driveCommand(
             () -> -MathUtil.applyDeadband(driverController.getLeftY(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
             () -> -MathUtil.applyDeadband(driverController.getLeftX(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
