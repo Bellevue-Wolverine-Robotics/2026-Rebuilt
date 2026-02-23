@@ -26,7 +26,7 @@ public class LEDSubsystem extends SubsystemBase {
         led.start();
     }
 
-    public void setAligned (boolean aligned) {
+    public void setAligned(boolean aligned) {
         this.aligned = aligned;
     }
 
