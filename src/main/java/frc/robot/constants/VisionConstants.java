@@ -32,8 +32,10 @@ public class VisionConstants {
         }
     }
 
-    public static final CameraProperties TOWER_CAMERA = new CameraProperties("primary", new Transform3d(new Translation3d(Units.inchesToMeters(15.825), Units.inchesToMeters(-5.25), Units.inchesToMeters(13.625)), new Rotation3d(0, Units.degreesToRadians(0), 0)));
-    public static final CameraProperties HUB_CAMERA = new CameraProperties("secondary", new Transform3d(new Translation3d(Units.inchesToMeters(15.825), Units.inchesToMeters(-3.5), Units.inchesToMeters(14.5)), new Rotation3d(0, Units.degreesToRadians(-30), 0)));
+    public static final List<CameraProperties> CAMERAS = List.of(
+       new CameraProperties("secondary", new Transform3d(new Translation3d(Units.inchesToMeters(15.825), Units.inchesToMeters(-3.5), Units.inchesToMeters(14.5)), new Rotation3d(0, Units.degreesToRadians(-30), 0))),
+       new CameraProperties("primary", new Transform3d(new Translation3d(Units.inchesToMeters(15.825), Units.inchesToMeters(-5.25), Units.inchesToMeters(13.625)), new Rotation3d(0, Units.degreesToRadians(0), 0)))
+    );
 
     // Used for simulaiton
     public static final int CAMERA_RESOLUTION_WIDTH = 1280;

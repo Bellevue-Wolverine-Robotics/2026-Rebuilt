@@ -81,30 +81,6 @@ public class ArmSubsystem extends SubsystemBase {
         }
     }
 
-    private boolean atPosition(double position) {
-        double setpointError = Math.abs(relativeEncoder.getPosition() - position);
-        double velocityError = Math.abs(relativeEncoder.getVelocity());
-        return velocityError < ArmConstants.VELOCITY_ERROR_TOLERANCE && setpointError < ArmConstants.SETPOINT_ERROR_TOLERANCE;
-    }
-
-    /**
-     * Provides whether the arm intake is extended.
-     *
-     * @return Whether the arm is fully extended and not in motion.
-     */
-    public boolean extended() {
-        return atPosition(ArmConstants.EXTENDED_SETPOINT);
-    }
-
-    /**
-     * Provides whether the intake arm is retracted.
-     * 
-     * @return Whether the arm is fully retracted and not in motion.
-     */
-    public boolean retracted() {
-        return atPosition(ArmConstants.RETRACTED_SETPOINT);
-    }
-
     /**
      * Provides a command that the sets the motor controller setpoint to extend the arm,
      * and finishes itself when complete.
@@ -115,7 +91,7 @@ public class ArmSubsystem extends SubsystemBase {
         return runEnd(
             () -> controller.setSetpoint(ArmConstants.EXTENDED_SETPOINT, ControlType.kPosition),
             () -> motor.stopMotor()
-        ).until(this::extended);
+        ).until(() -> controller.isAtSetpoint());
     }
 
     /**
@@ -128,7 +104,7 @@ public class ArmSubsystem extends SubsystemBase {
         return runEnd(
             () -> controller.setSetpoint(ArmConstants.RETRACTED_SETPOINT, ControlType.kPosition),
             () -> motor.stopMotor()
-        ).until(this::retracted);
+        ).until(() -> controller.isAtSetpoint());
     }
 
     /**

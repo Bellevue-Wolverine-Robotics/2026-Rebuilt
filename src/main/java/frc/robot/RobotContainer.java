@@ -26,7 +26,7 @@ public class RobotContainer {
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(ledSubsystem);
     @SuppressWarnings("unused")  // Subsystems automatically register themselves to command scheduler
-    private final VisionSubsystem visionSubsystem = new VisionSubsystem(armSubsystem, swerveSubsystem);
+    private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
 
     private final CommandXboxController driverController = new CommandXboxController(DriverStationConstants.DRIVER_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
