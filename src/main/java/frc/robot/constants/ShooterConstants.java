@@ -23,7 +23,6 @@ public class ShooterConstants {
     public static final double SHORT_SHOOT_METERS = 10.0; // TODO: Come up with an actual value
     public static final double PASS_SHOOT_METERS = 10.0; // TODO: Come up with an actual value
 
-
     public static final double DIST_KX2 = 0;
     public static final double DIST_KX1 = 0;
     public static final double DIST_KX0 = 0;
