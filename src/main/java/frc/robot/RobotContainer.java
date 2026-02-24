@@ -67,7 +67,6 @@ public class RobotContainer {
         driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
         driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
     }
-
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
     }

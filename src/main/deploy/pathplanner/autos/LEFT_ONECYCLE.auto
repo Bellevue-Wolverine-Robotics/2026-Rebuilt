@@ -7,13 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Shoot LEFT"
+            "pathName": "LEFT_BUMP-NEUTRAL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Tower"
+            "pathName": "LEFT_NEUTRAL-BUMP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_BUMP-ALLIANCE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_ALLIANCE-TOWER"
           }
         }
       ]

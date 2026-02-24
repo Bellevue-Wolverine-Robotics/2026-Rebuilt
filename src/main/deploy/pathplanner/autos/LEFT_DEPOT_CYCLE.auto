@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Shoot RIGHT"
+            "pathName": "LEFT_BUMP-DEPOT"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Tower"
+            "pathName": "LEFT_DEPOT-ALLIANCE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_ALLIANCE-TOWER"
           }
         }
       ]

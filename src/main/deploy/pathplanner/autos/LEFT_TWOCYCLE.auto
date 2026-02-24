@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_BUMP-NEUTRAL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_NEUTRAL-BUMP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_BUMP-ALLIANCE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_ALLIANCE-BUMP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_BUMP-NEUTRAL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_NEUTRAL-BUMP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFT_BUMP-ALLIANCE"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
