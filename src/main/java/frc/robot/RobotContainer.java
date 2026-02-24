@@ -57,8 +57,8 @@ public class RobotContainer {
         driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
         driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
 
-        operatorController.x().whileTrue(shooterSubsystem.shootDistanceCommand(ShooterConstants.PASS_SHOOT_DISTANCE, feederSubsystem));
-        operatorController.b().whileTrue(shooterSubsystem.shootDistanceCommand(ShooterConstants.SHORT_SHOOT_DISTANCE, feederSubsystem));
+        operatorController.x().whileTrue(shooterSubsystem.shootDistanceCommand(ShooterConstants.PASS_SHOOT_METERS, feederSubsystem));
+        operatorController.b().whileTrue(shooterSubsystem.shootDistanceCommand(ShooterConstants.SHORT_SHOOT_METERS, feederSubsystem));
     }
 
     public Command getAutonomousCommand() {

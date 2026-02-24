@@ -11,20 +11,20 @@ public class ShooterConstants {
     public static final double RPM_TOLERANCE = 50;
 
     /* The voltage required per RPM of the motor shaft. */
-    public static final double VOLTAGE_PER_MOTOR_RPM = 1 / 473.0; 
+    public static final double VOLTAGE_PER_MOTOR_RPM = GEAR_RATIO / 473.0; 
 
     /* The voltage required to overcome the static friction of the shooter shaft. */
-    public static final double STATIC_FRICTION_VOLTAGE = 0.0;
+    public static final double STATIC_FRICTION_VOLTAGE = 0.336;
 
-    /** Distances in meters */
-    public static final double SHORT_SHOOT_DISTANCE = 10.0; // TODO: Come up with an actual value for this
-    public static final double PASS_SHOOT_DISTANCE = 10.0; // TODO: Come up with an actual value
-
-    public static final double PROPORTIONAL_GAIN = 0;
+    public static final double PROPORTIONAL_GAIN = 0.1;
     public static final double INTEGRAL_GAIN = 0;
     public static final double DERIVATIVE_GAIN = 0;
 
-    public static final double DIST_KX2 = 1;
-    public static final double DIST_KX1 = 1;
+    public static final double SHORT_SHOOT_METERS = 10.0; // TODO: Come up with an actual value
+    public static final double PASS_SHOOT_METERS = 10.0; // TODO: Come up with an actual value
+
+
+    public static final double DIST_KX2 = 0;
+    public static final double DIST_KX1 = 0;
     public static final double DIST_KX0 = 0;
 }
