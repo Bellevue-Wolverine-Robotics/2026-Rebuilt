@@ -5,9 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,12 +26,16 @@ public class RobotContainer {
 
     private final CommandXboxController driverController = new CommandXboxController(DriverStationConstants.DRIVER_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
-    private final SendableChooser<Command> autoChooser;
-
+    private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
     public RobotContainer() {
         configureBindings();
-        autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+        sendableChooser.setDefaultOption("Left One Cycle",  new PathPlannerAuto("LEFT_ONECYCLE"));
+        sendableChooser.addOption("Left Two Cycle",         new PathPlannerAuto("LEFT_TWOCYCLE"));
+        sendableChooser.addOption("Left Depot Cycle",       new PathPlannerAuto("LEFT_DEPOT_CYCLE"));
+        sendableChooser.addOption("Right One Cycle",        new PathPlannerAuto("RIGHT_ONECYCLE"));
+        sendableChooser.addOption("Right Two Cycle",        new PathPlannerAuto("RIGHT_TWOCYCLE"));
+        sendableChooser.addOption("Right Depot Cycle",      new PathPlannerAuto("RIGHT_DEPOT_CYCLE"));
+        SmartDashboard.putData("Auto Chooser", sendableChooser);
     }
 
     private void configureBindings() {
@@ -68,6 +69,6 @@ public class RobotContainer {
         driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
     }
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
+        return sendableChooser.getSelected();
     }
 }
