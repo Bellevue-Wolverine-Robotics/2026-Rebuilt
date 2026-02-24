@@ -12,6 +12,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import frc.robot.commands.ShootCommand;
 import frc.robot.constants.DriverStationConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.constants.VisionConstants;
@@ -55,6 +56,9 @@ public class RobotContainer {
         driverController.y().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.NEUTRAL_POSE_SUPPLIER));
         driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
         driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
+
+        operatorController.x().whileTrue(shooterSubsystem.shootDistanceCommand(ShooterConstants.PASS_SHOOT_DISTANCE, feederSubsystem));
+        operatorController.b().whileTrue(shooterSubsystem.shootDistanceCommand(ShooterConstants.SHORT_SHOOT_DISTANCE, feederSubsystem));
     }
 
     public Command getAutonomousCommand() {

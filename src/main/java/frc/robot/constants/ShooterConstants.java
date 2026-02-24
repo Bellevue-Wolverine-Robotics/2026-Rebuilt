@@ -16,6 +16,10 @@ public class ShooterConstants {
     /* The voltage required to overcome the static friction of the shooter shaft. */
     public static final double STATIC_FRICTION_VOLTAGE = 0.0;
 
+    /** Distances in meters */
+    public static final double SHORT_SHOOT_DISTANCE = 10.0; // TODO: Come up with an actual value for this
+    public static final double PASS_SHOOT_DISTANCE = 10.0; // TODO: Come up with an actual value
+
     public static final double PROPORTIONAL_GAIN = 0;
     public static final double INTEGRAL_GAIN = 0;
     public static final double DERIVATIVE_GAIN = 0;
