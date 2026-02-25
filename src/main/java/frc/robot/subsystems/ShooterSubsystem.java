@@ -35,18 +35,18 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public Command shootDistanceCommand(double distance, FeederSubsystem feeder) {
-        return run(() -> run(distance))
+        return runEnd(() -> run(distance), () -> stop())
             .alongWith((feeder.feedCommand())
             .onlyIf(() -> atSpeed(distance)));
     }
 
     private double calculateSpeed(double distance) {
         // AX^2 + BX^1 + CX^0 or ax^2 + bx + c
+        return 1000.0;
         /* return 
             ShooterConstants.DIST_KX2 * distance * distance +
             ShooterConstants.DIST_KX1 * distance +
-            ShooterConstants.DIST_KX0; **/
-        return 1000;
+            ShooterConstants.DIST_KX0; */
     }
 
     public void run(double distance) {
