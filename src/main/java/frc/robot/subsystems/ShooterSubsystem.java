@@ -34,18 +34,36 @@ public class ShooterSubsystem extends SubsystemBase {
         rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
+    private double calculateSpeed(double distance) {
+        if (distance <= ShooterConstants.SETPOINTS_METERS_TO_RPM.firstKey()) {
+            return ShooterConstants.SETPOINTS_METERS_TO_RPM.firstEntry().getValue();
+        }
+
+        if (distance >= ShooterConstants.SETPOINTS_METERS_TO_RPM.lastKey()) {
+            return ShooterConstants.SETPOINTS_METERS_TO_RPM.lastEntry().getValue();
+        }
+
+        var lower = ShooterConstants.SETPOINTS_METERS_TO_RPM.floorEntry(distance);
+        var upper = ShooterConstants.SETPOINTS_METERS_TO_RPM.ceilingEntry(distance);
+
+        if (lower.getKey().equals(upper.getKey())) {
+            return lower.getValue();
+        }
+
+        double slope = (upper.getValue() - lower.getValue()) / (upper.getKey() - lower.getKey());
+        double difference = distance - lower.getKey();
+        return slope * difference + lower.getValue();
+    }
+
+    public boolean atSpeed(double distance) {
+        double targetSpeed = calculateSpeed(distance);
+        double currentSpeed = leftMotor.getEncoder().getVelocity();
+        return Math.abs(targetSpeed - currentSpeed) < ShooterConstants.RPM_TOLERANCE;
+    }
+
     public Command shootDistanceCommand(double distance, FeederSubsystem feeder) {
         return runEnd(() -> run(distance), () -> stop())
             .alongWith((feeder.feedCommand(() -> atSpeed(distance))));
-    }
-
-    private double calculateSpeed(double distance) {
-        // AX^2 + BX^1 + CX^0 or ax^2 + bx + c
-        return 1825.0;
-        /* return 
-            ShooterConstants.DIST_KX2 * distance * distance +
-            ShooterConstants.DIST_KX1 * distance +
-            ShooterConstants.DIST_KX0; */
     }
 
     public void run(double distance) {
@@ -55,11 +73,5 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void stop() {
         leftMotor.stopMotor();
-    }
-
-    public boolean atSpeed(double distance) {
-        double targetSpeed = calculateSpeed(distance);
-        double currentSpeed = leftMotor.getEncoder().getVelocity();
-        return Math.abs(targetSpeed - currentSpeed) < ShooterConstants.RPM_TOLERANCE;
     }
 }
