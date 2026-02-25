@@ -8,7 +8,7 @@ public class ShooterConstants {
     public static final double GEAR_RATIO = 3.0;
 
     /** Acceptable tolerance between the target and current RPM in order to shoot. */
-    public static final double RPM_TOLERANCE = 50;
+    public static final double RPM_TOLERANCE = 25;
 
     /* The voltage required per RPM of the motor shaft. */
     public static final double VOLTAGE_PER_MOTOR_RPM = GEAR_RATIO / 473.0; 
@@ -16,7 +16,7 @@ public class ShooterConstants {
     /* The voltage required to overcome the static friction of the shooter shaft. */
     public static final double STATIC_FRICTION_VOLTAGE = 0.336;
 
-    public static final double PROPORTIONAL_GAIN = 0.001;
+    public static final double PROPORTIONAL_GAIN = 0.1;
     public static final double INTEGRAL_GAIN = 0;
     public static final double DERIVATIVE_GAIN = 0;
 

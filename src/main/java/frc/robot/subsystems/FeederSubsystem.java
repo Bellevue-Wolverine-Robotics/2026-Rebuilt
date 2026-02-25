@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
@@ -21,8 +23,12 @@ public class FeederSubsystem extends SubsystemBase {
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public Command feedCommand() {
-        return runEnd(() -> run(), () -> stop());
+    public Command feedCommand(BooleanSupplier booleanSupplier) {
+        return runEnd(() -> {
+                if (booleanSupplier.getAsBoolean()) run();
+                else stop();
+            }, 
+            () -> stop());
     }
 
     public void run() {
