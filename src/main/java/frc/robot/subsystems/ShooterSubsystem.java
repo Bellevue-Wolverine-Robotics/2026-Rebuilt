@@ -10,7 +10,6 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ShooterConstants;
 
@@ -43,10 +42,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private double calculateSpeed(double distance) {
         // AX^2 + BX^1 + CX^0 or ax^2 + bx + c
-        return 
+        /* return 
             ShooterConstants.DIST_KX2 * distance * distance +
             ShooterConstants.DIST_KX1 * distance +
-            ShooterConstants.DIST_KX0;
+            ShooterConstants.DIST_KX0; **/
+        return 1000;
     }
 
     public void run(double distance) {
