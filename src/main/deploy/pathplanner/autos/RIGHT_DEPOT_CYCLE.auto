@@ -13,13 +13,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_DEPOT-ALLIANCE"
+            "pathName": "RIGHT_DEPOT_ALLIANCE"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_ALLIANCE-TOWER"
+            "pathName": "RIGHT_ALLIANCE_TOWER"
           }
         }
       ]

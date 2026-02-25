@@ -7,43 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_BUMP-NEUTRAL"
+            "pathName": "RIGHT_BUMP_NEUTRAL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_NEUTRAL-BUMP"
+            "pathName": "RIGHT_NEUTRAL_BUMP"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_BUMP-ALLIANCE"
+            "pathName": "RIGHT_BUMP_ALLIANCE"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_ALLIANCE-BUMP"
+            "pathName": "RIGHT_ALLIANCE_BUMP"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_BUMP-NEUTRAL"
+            "pathName": "RIGHT_BUMP_NEUTRAL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_NEUTRAL-BUMP"
+            "pathName": "RIGHT_NEUTRAL_BUMP"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_BUMP-ALLIANCE"
+            "pathName": "RIGHT_BUMP_ALLIANCE"
           }
         }
       ]
