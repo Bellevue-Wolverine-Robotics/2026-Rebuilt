@@ -29,19 +29,6 @@
             }
           },
           {
-            "title": "Camera",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 448.0,
-            "height": 384.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/main-raw",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
             "title": "FMS",
             "x": 832.0,
             "y": 256.0,
@@ -83,6 +70,32 @@
               "show_robot_rotation": true,
               "show_desired_states": true,
               "angle_offset": 0.0
+            }
+          },
+          {
+            "title": "Auto Chooser",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 448.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Chooser",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "primary-raw",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 448.0,
+            "height": 384.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/primary-raw",
+              "period": 0.06,
+              "rotation_turns": 0
             }
           }
         ]
