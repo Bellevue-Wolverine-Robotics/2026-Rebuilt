@@ -13,37 +13,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LEFT_NEUTRAL_BUMP"
+            "pathName": "LEFT_NEUTRAL_ALLIANCE"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LEFT_BUMP_ALLIANCE"
+            "pathName": "LEFT_ALLIANCE_NEUTRAL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LEFT_ALLIANCE_BUMP"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LEFT_BUMP_NEUTRAL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LEFT_NEUTRAL_BUMP"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LEFT_BUMP_ALLIANCE"
+            "pathName": "LEFT_NEUTRAL_ALLIANCE"
           }
         }
       ]

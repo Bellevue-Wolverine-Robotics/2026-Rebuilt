@@ -13,13 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LEFT_NEUTRAL_BUMP"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LEFT_BUMP_ALLIANCE"
+            "pathName": "LEFT_NEUTRAL_ALLIANCE"
           }
         },
         {

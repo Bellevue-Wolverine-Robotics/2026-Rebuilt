@@ -13,13 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_NEUTRAL_BUMP"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RIGHT_BUMP_ALLIANCE"
+            "pathName": "RIGHT_NEUTRAL_ALLIANCE"
           }
         },
         {
