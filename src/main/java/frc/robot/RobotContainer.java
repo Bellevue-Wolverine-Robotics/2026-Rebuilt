@@ -33,19 +33,19 @@ public class RobotContainer {
         configureBindings();
         sendableChooser.setDefaultOption(
                 "Left One Cycle",
-                new PathPlannerAuto("LEFT_ONECYCLE")
+                new PathPlannerAuto("ONE_CYCLE")
         );
         sendableChooser.addOption(
                 "Left Two Cycle",
-                new PathPlannerAuto("LEFT_TWOCYCLE")
+                new PathPlannerAuto("TWO_CYCLE")
         );
         sendableChooser.setDefaultOption(
                 "Right One Cycle",
-                new PathPlannerAuto("LEFT_ONECYCLE", true)
+                new PathPlannerAuto("ONE_CYCLE", true)
         );
         sendableChooser.addOption(
                 "Right Two Cycle",
-                new PathPlannerAuto("LEFT_TWOCYCLE", true)
+                new PathPlannerAuto("TWO_CYCLE", true)
         );
         sendableChooser.addOption(
                 "Depot Left Tower",
