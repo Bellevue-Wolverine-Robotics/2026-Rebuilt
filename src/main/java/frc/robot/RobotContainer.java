@@ -28,6 +28,7 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
     private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
+
     public RobotContainer() {
         configureBindings();
         sendableChooser.setDefaultOption(
