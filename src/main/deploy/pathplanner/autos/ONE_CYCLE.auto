@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CENTER_DEPOT"
+            "pathName": "BUMP_TO_NEUTRAL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_DEPOT_ALLIANCE"
+            "pathName": "NEUTRAL_TO_ALLIANCE"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_ALLIANCE_TOWER"
+            "pathName": "ALLIANCE_TO_LEFT_TOWER"
           }
         }
       ]

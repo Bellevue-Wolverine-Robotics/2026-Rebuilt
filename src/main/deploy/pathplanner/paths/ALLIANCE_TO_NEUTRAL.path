@@ -12,7 +12,7 @@
         "y": 5.4758644812433195
       },
       "isLocked": false,
-      "linkedName": "LEFT_ALLIANCE"
+      "linkedName": "ALLIANCE"
     },
     {
       "anchor": {
@@ -44,7 +44,7 @@
         "y": 6.683136713195503
       },
       "isLocked": false,
-      "linkedName": "LEFT_MIDPOINT"
+      "linkedName": "MIDPOINT"
     },
     {
       "anchor": {
@@ -57,7 +57,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LEFT_NEUTRAL"
+      "linkedName": "NEUTRAL"
     }
   ],
   "rotationTargets": [],

@@ -7,25 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_BUMP_NEUTRAL"
+            "pathName": "CENTER_TO_DEPOT"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_NEUTRAL_ALLIANCE"
+            "pathName": "DEPOT_TO_ALLIANCE"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_ALLIANCE_NEUTRAL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RIGHT_NEUTRAL_ALLIANCE"
+            "pathName": "ALLIANCE_TO_RIGHT_TOWER"
           }
         }
       ]
