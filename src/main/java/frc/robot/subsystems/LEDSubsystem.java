@@ -26,7 +26,7 @@ public class LEDSubsystem extends SubsystemBase {
         led.start();
     }
 
-    public void setAligned (boolean aligned) {
+    public void setAligned(boolean aligned) {
         this.aligned = aligned;
     }
 
@@ -45,6 +45,7 @@ public class LEDSubsystem extends SubsystemBase {
         led.setData(ledBuffer);
     }
 
+    @Override
     public void periodic() {
         if (DriverStation.isDisabled()) {
             setBlueYellow();
