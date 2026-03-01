@@ -8,7 +8,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -16,6 +15,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.FixedShootCommand;
+import frc.robot.constants.AutonomousConstants;
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.FeederSubsystem;
@@ -40,34 +40,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
-        sendableChooser.setDefaultOption(
-                "Left One Cycle",
-                new PathPlannerAuto("ONE_CYCLE")
-        );
-        sendableChooser.addOption(
-                "Left Two Cycle",
-                new PathPlannerAuto("TWO_CYCLE")
-        );
-        sendableChooser.setDefaultOption(
-                "Right One Cycle",
-                new PathPlannerAuto("ONE_CYCLE", true)
-        );
-        sendableChooser.addOption(
-                "Right Two Cycle",
-                new PathPlannerAuto("TWO_CYCLE", true)
-        );
-        sendableChooser.addOption(
-                "Depot Left Tower",
-                new PathPlannerAuto("DEPOT_LEFT_TOWER")
-        );
-        sendableChooser.addOption(
-                "Depot Right Tower",
-                new PathPlannerAuto("DEPOT_RIGHT_TOWER")
-        );
-
-        SmartDashboard.putData("Auto Chooser", sendableChooser);
-
-        NamedCommands.registerCommand("shoot", Commands.run(() -> {}));
+        configureAutonomous();
     }
 
     private void configureBindings() {
@@ -107,15 +80,51 @@ public class RobotContainer {
         operatorController.x().whileTrue(new FixedShootCommand(
             shooterSubsystem,
             feederSubsystem,
-            ShooterConstants.PASS_SHOOT_METERS
+            ShooterConstants.PASS_SHOOT_DISTANCE_METERS
         ));
 
         operatorController.b().whileTrue(new FixedShootCommand(
             shooterSubsystem,
             feederSubsystem,
-            ShooterConstants.MANUAL_SHOOT_METERS
+            ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS
         ));
     }
+
+    private void configureAutonomous() {
+        NamedCommands.registerCommand("shoot", new FixedShootCommand(
+            shooterSubsystem,
+            feederSubsystem,
+            AutonomousConstants.SHOOT_DISTANCE_METERS
+        ));
+
+        sendableChooser.setDefaultOption(
+                "Left One Cycle",
+                new PathPlannerAuto("ONE_CYCLE")
+        );
+        sendableChooser.addOption(
+                "Left Two Cycle",
+                new PathPlannerAuto("TWO_CYCLE")
+        );
+        sendableChooser.setDefaultOption(
+                "Right One Cycle",
+                new PathPlannerAuto("ONE_CYCLE", true)
+        );
+        sendableChooser.addOption(
+                "Right Two Cycle",
+                new PathPlannerAuto("TWO_CYCLE", true)
+        );
+        sendableChooser.addOption(
+                "Depot Left Tower",
+                new PathPlannerAuto("DEPOT_LEFT_TOWER")
+        );
+        sendableChooser.addOption(
+                "Depot Right Tower",
+                new PathPlannerAuto("DEPOT_RIGHT_TOWER")
+        );
+
+        SmartDashboard.putData("Auto Chooser", sendableChooser);
+    }
+
     public Command getAutonomousCommand() {
         return sendableChooser.getSelected();
     }

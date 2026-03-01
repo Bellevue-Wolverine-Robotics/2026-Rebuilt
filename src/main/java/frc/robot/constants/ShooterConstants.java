@@ -23,8 +23,8 @@ public class ShooterConstants {
     public static final double INTEGRAL_GAIN = 0;
     public static final double DERIVATIVE_GAIN = 0;
 
-    public static final double MANUAL_SHOOT_METERS = 1.0;
-    public static final double PASS_SHOOT_METERS = 3.0;
+    public static final double MANUAL_SHOOT_DISTANCE_METERS = 1.0;
+    public static final double PASS_SHOOT_DISTANCE_METERS = 3.0;
 
     /** A mapping of distances in meters to RPM setpoints.
      * The distances are measured from the center of the robot to the center of the hub.
