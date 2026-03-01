@@ -16,7 +16,7 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class ShootCommand extends Command {
+public class AutoShootCommand extends Command {
     private final ProfiledPIDController thetaController = new ProfiledPIDController(
         AlignmentConstants.ROTATIONAL_PID_KP,
         AlignmentConstants.ROTATIONAL_PID_KI,
@@ -35,7 +35,7 @@ public class ShootCommand extends Command {
     private final DoubleSupplier yAxis;
     private final Supplier<Pose2d> target;
 
-    public ShootCommand(
+    public AutoShootCommand(
         SwerveSubsystem swerveSubsystem,
         LEDSubsystem ledSubsystem,
         ShooterSubsystem shooterSubsystem,

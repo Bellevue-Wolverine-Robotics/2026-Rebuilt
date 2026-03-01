@@ -10,7 +10,6 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ShooterConstants;
 
@@ -48,11 +47,6 @@ public class ShooterSubsystem extends SubsystemBase {
         return Math.abs(targetSpeed - currentSpeed) < ShooterConstants.RPM_TOLERANCE;
     }
 
-    public Command shootDistanceCommand(double distance, FeederSubsystem feeder) {
-        return runEnd(() -> run(distance), () -> stop())
-            .alongWith((feeder.feedCommand(() -> atSpeed(distance))));
-    }
-
     public void run(double distance) {
         double speed = calculateSpeed(distance);
         leftController.setSetpoint(speed, ControlType.kVelocity);
@@ -60,5 +54,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void stop() {
         leftMotor.stopMotor();
+    }
+
+    @Override
+    public void periodic() {
+        
     }
 }

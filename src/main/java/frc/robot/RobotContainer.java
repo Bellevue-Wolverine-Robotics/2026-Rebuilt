@@ -14,7 +14,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import frc.robot.commands.ShootCommand;
+import frc.robot.commands.AutoShootCommand;
+import frc.robot.commands.FixedShootCommand;
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.FeederSubsystem;
@@ -88,7 +89,7 @@ public class RobotContainer {
             () -> -MathUtil.applyDeadband(driverController.getRightX(), DriverStationConstants.DRIVER_CONTROLLER_RIGHT_DEADBAND)
         ));
 
-        driverController.rightTrigger().whileTrue(new ShootCommand(
+        driverController.rightTrigger().whileTrue(new AutoShootCommand(
             swerveSubsystem, 
             ledSubsystem,
             shooterSubsystem,
@@ -103,11 +104,19 @@ public class RobotContainer {
         driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
         driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
 
-        operatorController.x().whileTrue(shooterSubsystem.shootDistanceCommand(ShooterConstants.PASS_SHOOT_METERS, feederSubsystem));
-        operatorController.b().whileTrue(shooterSubsystem.shootDistanceCommand(ShooterConstants.MANUAL_SHOOT_METERS, feederSubsystem));
+        operatorController.x().whileTrue(new FixedShootCommand(
+            shooterSubsystem,
+            feederSubsystem,
+            ShooterConstants.PASS_SHOOT_METERS
+        ));
+
+        operatorController.b().whileTrue(new FixedShootCommand(
+            shooterSubsystem,
+            feederSubsystem,
+            ShooterConstants.MANUAL_SHOOT_METERS
+        ));
     }
     public Command getAutonomousCommand() {
         return sendableChooser.getSelected();
     }
-
 }
