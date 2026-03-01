@@ -81,15 +81,11 @@ public class AutoShootCommand extends Command {
         double distance = Math.hypot(x, y);
         shooterSubsystem.run(distance);
 
-        boolean stationary = swerveSubsystem.getTranslationalVelocity() <  FeederConstants.MAXIMUM_ACCEPTABLE_ROBOT_SPEED;
-        boolean pointed = thetaController.atGoal();
-        boolean flywheelReady = shooterSubsystem.atSpeed(distance);
-
-        SmartDashboard.putBoolean("Stationary", stationary);
-        SmartDashboard.putBoolean("Pointed Hub", pointed);
-        SmartDashboard.putBoolean("Flywheel Ready", flywheelReady);
-
-        if (stationary && pointed && flywheelReady) {
+        if (
+            swerveSubsystem.getTranslationalVelocity() <  FeederConstants.MAXIMUM_ACCEPTABLE_ROBOT_SPEED
+            && thetaController.atGoal()
+            && shooterSubsystem.atSpeed()
+        ) {
             feederSubsystem.run();
         } else {
             feederSubsystem.stop();

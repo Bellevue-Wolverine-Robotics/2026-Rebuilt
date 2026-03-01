@@ -26,7 +26,7 @@ public class FixedShootCommand extends Command {
     public void execute() {
         shooterSubsystem.run(distance);
 
-        if (shooterSubsystem.atSpeed(distance)) {
+        if (shooterSubsystem.atSpeed()) {
             feederSubsystem.run();
         } else {
             feederSubsystem.stop();
