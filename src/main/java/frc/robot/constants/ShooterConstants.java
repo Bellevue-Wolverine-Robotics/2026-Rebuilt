@@ -1,7 +1,7 @@
 package frc.robot.constants;
 
-import java.util.NavigableMap;
-import java.util.TreeMap;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.util.Units;
 
 public class ShooterConstants {
     public static final int LEFT_MOTOR_ID = 24;
@@ -19,27 +19,25 @@ public class ShooterConstants {
     /** The voltage required to overcome the static friction of the shooter shaft. */
     public static final double STATIC_FRICTION_VOLTAGE = 0.336;
 
-    public static final double PROPORTIONAL_GAIN = 0.1;
+    public static final double PROPORTIONAL_GAIN = 0.001;
     public static final double INTEGRAL_GAIN = 0;
     public static final double DERIVATIVE_GAIN = 0;
 
-    public static final double MANUAL_SHOOT_METERS = 10.0; // TODO: Come up with an actual value
-    public static final double PASS_SHOOT_METERS = 10.0; // TODO: Come up with an actual value
+    public static final double MANUAL_SHOOT_METERS = 1.0;
+    public static final double PASS_SHOOT_METERS = 3.0;
 
     /** A mapping of distances in meters to RPM setpoints.
      * The distances are measured from the center of the robot to the center of the hub.
      * It represents a piecewise function, with linear interpoolation between known points.
      */
-    public static final NavigableMap<Double, Double> SETPOINTS_METERS_TO_RPM = new TreeMap<>();
-
+    public static final InterpolatingDoubleTreeMap SETPOINTS_METERS_TO_RPM = new InterpolatingDoubleTreeMap();
 
     static {
-        SETPOINTS_METERS_TO_RPM.put(1.00965, 1425.0);
-        SETPOINTS_METERS_TO_RPM.put(1.31445, 1450.0);
-        SETPOINTS_METERS_TO_RPM.put(1.61925, 1550.0);
-        SETPOINTS_METERS_TO_RPM.put(1.92405, 1650.0);
-        SETPOINTS_METERS_TO_RPM.put(2.22885, 1750.0);
-        SETPOINTS_METERS_TO_RPM.put(2.53365, 1825.0);
+        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(4.9791667), 1425.0);
+        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(5.9791667), 1450.0);
+        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(6.9791667), 1550.0);
+        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(7.9791667), 1650.0);
+        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(8.9791667), 1750.0);
+        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(9.9791667), 1825.0);
     }
-
 }

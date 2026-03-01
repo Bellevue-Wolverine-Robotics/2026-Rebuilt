@@ -9,6 +9,7 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ShooterConstants;
@@ -35,29 +36,15 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     private double calculateSpeed(double distance) {
-        if (distance <= ShooterConstants.SETPOINTS_METERS_TO_RPM.firstKey()) {
-            return ShooterConstants.SETPOINTS_METERS_TO_RPM.firstEntry().getValue();
-        }
-
-        if (distance >= ShooterConstants.SETPOINTS_METERS_TO_RPM.lastKey()) {
-            return ShooterConstants.SETPOINTS_METERS_TO_RPM.lastEntry().getValue();
-        }
-
-        var lower = ShooterConstants.SETPOINTS_METERS_TO_RPM.floorEntry(distance);
-        var upper = ShooterConstants.SETPOINTS_METERS_TO_RPM.ceilingEntry(distance);
-
-        if (lower.getKey().equals(upper.getKey())) {
-            return lower.getValue();
-        }
-
-        double slope = (upper.getValue() - lower.getValue()) / (upper.getKey() - lower.getKey());
-        double difference = distance - lower.getKey();
-        return slope * difference + lower.getValue();
+        return ShooterConstants.SETPOINTS_METERS_TO_RPM.get(distance);
     }
 
     public boolean atSpeed(double distance) {
         double targetSpeed = calculateSpeed(distance);
         double currentSpeed = leftMotor.getEncoder().getVelocity();
+        SmartDashboard.putNumber("Shooter/Target Flywheel Speed", targetSpeed);
+        SmartDashboard.putNumber("Shooter/Current Flywheel Speed", currentSpeed);
+        SmartDashboard.putNumber("Shooter/Hub Distance", distance);
         return Math.abs(targetSpeed - currentSpeed) < ShooterConstants.RPM_TOLERANCE;
     }
 

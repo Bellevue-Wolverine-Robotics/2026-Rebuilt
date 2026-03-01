@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.constants.AlignmentConstants;
@@ -80,7 +81,15 @@ public class ShootCommand extends Command {
         double distance = Math.hypot(x, y);
         shooterSubsystem.run(distance);
 
-        if (swerveSubsystem.getTranslationalVelocity() <  FeederConstants.MAXIMUM_ACCEPTABLE_ROBOT_SPEED && thetaController.atGoal() && shooterSubsystem.atSpeed(distance)) {
+        boolean stationary = swerveSubsystem.getTranslationalVelocity() <  FeederConstants.MAXIMUM_ACCEPTABLE_ROBOT_SPEED;
+        boolean pointed = thetaController.atGoal();
+        boolean flywheelReady = shooterSubsystem.atSpeed(distance);
+
+        SmartDashboard.putBoolean("Stationary", stationary);
+        SmartDashboard.putBoolean("Pointed Hub", pointed);
+        SmartDashboard.putBoolean("Flywheel Ready", flywheelReady);
+
+        if (stationary && pointed && flywheelReady) {
             feederSubsystem.run();
         } else {
             feederSubsystem.stop();
