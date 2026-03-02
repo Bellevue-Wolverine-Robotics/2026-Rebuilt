@@ -58,6 +58,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Shooter/Target Flywheel Speed", targetSpeed);
         SmartDashboard.putNumber("Shooter/Current Flywheel Speed", leftMotor.getEncoder().getVelocity());
-
+        SmartDashboard.putNumber("Shooter/Applied Voltage", leftMotor.getAppliedOutput() * leftMotor.getBusVoltage());
+        SmartDashboard.putNumber("Shooter/Applied Current", leftMotor.getOutputCurrent());
     }
 }
