@@ -24,10 +24,10 @@ public class ShooterSubsystem extends SubsystemBase {
         // TODO: Switch controllers from SparkMax to TalonFX on real robot
         SparkMaxConfig leftConfig = new SparkMaxConfig();
         leftConfig.closedLoop.p(ShooterConstants.PROPORTIONAL_GAIN).i(ShooterConstants.INTEGRAL_GAIN).d(ShooterConstants.DERIVATIVE_GAIN);
-        leftConfig.closedLoop.feedForward.kS(ShooterConstants.STATIC_FRICTION_VOLTAGE).kV(ShooterConstants.VOLTAGE_PER_SHAFT_RPM);
+        leftConfig.closedLoop.feedForward.kS(ShooterConstants.STATIC_FRICTION_OVERCOME_VOLTAGE).kV(ShooterConstants.VOLTAGE_PER_SHAFT_RPM);
         leftConfig.encoder.velocityConversionFactor(1.0 / ShooterConstants.GEAR_RATIO);
         leftConfig.idleMode(IdleMode.kCoast);
-        leftConfig.inverted(true); // TODO: Change based on real robot
+        leftConfig.inverted(ShooterConstants.LEFT_MOTOR_INVERTED); // TODO: Change based on real robot
         leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig rightConfig = new SparkMaxConfig();

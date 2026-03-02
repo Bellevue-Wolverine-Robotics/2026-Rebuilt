@@ -6,6 +6,7 @@ import edu.wpi.first.math.util.Units;
 public class ShooterConstants {
     public static final int LEFT_MOTOR_ID = 24;
     public static final int RIGHT_MOTOR_ID = 25;
+    public static final boolean LEFT_MOTOR_INVERTED = true;
 
     /** The gear ratio between the motor shaft and shooter shaft. */
     public static final double GEAR_RATIO = 3.0;
@@ -17,9 +18,9 @@ public class ShooterConstants {
     public static final double VOLTAGE_PER_SHAFT_RPM = GEAR_RATIO / 473.0; 
 
     /** The voltage required to overcome the static friction of the shooter shaft. */
-    public static final double STATIC_FRICTION_VOLTAGE = 0.336;
+    public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.336;
 
-    public static final double PROPORTIONAL_GAIN = 0.001;
+    public static final double PROPORTIONAL_GAIN = 0.01;
     public static final double INTEGRAL_GAIN = 0;
     public static final double DERIVATIVE_GAIN = 0;
 
