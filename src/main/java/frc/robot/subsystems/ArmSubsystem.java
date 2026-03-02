@@ -4,6 +4,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -64,6 +65,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         absoluteEncoder.setInverted(ArmConstants.ABSOLUTE_ENCODER_INVERTED);
 
+        synchronize();
+
         if (Robot.isSimulation()) {
             sim = new SingleJointedArmSim(
                 DCMotor.getNEO(1),
@@ -82,7 +85,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     private void synchronize() {
-        double position = (absoluteEncoder.get() + ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE + 1) % 1;
+        double position = (absoluteEncoder.get() - ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE + 1) % 1;
         relativeEncoder.setPosition(position * (2.0 * Math.PI));
     }
 
@@ -129,14 +132,22 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Arm/Absolute Encoder Position", absoluteEncoder.get());
+        SmartDashboard.putNumber("Arm/Relative Encoder Position", relativeEncoder.getPosition());
+        SmartDashboard.putNumber("Arm/Relative Encoder Velocity", relativeEncoder.getVelocity());
+        SmartDashboard.putNumber("Arm/Applied Motor Voltage", motor.getAppliedOutput() * motor.getBusVoltage());
+    }
+
+    @Override
     public void simulationPeriodic() {
-        sim.setInputVoltage(motor.get() * 12.0);
+        sim.setInputVoltage(motor.getAppliedOutput() * motor.getBusVoltage());
         sim.update(0.02);
 
         double position = sim.getAngleRads();
         double velocity = sim.getVelocityRadPerSec();
 
-        absoluteEncoderSim.set(position / (2.0 * Math.PI));
+        absoluteEncoderSim.set((position / (2.0 * Math.PI) + ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE + 1) % 1);
         relativeEncoderSim.setPosition(position);
         relativeEncoderSim.setVelocity(velocity);
     }
