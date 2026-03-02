@@ -27,10 +27,10 @@ import frc.robot.constants.ArmConstants;
 
 /** Represents the arm mechanism, which moves the linkage intake */
 public class ArmSubsystem extends SubsystemBase {
-    private final SparkMax motor = new SparkMax(ArmConstants.MOTOR_CAN_ID, MotorType.kBrushless);
+    private final SparkMax motor = new SparkMax(ArmConstants.MOTOR_ID, MotorType.kBrushless);
     private final SparkMaxConfig motorConfig = new SparkMaxConfig();
 
-    private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(ArmConstants.ENCODER_PWM_PORT);
+    private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(ArmConstants.ENCODER_PORT);
     private final RelativeEncoder relativeEncoder = motor.getEncoder();
     private final SparkClosedLoopController controller = motor.getClosedLoopController();
 
@@ -41,28 +41,28 @@ public class ArmSubsystem extends SubsystemBase {
     /** Constructs a new ArmSubsystem. */
     public ArmSubsystem() {
         motorConfig.idleMode(IdleMode.kBrake);
+        motorConfig.inverted(ArmConstants.MOTOR_INVERTED);
 
-        motorConfig.encoder.positionConversionFactor(1.0 /  ArmConstants.GEAR_RATIO);
-        motorConfig.encoder.velocityConversionFactor(1.0 / ArmConstants.GEAR_RATIO);
+        motorConfig.encoder.positionConversionFactor((2.0 * Math.PI) /  ArmConstants.GEAR_RATIO);
+        motorConfig.encoder.velocityConversionFactor((2.0 * Math.PI) / ArmConstants.GEAR_RATIO / 60.0);
 
         motorConfig.closedLoop
-            .p(ArmConstants.PID_KP)
-            .i(ArmConstants.PID_KI)
-            .d(ArmConstants.PID_KD);
+            .p(ArmConstants.PROPORTIONAL_GAIN)
+            .i(ArmConstants.INTEGRAL_GAIN)
+            .d(ArmConstants.DERIVATIVE_GAIN);
 
         motorConfig.closedLoop.feedForward
-            .kS(ArmConstants.FEEDFORWARD_KS)
-            .kV(ArmConstants.FEEDFORWARD_KV)
-            .kA(ArmConstants.FEEDFORWARD_KA)
-            .kCos(ArmConstants.FEEDFORWARD_KG)
+            .kS(ArmConstants.STATIC_FRICTION_OVERCOME_VOLTAGE)
+            .kV(ArmConstants.VOLTS_PER_RADIAN_PER_SECOND)
+            .kA(ArmConstants.INTERTIA_OVERCOME_VOLTAGE)
+            .kCos(ArmConstants.GRAVITY_OVERCOME_VOLTAGE)
             .kCosRatio(1.0);
 
-        motorConfig.closedLoop.allowedClosedLoopError(ArmConstants.SETPOINT_ERROR_TOLERANCE, ClosedLoopSlot.kSlot0);
+        motorConfig.closedLoop.allowedClosedLoopError(ArmConstants.ERROR_TOLERANCE_RADIANS, ClosedLoopSlot.kSlot0);
 
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // We only use the absolute encoder to set the internal relative encoder, as it allows for higher frequency movement control
-        relativeEncoder.setPosition(absoluteEncoder.get());
+        absoluteEncoder.setInverted(ArmConstants.ABSOLUTE_ENCODER_INVERTED);
 
         if (Robot.isSimulation()) {
             sim = new SingleJointedArmSim(
@@ -70,10 +70,10 @@ public class ArmSubsystem extends SubsystemBase {
                 ArmConstants.GEAR_RATIO,
                 ArmConstants.MASS_KILOGRAMS * Math.pow(ArmConstants.LENGTH_METERS, 2) / 3,
                 ArmConstants.LENGTH_METERS,
-                ArmConstants.MINIMUM_ANGLE_RADIANS,
-                ArmConstants.MAXIMUM_ANGLE_RADIANS,
+                ArmConstants.RETRACTED_ANGLE_RADIANS,
+                ArmConstants.EXTENDED_ANGLE_RADIANS,
                 false,
-                ArmConstants.MAXIMUM_ANGLE_RADIANS
+                ArmConstants.RETRACTED_ANGLE_RADIANS
             );
 
             absoluteEncoderSim = new DutyCycleEncoderSim(absoluteEncoder);
@@ -81,30 +81,37 @@ public class ArmSubsystem extends SubsystemBase {
         }
     }
 
+    private void synchronize() {
+        double position = (absoluteEncoder.get() + ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE + 1) % 1;
+        relativeEncoder.setPosition(position * (2.0 * Math.PI));
+    }
+
+    private void set(double setpoint) {
+        controller.setSetpoint(setpoint, ControlType.kPosition);
+    }
+
     /**
-     * Provides a command that the sets the motor controller setpoint to extend the arm,
-     * and finishes itself when complete.
+     * Provides a command that extends the arm until finished.
      * 
      * @return The extension command.
      */
     public Command extendCommand() {
         return runEnd(
-            () -> controller.setSetpoint(ArmConstants.EXTENDED_SETPOINT, ControlType.kPosition),
-            () -> motor.stopMotor()
-        ).until(() -> controller.isAtSetpoint());
+            () -> set(ArmConstants.EXTENDED_ANGLE_RADIANS),
+            motor::stopMotor
+        ).beforeStarting(this::synchronize).until(controller::isAtSetpoint);
     }
 
     /**
-     * Provides a command that sets the motor controller setpoint to retract the arm,
-     * and finishes itself when complete.
+     * Provides a command that retracts the arm until finished.
      * 
      * @return The retraction command.
      */
     public Command retractCommand() {
         return runEnd(
-            () -> controller.setSetpoint(ArmConstants.RETRACTED_SETPOINT, ControlType.kPosition),
-            () -> motor.stopMotor()
-        ).until(() -> controller.isAtSetpoint());
+            () -> set(ArmConstants.RETRACTED_ANGLE_RADIANS),
+            motor::stopMotor
+        ).beforeStarting(this::synchronize).until(controller::isAtSetpoint);
     }
 
     /**
@@ -126,10 +133,10 @@ public class ArmSubsystem extends SubsystemBase {
         sim.setInputVoltage(motor.get() * 12.0);
         sim.update(0.02);
 
-        double position = sim.getAngleRads() / (2.0 * Math.PI);
-        double velocity = sim.getVelocityRadPerSec() / (2.0 * Math.PI) * 60;
+        double position = sim.getAngleRads();
+        double velocity = sim.getVelocityRadPerSec();
 
-        absoluteEncoderSim.set(position);
+        absoluteEncoderSim.set(position / (2.0 * Math.PI));
         relativeEncoderSim.setPosition(position);
         relativeEncoderSim.setVelocity(velocity);
     }

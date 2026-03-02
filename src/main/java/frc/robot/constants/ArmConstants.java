@@ -3,26 +3,33 @@ package frc.robot.constants;
 import edu.wpi.first.math.util.Units;
 
 public class ArmConstants {
-    public static final int MOTOR_CAN_ID = 23;
-    public static final int ENCODER_PWM_PORT = 0;
+    public static final int MOTOR_ID = 23;
+    public static final int ENCODER_PORT = 0;
 
-    public static final double PID_KP = 3.0; // TODO: Tune PID constants
-    public static final double PID_KI = 0.0; // TODO: Tune PID constants
-    public static final double PID_KD = 0.05; // TODO: Tune PID constants
+    // TODO: Tune PID constants
+    public static final double PROPORTIONAL_GAIN = 3.0;
+    public static final double INTEGRAL_GAIN = 0.0;
+    public static final double DERIVATIVE_GAIN = 0.05;
 
-    public static final double FEEDFORWARD_KS = -1; // TODO: Run SysId to find constants
-    public static final double FEEDFORWARD_KV = -1; // TOOD: Run SysId to find constants
-    public static final double FEEDFORWARD_KA = -1; // TODO: Run SysId to find constants
-    public static final double FEEDFORWARD_KG = -1; // TODO: Run SysId to find constants
+    // TODO: find actual values using SysId
+    public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0;
+    public static final double VOLTS_PER_RADIAN_PER_SECOND = 0;
+    public static final double INTERTIA_OVERCOME_VOLTAGE = 0;
+    public static final double GRAVITY_OVERCOME_VOLTAGE = 0;
+    public static final double FEEDFORWARD_KG = 0;
 
-    public static final double RETRACTED_SETPOINT = 0.25; // TODO: Replace with actual offset
-    public static final double EXTENDED_SETPOINT = 0; // TODO: Replace with actual offset
-    public static final double SETPOINT_ERROR_TOLERANCE = 0.025; // TODO: Replace with actual tolerance 
-    public static final double VELOCITY_ERROR_TOLERANCE = 0.025; // TODO: Replace with actual velocity error tolerance
+    // TODO: Find actual values based on final robot
+    public static final boolean MOTOR_INVERTED = false;
+    public static final boolean ABSOLUTE_ENCODER_INVERTED = false;
+    public static final double ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE = 0.0;
+    public static final double GEAR_RATIO =  12;
 
-    public static final double GEAR_RATIO = 12;
+    // TODO: Find actual values based on final robot
+    public static final double EXTENDED_ANGLE_RADIANS = Units.degreesToRadians(56.6712636);
+    public static final double RETRACTED_ANGLE_RADIANS = Units.degreesToRadians(79.0541668);
+    public static final double ERROR_TOLERANCE_RADIANS = Units.degreesToRadians(1); 
+
+    // TODO: Update for more accurate simulation
     public static final double LENGTH_METERS = Units.inchesToMeters(14.722102);
     public static final double MASS_KILOGRAMS = 2.0675323998;
-    public static final double MINIMUM_ANGLE_RADIANS = Units.degreesToRadians(56.6712636);
-    public static final double MAXIMUM_ANGLE_RADIANS = Units.degreesToRadians(79.0541668);
 }
