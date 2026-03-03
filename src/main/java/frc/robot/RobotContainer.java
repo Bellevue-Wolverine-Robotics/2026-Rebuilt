@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import frc.robot.commands.AutoClimbCommand;
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -46,9 +47,21 @@ public class RobotContainer {
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
 
-        driverController.y().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.NEUTRAL_POSE_SUPPLIER));
-        driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
-        driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
+        driverController.x().whileTrue(new AutoClimbCommand(
+            swerveSubsystem,
+            climberSubsystem,
+            ledSubsystem,
+            VisionConstants.LEFT_TOWER_APPROACH_POSE_SUPPLIER,
+            VisionConstants.LEFT_TOWER_FINAL_POSE_SUPPLIER
+        ));
+
+        driverController.b().whileTrue(new AutoClimbCommand(
+            swerveSubsystem,
+            climberSubsystem,
+            ledSubsystem,
+            VisionConstants.RIGHT_TOWER_APPROACH_POSE_SUPPLIER,
+            VisionConstants.RIGHT_TOWER_FINAL_POSE_SUPPLIER
+        ));
 
         operatorController.pov(0).onTrue(climberSubsystem.extendCommand());
         operatorController.pov(180).onTrue(climberSubsystem.retractCommand());
