@@ -6,8 +6,8 @@ public class ArmConstants {
     public static final int MOTOR_ID = 23;
     public static final int ENCODER_PORT = 0;
 
-    // TODO: Tune PID constants
-    public static final double PROPORTIONAL_GAIN = 3.0;
+    // TODO: Tune PID constants\
+    public static final double PROPORTIONAL_GAIN = 0.01;
     public static final double INTEGRAL_GAIN = 0.0;
     public static final double DERIVATIVE_GAIN = 0.05;
 
@@ -16,7 +16,6 @@ public class ArmConstants {
     public static final double VOLTS_PER_RADIAN_PER_SECOND = 0;
     public static final double INTERTIA_OVERCOME_VOLTAGE = 0;
     public static final double GRAVITY_OVERCOME_VOLTAGE = 0;
-    public static final double FEEDFORWARD_KG = 0;
 
     // TODO: Find actual values based on final robot
     public static final boolean MOTOR_INVERTED = false;
@@ -36,8 +35,4 @@ public class ArmConstants {
 
     /** The required accuracy of the arm, in order to finish moving it. */
     public static final double ERROR_TOLERANCE_RADIANS = Units.degreesToRadians(1); 
-
-    // TODO: Update for more accurate simulation
-    public static final double LENGTH_METERS = Units.inchesToMeters(14.722102);
-    public static final double MASS_KILOGRAMS = 2.0675323998;
 }

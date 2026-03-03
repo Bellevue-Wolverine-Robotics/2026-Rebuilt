@@ -1,9 +1,6 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,11 +16,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.ResetMode;
-import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import frc.robot.Robot;
 import frc.robot.constants.ArmConstants;
 
 /** Represents the arm mechanism, which moves the linkage intake */
@@ -34,10 +29,6 @@ public class ArmSubsystem extends SubsystemBase {
     private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(ArmConstants.ENCODER_PORT);
     private final RelativeEncoder relativeEncoder = motor.getEncoder();
     private final SparkClosedLoopController controller = motor.getClosedLoopController();
-
-    private SingleJointedArmSim sim;
-    private DutyCycleEncoderSim absoluteEncoderSim;
-    private SparkRelativeEncoderSim relativeEncoderSim;
 
     /** Constructs a new ArmSubsystem. */
     public ArmSubsystem() {
@@ -66,22 +57,6 @@ public class ArmSubsystem extends SubsystemBase {
         absoluteEncoder.setInverted(ArmConstants.ABSOLUTE_ENCODER_INVERTED);
 
         synchronize();
-
-        if (Robot.isSimulation()) {
-            sim = new SingleJointedArmSim(
-                DCMotor.getNEO(1),
-                ArmConstants.GEAR_RATIO,
-                ArmConstants.MASS_KILOGRAMS * Math.pow(ArmConstants.LENGTH_METERS, 2) / 3,
-                ArmConstants.LENGTH_METERS,
-                ArmConstants.RETRACTED_ANGLE_RADIANS,
-                ArmConstants.EXTENDED_ANGLE_RADIANS,
-                false,
-                ArmConstants.RETRACTED_ANGLE_RADIANS
-            );
-
-            absoluteEncoderSim = new DutyCycleEncoderSim(absoluteEncoder);
-            relativeEncoderSim = new SparkRelativeEncoderSim(motor);
-        }
     }
 
     private void synchronize() {
@@ -137,18 +112,5 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Arm/Relative Encoder Position", relativeEncoder.getPosition());
         SmartDashboard.putNumber("Arm/Relative Encoder Velocity", relativeEncoder.getVelocity());
         SmartDashboard.putNumber("Arm/Applied Motor Voltage", motor.getAppliedOutput() * motor.getBusVoltage());
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        sim.setInputVoltage(motor.getAppliedOutput() * motor.getBusVoltage());
-        sim.update(0.02);
-
-        double position = sim.getAngleRads();
-        double velocity = sim.getVelocityRadPerSec();
-
-        absoluteEncoderSim.set((position / (2.0 * Math.PI) + ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE + 1) % 1);
-        relativeEncoderSim.setPosition(position);
-        relativeEncoderSim.setVelocity(velocity);
     }
 }
