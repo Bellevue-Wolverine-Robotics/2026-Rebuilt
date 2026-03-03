@@ -17,12 +17,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "ALLIANCE_TO_LEFT_TOWER"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
@@ -39,6 +33,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ALLIANCE_TO_LEFT_TOWER"
           }
         }
       ]

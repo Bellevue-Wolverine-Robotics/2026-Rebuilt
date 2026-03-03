@@ -105,7 +105,7 @@ public class RobotContainer {
                 "Left Two Cycle",
                 new PathPlannerAuto("TWO_CYCLE")
         );
-        sendableChooser.setDefaultOption(
+        sendableChooser.addOption(
                 "Right One Cycle",
                 new PathPlannerAuto("ONE_CYCLE", true)
         );
