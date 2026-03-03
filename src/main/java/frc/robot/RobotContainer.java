@@ -47,7 +47,7 @@ public class RobotContainer {
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
 
-        driverController.x().whileTrue(new AutoClimbCommand(
+        driverController.pov(270).whileTrue(new AutoClimbCommand(
             swerveSubsystem,
             climberSubsystem,
             ledSubsystem,
@@ -55,7 +55,7 @@ public class RobotContainer {
             VisionConstants.LEFT_TOWER_FINAL_POSE_SUPPLIER
         ));
 
-        driverController.b().whileTrue(new AutoClimbCommand(
+        driverController.pov(90).whileTrue(new AutoClimbCommand(
             swerveSubsystem,
             climberSubsystem,
             ledSubsystem,
