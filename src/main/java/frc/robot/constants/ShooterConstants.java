@@ -34,11 +34,8 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap SETPOINTS_METERS_TO_RPM = new InterpolatingDoubleTreeMap();
 
     static {
-        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(4.9791667), 1425.0);
-        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(5.9791667), 1450.0);
-        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(6.9791667), 1550.0);
-        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(7.9791667), 1650.0);
-        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(8.9791667), 1750.0);
-        SETPOINTS_METERS_TO_RPM.put(Units.feetToMeters(9.9791667), 1825.0);
+        SETPOINTS_METERS_TO_RPM.put(Units.inchesToMeters(63.25), 1575.0);
+        SETPOINTS_METERS_TO_RPM.put(Units.inchesToMeters(75.25), 1650.0);
+        SETPOINTS_METERS_TO_RPM.put(Units.inchesToMeters(87.25), 1775.0);
     }
 }
