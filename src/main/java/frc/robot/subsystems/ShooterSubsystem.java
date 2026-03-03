@@ -37,7 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     private double calculateSpeed(double distance) {
-        return ShooterConstants.SETPOINTS_METERS_TO_RPM.get(distance);
+        return ShooterConstants.DISTANCE_METERS_TO_RPM.get(distance);
     }
 
     public boolean atSpeed() {

@@ -175,12 +175,28 @@ public class SwerveSubsystem extends SubsystemBase {
         });
     }
 
+    /** Provides the field relative robot velocity.
+     * 
+     * @return The field relative velocity.
+     */
+    public ChassisSpeeds getVelocity() {
+        return swerveDrive.getFieldVelocity();
+    }
+
+    /** Provides the magnitude, or overall linear speed, of field relative robot velocity.
+     * 
+     * @return The field relative translational velocity in meters per second.
+     */
     public double getTranslationalVelocity() {
         ChassisSpeeds velocities = swerveDrive.getFieldVelocity();
         return Math.sqrt(velocities.vxMetersPerSecond * velocities.vxMetersPerSecond +
                          velocities.vyMetersPerSecond * velocities.vyMetersPerSecond);
     }
 
+    /** Provides the rotational velocity, in radians per second.
+     * 
+     * @return The rotational velocity, in radians in persecond.
+     */
     public double getRotationalVelocity() {
         return swerveDrive.getRobotVelocity().omegaRadiansPerSecond;
     }

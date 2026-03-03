@@ -5,11 +5,12 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.constants.AlignmentConstants;
-import frc.robot.constants.FeederConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -56,6 +57,38 @@ public class AutoShootCommand extends Command {
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
+    /**
+     * Finds the approximate position of the robot when launched fuel will arrive at the hub.
+     * 
+     * @param current The current position of the robot.
+     * @return The future position of the robot.
+     */
+    private Pose2d calculatePose(Pose2d current) {
+        // By calculating the time of flight and current velocity, we are able
+        // to estiamte where the robot will be when the launched fuel arrives at the hub.
+        // We can repeat the process by finding the time of flight
+        // at the new calculated future pose as many times as necessary to get an accurate estimate.
+        Pose2d future = current;
+        ChassisSpeeds velocity = swerveSubsystem.getVelocity();
+    
+        for (int i = 0; i <= ShooterConstants.MOVEMENT_CALCULATION_ITERATIONS; i++) {
+            double distance = Math.hypot(
+                target.get().getX() - future.getX(),
+                target.get().getY() - future.getY()
+            );
+
+            double time = ShooterConstants.DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.get(distance);
+
+            future = new Pose2d(
+                current.getX() + (velocity.vxMetersPerSecond * time),
+                current.getY() + (velocity.vyMetersPerSecond * time),
+                current.getRotation()
+        );
+        }
+
+        return future;
+    }
+
     @Override
     public void initialize() {
         thetaController.reset(swerveSubsystem.getPose().getRotation().getRadians(), swerveSubsystem.getRotationalVelocity());
@@ -64,8 +97,10 @@ public class AutoShootCommand extends Command {
     @Override
     public void execute() {
         Pose2d current = swerveSubsystem.getPose();
-        double x = target.get().getX() - current.getX();
-        double y = target.get().getY() - current.getY();
+        Pose2d future = calculatePose(current);
+
+        double x = target.get().getX() - future.getX();
+        double y = target.get().getY() - future.getY();
 
         double currentHeading = current.getRotation().getRadians();
         double desiredHeading = Math.atan2(y, x);
@@ -80,11 +115,7 @@ public class AutoShootCommand extends Command {
         double distance = Math.hypot(x, y);
         shooterSubsystem.run(distance);
 
-        if (
-            swerveSubsystem.getTranslationalVelocity() <  FeederConstants.MAXIMUM_ACCEPTABLE_ROBOT_SPEED
-            && thetaController.atGoal()
-            && shooterSubsystem.atSpeed()
-        ) {
+        if (thetaController.atGoal() && shooterSubsystem.atSpeed()) {
             feederSubsystem.run();
         } else {
             feederSubsystem.stop();

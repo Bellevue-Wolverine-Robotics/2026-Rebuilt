@@ -27,15 +27,21 @@ public class ShooterConstants {
     public static final double MANUAL_SHOOT_DISTANCE_METERS = 1.0;
     public static final double PASS_SHOOT_DISTANCE_METERS = 3.0;
 
+    /** 
+     * For automatically shooting while moving, this is the number of iterations used to find the future position.
+     */
+    public static final int MOVEMENT_CALCULATION_ITERATIONS = 3;
+
     /** A mapping of distances in meters to RPM setpoints.
      * The distances are measured from the center of the robot to the center of the hub.
      * It represents a piecewise function, with linear interpoolation between known points.
      */
-    public static final InterpolatingDoubleTreeMap SETPOINTS_METERS_TO_RPM = new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap DISTANCE_METERS_TO_RPM = new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS = new InterpolatingDoubleTreeMap();
 
     static {
-        SETPOINTS_METERS_TO_RPM.put(Units.inchesToMeters(63.25), 1575.0);
-        SETPOINTS_METERS_TO_RPM.put(Units.inchesToMeters(75.25), 1650.0);
-        SETPOINTS_METERS_TO_RPM.put(Units.inchesToMeters(87.25), 1775.0);
+        DISTANCE_METERS_TO_RPM.put(Units.inchesToMeters(63.25), 1575.0);
+        DISTANCE_METERS_TO_RPM.put(Units.inchesToMeters(75.25), 1650.0);
+        DISTANCE_METERS_TO_RPM.put(Units.inchesToMeters(87.25), 1775.0);
     }
 }
