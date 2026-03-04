@@ -61,7 +61,7 @@ public class AimPoseCommand extends Command {
         double currentHeading = current.getRotation().getRadians();
         double desiredHeading = Math.atan2(y, x);
 
-        ledSubsystem.setAligned(thetaController.atGoal());
+        ledSubsystem.setAligning(thetaController.atGoal());
 
         swerveSubsystem.drive(
             swerveSubsystem.inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
@@ -71,6 +71,6 @@ public class AimPoseCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        ledSubsystem.setAligned(false);
+        ledSubsystem.setAligning(false);
     }
 }
