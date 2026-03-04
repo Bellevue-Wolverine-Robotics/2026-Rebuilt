@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.photonvision.EstimatedRobotPose;
@@ -143,6 +144,8 @@ public class VisionSubsystem extends SubsystemBase {
     public VisionSubsystem(SwerveSubsystem swerveSubsystem) {
         this.swerveSubsystem = swerveSubsystem;
 
+        SmartDashboard.putBoolean("Vision/Enabled", true);
+
         for (VisionConstants.CameraProperties cameraProperties : VisionConstants.CAMERAS) {
             cameras.add(new Camera(cameraProperties));
         }
@@ -159,6 +162,10 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (!SmartDashboard.getBoolean(("Vision/Enabled"), true)) {
+            return;
+        }
+
         for (Camera camera: cameras) {
             Optional<PoseEstimate> cameraEstimate = camera.estimatePose();
 
