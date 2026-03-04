@@ -66,10 +66,11 @@ public class RobotContainer {
         driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
         driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
 
-        operatorController.leftTrigger().whileTrue(new ExtendIntakeCommand(armSubsystem, intakeSubsystem));
+        operatorController.leftTrigger().whileTrue(intakeSubsystem.intakeCommand());
         operatorController.rightTrigger().whileTrue(intakeSubsystem.unjamCommand());
         operatorController.leftBumper().onTrue(armSubsystem.retractCommand());
         operatorController.rightBumper().onTrue(armSubsystem.extendCommand());
+        operatorController.y().whileTrue(new ExtendIntakeCommand(armSubsystem, intakeSubsystem));
 
         new Trigger(
             () -> Math.abs(operatorController.getLeftY()) > DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND
