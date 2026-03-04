@@ -61,7 +61,7 @@ public class AlignPoseCommand extends Command {
     public void execute() {
         Pose2d current = swerveSubsystem.getPose();
         ChassisSpeeds chassisSpeeds = controller.calculate(current, target.get(), 0.0, target.get().getRotation());
-        ledSubsystem.setAligning(controller.atReference());
+        ledSubsystem.setAligning(true);
         swerveSubsystem.drive(chassisSpeeds);
     }
 
