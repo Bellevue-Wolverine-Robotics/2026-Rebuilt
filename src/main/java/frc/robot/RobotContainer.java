@@ -73,9 +73,8 @@ public class RobotContainer {
         ));
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
-        driverController.y().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.NEUTRAL_POSE_SUPPLIER));
-        driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
-        driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
+
+        driverController.y().whileTrue(swerveSubsystem.alignShootCommand());
 
         operatorController.x().whileTrue(new FixedShootCommand(
             shooterSubsystem,

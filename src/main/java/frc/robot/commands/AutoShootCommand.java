@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -72,10 +73,8 @@ public class AutoShootCommand extends Command {
         ChassisSpeeds velocity = swerveSubsystem.getVelocity();
     
         for (int i = 0; i <= ShooterConstants.MOVEMENT_CALCULATION_ITERATIONS; i++) {
-            double distance = Math.hypot(
-                target.get().getX() - future.getX(),
-                target.get().getY() - future.getY()
-            );
+
+            double distance = future.getTranslation().getDistance(target.get().getTranslation());
 
             double time = ShooterConstants.DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.get(distance);
 
@@ -83,7 +82,7 @@ public class AutoShootCommand extends Command {
                 current.getX() + (velocity.vxMetersPerSecond * time),
                 current.getY() + (velocity.vyMetersPerSecond * time),
                 current.getRotation()
-        );
+            );
         }
 
         return future;
@@ -99,23 +98,22 @@ public class AutoShootCommand extends Command {
         Pose2d current = swerveSubsystem.getPose();
         Pose2d future = calculatePose(current);
 
-        double x = target.get().getX() - future.getX();
-        double y = target.get().getY() - future.getY();
+        Translation2d difference = target.get().getTranslation().minus(future.getTranslation());
 
         double currentHeading = current.getRotation().getRadians();
-        double desiredHeading = Math.atan2(y, x);
+        double desiredHeading =difference.getAngle().getRadians();
 
         ledSubsystem.setAligned(thetaController.atGoal());
 
         swerveSubsystem.drive(
             swerveSubsystem.inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
             thetaController.calculate(currentHeading, desiredHeading)
-        );
+        ); 
 
-        double distance = Math.hypot(x, y);
+        double distance = difference.getNorm();
         shooterSubsystem.run(distance);
 
-        if (thetaController.atGoal() && shooterSubsystem.atSpeed()) {
+        if (thetaController.atGoal() && shooterSubsystem.atSpeed() && swerveSubsystem.getTranslationalVelocity() <= ShooterConstants.MAXIMUM_SHOOT_SPEED_METERS_PER_SECOND) {
             feederSubsystem.run();
         } else {
             feederSubsystem.stop();

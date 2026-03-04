@@ -3,8 +3,8 @@ package frc.robot.subsystems;
 import java.io.File;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -28,7 +29,9 @@ import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import frc.robot.commands.AlignPoseCommand;
 import frc.robot.constants.PathPlannerConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
+import frc.robot.constants.VisionConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
     private final LEDSubsystem ledSubsystem;
@@ -156,6 +159,30 @@ public class SwerveSubsystem extends SubsystemBase {
         );
     }
 
+    
+    /** Provides the closest pose that is the optimal distance away from the hub, to shoot from.
+     * In other terms, it finds closest point to the robot on the semicricle formed at the optimal radius from the hub.
+     * 
+     * @return The optimal shooting pose.
+     */
+    private Pose2d getShootPose() {
+        Pose2d current = swerveDrive.getPose();
+        Pose2d target = VisionConstants.HUB_POSE_SUPPLIER.get();
+
+        double theta = MathUtil.clamp(
+            current.getTranslation().minus(target.getTranslation()).getAngle().getRadians(),
+            -ShooterConstants.MAXIMUM_SHOOT_ANGLE_RADIANS,
+            ShooterConstants.MAXIMUM_SHOOT_ANGLE_RADIANS
+        );
+
+        Translation2d translation = new Translation2d(ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS, theta).plus(target.getTranslation());
+
+        return new Pose2d(
+            translation,
+            Rotation2d.fromRadians(theta).plus(Rotation2d.fromDegrees(180))
+        );
+    }
+
     /**
      * Provides a command to drive the robot using field relative translative values and heading as angular velocity.
      *
@@ -207,8 +234,11 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param pose The pose to go to.
      * @return Command that aligns with the pose.
      */
-    public Command alignPoseCommand(Supplier<Pose2d> pose) {
-        return new AlignPoseCommand(this, ledSubsystem, pose);
+    public Command alignShootCommand() {
+        return Commands.deferredProxy(() -> {
+            Pose2d pose = getShootPose();
+            return new AlignPoseCommand(this, ledSubsystem, () -> pose);
+        });
     }
 
     /**
