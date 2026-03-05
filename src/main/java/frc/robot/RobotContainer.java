@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -31,8 +33,36 @@ public class RobotContainer {
     private final CommandXboxController driverController = new CommandXboxController(DriverStationConstants.DRIVER_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
+    private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
+
     public RobotContainer() {
         configureBindings();
+        sendableChooser.setDefaultOption(
+                "Left One Cycle",
+                new PathPlannerAuto("ONE_CYCLE")
+        );
+        sendableChooser.addOption(
+                "Left Two Cycle",
+                new PathPlannerAuto("TWO_CYCLE")
+        );
+        sendableChooser.setDefaultOption(
+                "Right One Cycle",
+                new PathPlannerAuto("ONE_CYCLE", true)
+        );
+        sendableChooser.addOption(
+                "Right Two Cycle",
+                new PathPlannerAuto("TWO_CYCLE", true)
+        );
+        sendableChooser.addOption(
+                "Depot Left Tower",
+                new PathPlannerAuto("DEPOT_LEFT_TOWER")
+        );
+        sendableChooser.addOption(
+                "Depot Right Tower",
+                new PathPlannerAuto("DEPOT_RIGHT_TOWER")
+        );
+
+        SmartDashboard.putData("Auto Chooser", sendableChooser);
     }
 
     private void configureBindings() {
@@ -78,8 +108,8 @@ public class RobotContainer {
             armSubsystem.moveCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
         );
     }
-
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("Basic");
+        return sendableChooser.getSelected();
     }
+
 }
