@@ -97,6 +97,19 @@
               "period": 0.06,
               "rotation_turns": 0
             }
+          },
+          {
+            "title": "Enable Vision Localization",
+            "x": 448.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/SmartDashboard/Vision/Enabled",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
           }
         ]
       }

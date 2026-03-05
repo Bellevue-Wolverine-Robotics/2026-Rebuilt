@@ -103,7 +103,7 @@ public class AutoShootCommand extends Command {
         double currentHeading = current.getRotation().getRadians();
         double desiredHeading =difference.getAngle().getRadians();
 
-        ledSubsystem.setAligned(thetaController.atGoal());
+        ledSubsystem.setAligning(false);
 
         swerveSubsystem.drive(
             swerveSubsystem.inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
@@ -125,6 +125,6 @@ public class AutoShootCommand extends Command {
     public void end(boolean interrupted) {
         feederSubsystem.stop();
         shooterSubsystem.stop();
-        ledSubsystem.setAligned(false);
+        ledSubsystem.setAligning(false);
     }
 }

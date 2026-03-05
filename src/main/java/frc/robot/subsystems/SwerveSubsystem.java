@@ -193,7 +193,7 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Command driveCommand(DoubleSupplier xAxis, DoubleSupplier yAxis, DoubleSupplier rotationAxis) {
         return run(() -> {
-            ledSubsystem.setAligned(false);
+            ledSubsystem.setAligning(false);
 
             drive(
                 inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
