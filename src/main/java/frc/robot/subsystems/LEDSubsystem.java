@@ -66,7 +66,7 @@ public class LEDSubsystem extends SubsystemBase {
             basePattern = LEDPattern.solid(Color.kRed);
         }
 
-        if (!aligning) {
+        if (aligning) {
             setPattern(basePattern.blink(Seconds.of(0.5)));
         } else {
             setPattern(basePattern);
