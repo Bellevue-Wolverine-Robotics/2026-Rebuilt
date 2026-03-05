@@ -74,16 +74,16 @@ public class RobotContainer {
 
         driverController.y().whileTrue(swerveSubsystem.alignShootCommand());
 
-        operatorController.x().whileTrue(new FixedShootCommand(
+        operatorController.a().whileTrue(new FixedShootCommand(
             shooterSubsystem,
             feederSubsystem,
-            ShooterConstants.PASS_SHOOT_DISTANCE_METERS
+            ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS
         ));
 
         operatorController.b().whileTrue(new FixedShootCommand(
             shooterSubsystem,
             feederSubsystem,
-            ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS
+            ShooterConstants.PASS_SHOOT_DISTANCE_METERS
         ));
     }
 
