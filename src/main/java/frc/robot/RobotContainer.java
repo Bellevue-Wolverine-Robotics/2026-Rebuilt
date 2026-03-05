@@ -31,29 +31,30 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
+
         sendableChooser.setDefaultOption(
-                "Left One Cycle",
-                new PathPlannerAuto("ONE_CYCLE")
+            "Left One Cycle",
+            new PathPlannerAuto("ONE_CYCLE")
         );
         sendableChooser.addOption(
-                "Left Two Cycle",
-                new PathPlannerAuto("TWO_CYCLE")
+            "Left Two Cycle",
+            new PathPlannerAuto("TWO_CYCLE")
         );
         sendableChooser.setDefaultOption(
-                "Right One Cycle",
-                new PathPlannerAuto("ONE_CYCLE", true)
+            "Right One Cycle",
+            new PathPlannerAuto("ONE_CYCLE", true)
         );
         sendableChooser.addOption(
-                "Right Two Cycle",
-                new PathPlannerAuto("TWO_CYCLE", true)
+            "Right Two Cycle",
+            new PathPlannerAuto("TWO_CYCLE", true)
         );
         sendableChooser.addOption(
-                "Depot Left Tower",
-                new PathPlannerAuto("DEPOT_LEFT_TOWER")
+            "Depot Left Tower",
+            new PathPlannerAuto("DEPOT_LEFT_TOWER")
         );
         sendableChooser.addOption(
-                "Depot Right Tower",
-                new PathPlannerAuto("DEPOT_RIGHT_TOWER")
+            "Depot Right Tower",
+            new PathPlannerAuto("DEPOT_RIGHT_TOWER")
         );
 
         SmartDashboard.putData("Auto Chooser", sendableChooser);
@@ -89,8 +90,8 @@ public class RobotContainer {
         driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
         driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
     }
+
     public Command getAutonomousCommand() {
         return sendableChooser.getSelected();
     }
-
 }
