@@ -20,7 +20,6 @@ import frc.robot.constants.DriverStationConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -67,9 +66,8 @@ public class RobotContainer {
             ledSubsystem,
             shooterSubsystem,
             feederSubsystem,
-            () -> -driverController.getLeftY(), 
-            () -> -driverController.getLeftX(), 
-            VisionConstants.HUB_POSE_SUPPLIER
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getLeftX()
         ));
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());

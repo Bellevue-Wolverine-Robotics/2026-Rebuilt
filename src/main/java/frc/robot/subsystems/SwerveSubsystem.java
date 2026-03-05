@@ -12,8 +12,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -171,8 +173,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
         double theta = MathUtil.clamp(
             current.getTranslation().minus(target.getTranslation()).getAngle().getRadians(),
-            -ShooterConstants.MAXIMUM_SHOOT_ANGLE_RADIANS,
-            ShooterConstants.MAXIMUM_SHOOT_ANGLE_RADIANS
+            -ShooterConstants.MAXIMUM_ANGLE_RADIANS,
+            ShooterConstants.MAXIMUM_ANGLE_RADIANS
         );
 
         Translation2d translation = new Translation2d(ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS, theta).plus(target.getTranslation());
@@ -249,5 +251,25 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Command zeroGyro() {
         return runOnce(swerveDrive::zeroGyro);
+    }
+
+    @Override
+    public void periodic() {
+        Translation2d difference = VisionConstants.HUB_POSE_SUPPLIER.get().getTranslation().minus(
+            swerveDrive.getPose().getTranslation()
+        );
+
+        double distance = difference.getNorm();
+        double theta = difference.getAngle().getRadians();  
+
+        ledSubsystem.setInRange(
+            distance > ShooterConstants.MINIMUM_DISTANCE_METERS
+            && distance < ShooterConstants.MAXIMUM_DISTANCE_METERS
+            && theta > -ShooterConstants.MAXIMUM_ANGLE_RADIANS + Units.degreesToRadians(180)
+            && theta < ShooterConstants.MAXIMUM_ANGLE_RADIANS + Units.degreesToRadians(180)
+        );
+
+        SmartDashboard.putNumber("Swerve/Hub Distance", distance);
+        SmartDashboard.putNumber("Swerve/Hub Angle", theta);
     }
 }

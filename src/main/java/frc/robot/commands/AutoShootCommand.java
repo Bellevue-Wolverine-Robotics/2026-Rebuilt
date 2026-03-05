@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.constants.AlignmentConstants;
 import frc.robot.constants.ShooterConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -34,7 +34,6 @@ public class AutoShootCommand extends Command {
     private final FeederSubsystem feederSubsystem;
     private final DoubleSupplier xAxis;
     private final DoubleSupplier yAxis;
-    private final Supplier<Pose2d> target;
 
     public AutoShootCommand(
         SwerveSubsystem swerveSubsystem,
@@ -42,8 +41,7 @@ public class AutoShootCommand extends Command {
         ShooterSubsystem shooterSubsystem,
         FeederSubsystem feederSubsystem,
         DoubleSupplier xAxis,
-        DoubleSupplier yAxis,
-        Supplier<Pose2d> target
+        DoubleSupplier yAxis
     ) {
         this.swerveSubsystem = swerveSubsystem;
         this.ledSubsystem = ledSubsystem;
@@ -51,7 +49,6 @@ public class AutoShootCommand extends Command {
         this.feederSubsystem = feederSubsystem;
         this.xAxis = xAxis;
         this.yAxis = yAxis;
-        this.target = target;
         addRequirements(swerveSubsystem, shooterSubsystem, feederSubsystem);
 
         thetaController.setTolerance(AlignmentConstants.ROTATIONAL_TOLERANCE_DISTANCE, AlignmentConstants.ROTATIONAL_TOLERANCE_VELOCITY);
@@ -74,7 +71,7 @@ public class AutoShootCommand extends Command {
     
         for (int i = 0; i <= ShooterConstants.MOVEMENT_CALCULATION_ITERATIONS; i++) {
 
-            double distance = future.getTranslation().getDistance(target.get().getTranslation());
+            double distance = future.getTranslation().getDistance(VisionConstants.HUB_POSE_SUPPLIER.get().getTranslation());
 
             double time = ShooterConstants.DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.get(distance);
 
@@ -98,10 +95,10 @@ public class AutoShootCommand extends Command {
         Pose2d current = swerveSubsystem.getPose();
         Pose2d future = calculatePose(current);
 
-        Translation2d difference = target.get().getTranslation().minus(future.getTranslation());
+        Translation2d difference = VisionConstants.HUB_POSE_SUPPLIER.get().getTranslation().minus(future.getTranslation());
 
         double currentHeading = current.getRotation().getRadians();
-        double desiredHeading =difference.getAngle().getRadians();
+        double desiredHeading = difference.getAngle().getRadians();
 
         ledSubsystem.setAligning(false);
 

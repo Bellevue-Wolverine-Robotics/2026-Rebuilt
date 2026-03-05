@@ -29,7 +29,10 @@ public class ShooterConstants {
 
     /** The maximum velocity that the feeder can run at. Set this lower to disable shooting on the go. */
     public static final double MAXIMUM_SHOOT_SPEED_METERS_PER_SECOND = 5;
-    public static final double MAXIMUM_SHOOT_ANGLE_RADIANS = Units.degreesToRadians(45);
+
+    public static final double MAXIMUM_ANGLE_RADIANS = Units.degreesToRadians(45);
+    public static final double MINIMUM_DISTANCE_METERS = Units.inchesToMeters(63.25);
+    public static final double MAXIMUM_DISTANCE_METERS = Units.inchesToMeters(87.25);
 
     /** 
      * For automatically shooting while moving, this is the number of iterations used to find the future position.
