@@ -103,13 +103,13 @@ public class RobotContainer {
                 GenericHID.RumbleType.kRightRumble,
                 DriverStationConstants.OPERATOR_ARM_WARNING_RUMBLE_POWER
             )
-        ))).onFalse(armSubsystem.retractCommand().onlyIf(() -> retract));
+        ))).onFalse(armSubsystem.retractCommand().onlyIf(() -> retract).until(() -> !retract));
 
         operatorController.leftTrigger().whileTrue(
             intakeSubsystem.runCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
         );
 
-        operatorController.rightBumper().whileTrue(Commands.runOnce(() -> retract = !retract));
+        operatorController.rightBumper().onTrue(Commands.runOnce(() -> retract = !retract));
 
         new Trigger(
             () -> Math.abs(operatorController.getRightY()) > DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND
