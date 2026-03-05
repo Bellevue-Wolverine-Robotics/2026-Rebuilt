@@ -13,9 +13,9 @@ public class LEDSubsystem extends SubsystemBase {
     private final AddressableLED led;
     private final AddressableLEDBuffer ledBuffer;
 
-    private boolean inRange = false;   // Within range to shoot
-    private boolean climbing = false;  // In the process of auto climbing
-    private boolean aligning = false;   // Aligned to pose (false = blinking)
+    private boolean inRange = false; // Within range to shoot
+    private boolean climbing = false; // In the process of auto climbing
+    private boolean aligning = false; // Aligned to pose (true = blinking)
     private LEDPattern basePattern;
 
     public LEDSubsystem() {
