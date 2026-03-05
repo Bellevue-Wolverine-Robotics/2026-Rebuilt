@@ -51,6 +51,7 @@ public class ShooterConstants {
         DISTANCE_METERS_TO_RPM.put(Units.inchesToMeters(75.25), 1650.0);
         DISTANCE_METERS_TO_RPM.put(Units.inchesToMeters(87.25), 1775.0);
 
-        DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.put(0.0, 0.0);
+        DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.put(63.25, 0.5);
+        DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.put(87.25, 1.0);
     }
 }

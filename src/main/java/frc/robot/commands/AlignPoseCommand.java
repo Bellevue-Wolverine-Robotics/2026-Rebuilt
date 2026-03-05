@@ -32,7 +32,7 @@ public class AlignPoseCommand extends Command {
             AlignmentConstants.ROTATIONAL_PID_KD,
             new TrapezoidProfile.Constraints(
                 AlignmentConstants.MAXIMUM_SPEED_RADIANS,
-                AlignmentConstants.MAXIMUM_ACCELERATION_RADIANS
+                AlignmentConstants.MAXIMUM_ACCELERATION_RADIANS_PER_SECOND
             )
         )
     );

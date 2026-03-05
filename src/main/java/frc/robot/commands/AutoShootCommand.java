@@ -24,7 +24,7 @@ public class AutoShootCommand extends Command {
         AlignmentConstants.ROTATIONAL_PID_KD,
         new TrapezoidProfile.Constraints(
             AlignmentConstants.MAXIMUM_SPEED_RADIANS,
-            AlignmentConstants.MAXIMUM_ACCELERATION_RADIANS
+            AlignmentConstants.MAXIMUM_ACCELERATION_RADIANS_PER_SECOND
         )
     );
 
@@ -51,7 +51,7 @@ public class AutoShootCommand extends Command {
         this.yAxis = yAxis;
         addRequirements(swerveSubsystem, shooterSubsystem, feederSubsystem);
 
-        thetaController.setTolerance(AlignmentConstants.ROTATIONAL_TOLERANCE_DISTANCE, AlignmentConstants.ROTATIONAL_TOLERANCE_VELOCITY);
+        thetaController.setTolerance(AlignmentConstants.ROTATIONAL_TOLERANCE_RADIANS, AlignmentConstants.ROTATIONAL_TOLERANCE_RADIANS_PER_SECOND);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
@@ -69,8 +69,7 @@ public class AutoShootCommand extends Command {
         Pose2d future = current;
         ChassisSpeeds velocity = swerveSubsystem.getVelocity();
     
-        for (int i = 0; i <= ShooterConstants.MOVEMENT_CALCULATION_ITERATIONS; i++) {
-
+        for (int i = 0; i < ShooterConstants.MOVEMENT_CALCULATION_ITERATIONS; i++) {
             double distance = future.getTranslation().getDistance(VisionConstants.HUB_POSE_SUPPLIER.get().getTranslation());
 
             double time = ShooterConstants.DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.get(distance);
@@ -101,10 +100,14 @@ public class AutoShootCommand extends Command {
         double currentHeading = current.getRotation().getRadians();
         double desiredHeading = difference.getAngle().getRadians();
 
-        swerveSubsystem.drive(
-            swerveSubsystem.inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
-            thetaController.calculate(currentHeading, desiredHeading)
-        ); 
+        if (thetaController.atGoal() && xAxis.getAsDouble() == 0 && yAxis.getAsDouble() == 0) {
+            swerveSubsystem.lock();
+        } else {
+            swerveSubsystem.drive(
+                swerveSubsystem.inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
+                thetaController.calculate(currentHeading, desiredHeading)
+            );
+        }
 
         double distance = difference.getNorm();
         shooterSubsystem.run(distance);

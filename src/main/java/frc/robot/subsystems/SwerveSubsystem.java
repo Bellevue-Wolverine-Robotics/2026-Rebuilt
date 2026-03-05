@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -52,6 +51,10 @@ public class SwerveSubsystem extends SubsystemBase {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        swerveDrive.chassisVelocityCorrection = true;
+        swerveDrive.setHeadingCorrection(true);
+        swerveDrive.setChassisDiscretization(true, 0.02);
 
         try {
             RobotConfig config = RobotConfig.fromGUISettings();
@@ -228,6 +231,11 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public double getRotationalVelocity() {
         return swerveDrive.getRobotVelocity().omegaRadiansPerSecond;
+    }
+
+    /** Points the wheels towards the center of the chassis, making the robot more difficult to move. */
+    public void lock() {
+        swerveDrive.lockPose();
     }
 
     /**
