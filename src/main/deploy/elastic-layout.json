@@ -86,16 +86,29 @@
             }
           },
           {
-            "title": "primary-raw",
+            "title": "Hub Camera",
             "x": 0.0,
             "y": 0.0,
             "width": 448.0,
             "height": 384.0,
             "type": "Camera Stream",
             "properties": {
-              "topic": "/CameraPublisher/primary-raw",
+              "topic": "/CameraPublisher/photonvision_Port_1182_Output_MJPEG_Server",
               "period": 0.06,
               "rotation_turns": 0
+            }
+          },
+          {
+            "title": "Enable Vision Localization",
+            "x": 448.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/SmartDashboard/Vision/Enabled",
+              "period": 0.06,
+              "data_type": "boolean"
             }
           }
         ]

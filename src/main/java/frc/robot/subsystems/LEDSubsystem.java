@@ -13,8 +13,10 @@ public class LEDSubsystem extends SubsystemBase {
     private final AddressableLED led;
     private final AddressableLEDBuffer ledBuffer;
 
-    private boolean tracking = false;
-    private boolean aligned = false;
+    private boolean inRange = false;   // Within range to shoot
+    private boolean climbing = false;  // In the process of auto climbing
+    private boolean aligning = false;   // Aligned to pose (false = blinking)
+    private LEDPattern basePattern;
 
     public LEDSubsystem() {
         led = new AddressableLED(LEDConstants.PWM_PORT);
@@ -26,12 +28,21 @@ public class LEDSubsystem extends SubsystemBase {
         led.start();
     }
 
-    public void setAligned (boolean aligned) {
-        this.aligned = aligned;
+    public void setInRange(boolean inRange) {
+        this.inRange = inRange;
     }
 
-    public void setTracking(boolean tracking) {
-        this.tracking = tracking;
+    public void setClimbing(boolean climbing) {
+        this.climbing = climbing;
+    }
+
+    public void setAligning(boolean aligning) {
+        this.aligning = aligning;
+    }
+
+    private void setPattern(LEDPattern pattern) {
+        pattern.applyTo(ledBuffer);
+        led.setData(ledBuffer);
     }
 
     private void setBlueYellow() {
@@ -40,29 +51,25 @@ public class LEDSubsystem extends SubsystemBase {
         led.setData(ledBuffer);
     }
 
-    private void setPattern(LEDPattern pattern) {
-        pattern.applyTo(ledBuffer);
-        led.setData(ledBuffer);
-    }
-
+    @Override
     public void periodic() {
         if (DriverStation.isDisabled()) {
             setBlueYellow();
             return;
         }
 
-        if (tracking) {
-            if (aligned) {
-                setPattern(LEDPattern.solid(Color.kGreen).blink(Seconds.of(1)));
-            } else {
-                setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(1)));
-            }
+        if (climbing) {
+            basePattern = LEDPattern.solid(Color.kBlue);
+        } else if (inRange) {
+            basePattern = LEDPattern.solid(Color.kGreen);
         } else {
-            if (aligned) {
-                setPattern(LEDPattern.solid(Color.kGreen));
-            } else {
-                setPattern(LEDPattern.solid(Color.kRed));
-            }
+            basePattern = LEDPattern.solid(Color.kRed);
+        }
+
+        if (aligning) {
+            setPattern(basePattern.blink(Seconds.of(0.5)));
+        } else {
+            setPattern(basePattern);
         }
     }
 }
