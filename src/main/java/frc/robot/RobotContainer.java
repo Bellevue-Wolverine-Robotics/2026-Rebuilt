@@ -114,7 +114,7 @@ public class RobotContainer {
         new Trigger(
             () -> Math.abs(operatorController.getRightY()) > DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND
         ).whileTrue(
-            armSubsystem.moveCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
+            armSubsystem.moveCommand(() -> -MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
         );
     }
     public Command getAutonomousCommand() {

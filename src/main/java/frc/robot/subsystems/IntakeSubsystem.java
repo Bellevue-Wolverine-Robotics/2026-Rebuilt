@@ -26,6 +26,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystem(ArmSubsystem armSubsystem) {
         this.armSubsystem = armSubsystem;
         motorConfig.idleMode(IdleMode.kBrake);
+        motorConfig.inverted(IntakeConstants.MOTOR_INVERTED);
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
