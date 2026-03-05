@@ -260,13 +260,12 @@ public class SwerveSubsystem extends SubsystemBase {
         );
 
         double distance = difference.getNorm();
-        double theta = difference.getAngle().getRadians();  
+        double theta = MathUtil.angleModulus(difference.getAngle().getRadians() - Math.PI);
 
         ledSubsystem.setInRange(
             distance > ShooterConstants.MINIMUM_DISTANCE_METERS
             && distance < ShooterConstants.MAXIMUM_DISTANCE_METERS
-            && theta > -ShooterConstants.MAXIMUM_ANGLE_RADIANS + Units.degreesToRadians(180)
-            && theta < ShooterConstants.MAXIMUM_ANGLE_RADIANS + Units.degreesToRadians(180)
+            && Math.abs(theta) < ShooterConstants.MAXIMUM_ANGLE_RADIANS
         );
 
         SmartDashboard.putNumber("Swerve/Hub Distance", distance);

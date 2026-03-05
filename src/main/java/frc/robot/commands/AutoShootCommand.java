@@ -88,6 +88,7 @@ public class AutoShootCommand extends Command {
     @Override
     public void initialize() {
         thetaController.reset(swerveSubsystem.getPose().getRotation().getRadians(), swerveSubsystem.getRotationalVelocity());
+        ledSubsystem.setAligning(true);
     }
 
     @Override
@@ -99,8 +100,6 @@ public class AutoShootCommand extends Command {
 
         double currentHeading = current.getRotation().getRadians();
         double desiredHeading = difference.getAngle().getRadians();
-
-        ledSubsystem.setAligning(false);
 
         swerveSubsystem.drive(
             swerveSubsystem.inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
