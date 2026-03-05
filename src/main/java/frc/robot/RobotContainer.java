@@ -5,15 +5,16 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import frc.robot.commands.ExtendIntakeCommand;
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.ArmSubsystem;
@@ -24,7 +25,7 @@ import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
     private final ArmSubsystem armSubsystem = new ArmSubsystem();
-    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(armSubsystem);
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(ledSubsystem);
     @SuppressWarnings("unused")  // Subsystems automatically register themselves to command scheduler
@@ -34,6 +35,7 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
     private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
+    private boolean retract = true;
 
     public RobotContainer() {
         configureBindings();
@@ -96,14 +98,21 @@ public class RobotContainer {
         driverController.a().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.SHOOT_POSE_SUPPLIER));
         driverController.b().whileTrue(swerveSubsystem.alignPoseCommand(VisionConstants.CLIMB_POSE_SUPPLIER));
 
-        operatorController.leftTrigger().whileTrue(intakeSubsystem.intakeCommand());
-        operatorController.rightTrigger().whileTrue(intakeSubsystem.unjamCommand());
-        operatorController.leftBumper().onTrue(armSubsystem.retractCommand());
-        operatorController.rightBumper().onTrue(armSubsystem.extendCommand());
-        operatorController.y().whileTrue(new ExtendIntakeCommand(armSubsystem, intakeSubsystem));
+        operatorController.rightTrigger().whileTrue(armSubsystem.extendCommand().andThen(armSubsystem.waitCommand(
+            () -> operatorController.setRumble(
+                GenericHID.RumbleType.kRightRumble,
+                DriverStationConstants.OPERATOR_ARM_WARNING_RUMBLE_POWER
+            )
+        ))).onFalse(armSubsystem.retractCommand().onlyIf(() -> retract));
+
+        operatorController.leftTrigger().whileTrue(
+            intakeSubsystem.runCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
+        );
+
+        operatorController.rightBumper().whileTrue(Commands.runOnce(() -> retract = !retract));
 
         new Trigger(
-            () -> Math.abs(operatorController.getLeftY()) > DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND
+            () -> Math.abs(operatorController.getRightY()) > DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND
         ).whileTrue(
             armSubsystem.moveCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
         );

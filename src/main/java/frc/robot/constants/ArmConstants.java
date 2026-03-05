@@ -35,4 +35,7 @@ public class ArmConstants {
 
     /** The required accuracy of the arm, in order to finish moving it. */
     public static final double ERROR_TOLERANCE_RADIANS = Units.degreesToRadians(1); 
+
+    /** The distance the arm must be from the original setpoint to provide a warning on the controller. */
+    public static final double WARN_THRESHOLD_RADIANS = Units.degreesToRadians(10);
 }

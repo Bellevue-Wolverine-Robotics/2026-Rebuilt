@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.ResetMode;
@@ -17,8 +20,11 @@ public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax motor = new SparkMax(IntakeConstants.MOTOR_CAN_ID, MotorType.kBrushless);
     private final SparkMaxConfig motorConfig = new SparkMaxConfig();
 
+    private final ArmSubsystem armSubsystem;
+
     /** Constructs a new IntakeSubsystem. */
-    public IntakeSubsystem() {
+    public IntakeSubsystem(ArmSubsystem armSubsystem) {
+        this.armSubsystem = armSubsystem;
         motorConfig.idleMode(IdleMode.kBrake);
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -29,20 +35,25 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return The intake command.
      */
     public Command intakeCommand() {
-        return runEnd(
-            () -> motor.set(IntakeConstants.INTAKE_SPEED),
-            () -> motor.stopMotor()
-        );
+        return run(() -> {
+            if (armSubsystem.isExtended()) {
+                motor.set(IntakeConstants.INTAKE_SPEED);
+            } else {
+                motor.stopMotor();
+            }
+        });
     }
 
     /**
-     * Provides a command that runs the motor in the reverse direction to unjam fuel.
+     * Provides a command sets the intake's motor to a manual speed.
+     * This is used in instances which the encoder is broken, so that the arm and intake are still usable.
      * 
-     * @return The unjam command.
+     * @param speed The speed to run the motor at as a percentage on [-1, 1].
+     * @return The run command.
      */
-    public Command unjamCommand() {
+    public Command runCommand(DoubleSupplier speed) {
         return runEnd(
-            () -> motor.set(IntakeConstants.UNJAM_SPEED),
+            () -> motor.set(speed.getAsDouble()),
             () -> motor.stopMotor()
         );
     }

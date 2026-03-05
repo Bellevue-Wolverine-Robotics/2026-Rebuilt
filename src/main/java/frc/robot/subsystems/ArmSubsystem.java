@@ -30,6 +30,8 @@ public class ArmSubsystem extends SubsystemBase {
     private final RelativeEncoder relativeEncoder = motor.getEncoder();
     private final SparkClosedLoopController controller = motor.getClosedLoopController();
 
+    private boolean extended = false;
+
     /** Constructs a new ArmSubsystem. */
     public ArmSubsystem() {
         motorConfig.idleMode(IdleMode.kBrake);
@@ -69,6 +71,15 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /**
+     * Provides whether the arm is extended with regular controls.
+     * 
+     * @return Whether the arm is extended.
+     */
+    public boolean isExtended() {
+        return extended;
+    } 
+
+    /**
      * Provides a command that extends the arm until finished.
      * 
      * @return The extension command.
@@ -90,6 +101,26 @@ public class ArmSubsystem extends SubsystemBase {
             () -> set(ArmConstants.RETRACTED_ANGLE_RADIANS),
             motor::stopMotor
         ).beforeStarting(this::synchronize).until(controller::isAtSetpoint);
+    }
+
+    /**
+     * Provides a command that waits for the extension to be released.
+     * It warns the controller when the arm passively moves beyond the normal expecteded range.
+     * This indicates something hitting and pushing the arm back, meaning it needs to be manually extended again by the driver.
+     * 
+     * @param warn This is called when it is time to warn the controller.
+     * @return The command that warns when necessary.
+     */
+    public Command waitCommand(Runnable warn) {
+        return run(() -> {
+            double error = Math.abs(relativeEncoder.getPosition() - ArmConstants.EXTENDED_ANGLE_RADIANS);
+            if (error > ArmConstants.WARN_THRESHOLD_RADIANS) {
+                warn.run();
+                extended = false;
+            } else {
+                extended = true;
+            }
+        });
     }
 
     /**
