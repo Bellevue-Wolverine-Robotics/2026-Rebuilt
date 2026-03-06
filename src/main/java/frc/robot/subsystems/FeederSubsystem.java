@@ -1,23 +1,23 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.FeederConstants;
+import frc.robot.constants.ShooterConstants;
 
 public class FeederSubsystem extends SubsystemBase {
-    // Todo: Change to one TalonFX on the competition robot
-    private SparkMax motor = new SparkMax(FeederConstants.MOTOR_ID, MotorType.kBrushless);
+    private TalonFX motor = new TalonFX(FeederConstants.MOTOR_ID);
 
     public FeederSubsystem() {
-        SparkMaxConfig config = new SparkMaxConfig();
-        config.idleMode(IdleMode.kBrake);
-        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        config.MotorOutput.Inverted = ShooterConstants.LEFT_MOTOR_INVERTED ? 
+        InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+        motor.getConfigurator().apply(config);
     }
 
     public void run() {

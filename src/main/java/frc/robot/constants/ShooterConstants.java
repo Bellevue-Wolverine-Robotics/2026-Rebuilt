@@ -3,19 +3,20 @@ package frc.robot.constants;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 
+// TODO: Tune PID, feedforward, and lookup table
 public class ShooterConstants {
     public static final int LEFT_MOTOR_ID = 24;
     public static final int RIGHT_MOTOR_ID = 25;
     public static final boolean LEFT_MOTOR_INVERTED = true;
 
     /** The gear ratio between the motor shaft and shooter shaft. */
-    public static final double GEAR_RATIO = 3.0;
+    public static final double GEAR_RATIO = 2.0;
 
-    /**Acceptable tolerance between the target and current RPM on the shooter shaft, before the feeder engages. */
-    public static final double RPM_TOLERANCE = 50;
+    /**Acceptable tolerance between the target and current RPS on the shooter shaft for the feeder to engage. */
+    public static final double RPS_TOLERANCE = 0.5;
 
-    /** The voltage required per RPM of the shooter shaft. */
-    public static final double VOLTAGE_PER_SHAFT_RPM = GEAR_RATIO / 473.0; 
+    /** The voltage required per RPS of the shooter shaft. */
+    public static final double VOLTAGE_PER_RPS = (GEAR_RATIO * 60) / 504.0; 
 
     /** The voltage required to overcome the static friction of the shooter shaft. */
     public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.336;
@@ -47,13 +48,13 @@ public class ShooterConstants {
      * The distances are measured from the center of the robot to the center of the hub.
      * It represents a piecewise function, with linear interpoolation between known points.
      */
-    public static final InterpolatingDoubleTreeMap DISTANCE_METERS_TO_RPM = new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap DISTANCE_METERS_TO_RPS = new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS = new InterpolatingDoubleTreeMap();
 
     static {
-        DISTANCE_METERS_TO_RPM.put(Units.inchesToMeters(63.25), 1575.0);
-        DISTANCE_METERS_TO_RPM.put(Units.inchesToMeters(75.25), 1650.0);
-        DISTANCE_METERS_TO_RPM.put(Units.inchesToMeters(87.25), 1775.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(63.25), 26.25);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(75.25), 27.5);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(87.25), 29.583);
 
         DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.put(63.25, 0.0);
         DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.put(87.25, 0.0);
