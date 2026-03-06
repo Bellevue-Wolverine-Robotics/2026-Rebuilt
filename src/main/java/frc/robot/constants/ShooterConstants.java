@@ -16,7 +16,7 @@ public class ShooterConstants {
     public static final double RPS_TOLERANCE = 0.5;
 
     /** The voltage required per RPS of the shooter shaft. */
-    public static final double VOLTAGE_PER_RPS = (GEAR_RATIO * 60) / 504.0; 
+    public static final double VOLTS_PER_RPS = (GEAR_RATIO * 60) / 504.0; 
 
     /** The voltage required to overcome the static friction of the shooter shaft. */
     public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.336;

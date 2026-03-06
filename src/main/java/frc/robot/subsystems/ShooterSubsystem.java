@@ -27,7 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
         config.Slot0.kI = ShooterConstants.INTEGRAL_GAIN;
         config.Slot0.kD = ShooterConstants.DERIVATIVE_GAIN;
         config.Slot0.kS = ShooterConstants.STATIC_FRICTION_OVERCOME_VOLTAGE;
-        config.Slot0.kV = ShooterConstants.VOLTAGE_PER_RPS;
+        config.Slot0.kV = ShooterConstants.VOLTS_PER_RPS;
 
         config.Feedback.SensorToMechanismRatio = ShooterConstants.GEAR_RATIO;
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
