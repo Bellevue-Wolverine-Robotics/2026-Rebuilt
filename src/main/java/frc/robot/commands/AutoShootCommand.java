@@ -2,11 +2,10 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.constants.AlignmentConstants;
@@ -18,14 +17,10 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class AutoShootCommand extends Command {
-    private final ProfiledPIDController thetaController = new ProfiledPIDController(
-        AlignmentConstants.ROTATIONAL_PID_KP,
-        AlignmentConstants.ROTATIONAL_PID_KI,
-        AlignmentConstants.ROTATIONAL_PID_KD,
-        new TrapezoidProfile.Constraints(
-            AlignmentConstants.MAXIMUM_SPEED_RADIANS,
-            AlignmentConstants.MAXIMUM_ACCELERATION_RADIANS_PER_SECOND
-        )
+    private final PIDController thetaController = new PIDController(
+        ShooterConstants.ROTATIONAL_PID_KP,
+        ShooterConstants.ROTATIONAL_PID_KI,
+        ShooterConstants.ROTATIONAL_PID_KD
     );
 
     private final SwerveSubsystem swerveSubsystem;
@@ -51,7 +46,7 @@ public class AutoShootCommand extends Command {
         this.yAxis = yAxis;
         addRequirements(swerveSubsystem, shooterSubsystem, feederSubsystem);
 
-        thetaController.setTolerance(AlignmentConstants.ROTATIONAL_TOLERANCE_RADIANS, AlignmentConstants.ROTATIONAL_TOLERANCE_RADIANS_PER_SECOND);
+        thetaController.setTolerance(AlignmentConstants.ROTATIONAL_TOLERANCE_RADIANS);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
@@ -86,8 +81,7 @@ public class AutoShootCommand extends Command {
 
     @Override
     public void initialize() {
-        thetaController.reset(swerveSubsystem.getPose().getRotation().getRadians(), swerveSubsystem.getRotationalVelocity());
-        ledSubsystem.setAligning(true);
+        thetaController.reset();
     }
 
     @Override
@@ -100,11 +94,12 @@ public class AutoShootCommand extends Command {
         double currentHeading = current.getRotation().getRadians();
         double desiredHeading = difference.getAngle().getRadians();
 
-        if (thetaController.atGoal() && xAxis.getAsDouble() == 0 && yAxis.getAsDouble() == 0) {
+        if (thetaController.atSetpoint() && xAxis.getAsDouble() == 0 && yAxis.getAsDouble() == 0) {
             swerveSubsystem.lock();
         } else {
             swerveSubsystem.drive(
-                swerveSubsystem.inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
+                xAxis.getAsDouble(),
+                yAxis.getAsDouble(),
                 thetaController.calculate(currentHeading, desiredHeading)
             );
         }
@@ -112,12 +107,13 @@ public class AutoShootCommand extends Command {
         double distance = difference.getNorm();
         shooterSubsystem.run(distance);
 
-        if (thetaController.atGoal() && shooterSubsystem.atSpeed() && swerveSubsystem.getTranslationalVelocity() <= ShooterConstants.MAXIMUM_SHOOT_SPEED_METERS_PER_SECOND) {
+        if (thetaController.atSetpoint() && shooterSubsystem.atSpeed() && swerveSubsystem.getTranslationalVelocity() <= ShooterConstants.MAXIMUM_SHOOT_SPEED_METERS_PER_SECOND) {
             feederSubsystem.run();
         } else {
             feederSubsystem.stop();
         }
 
+        ledSubsystem.setAligning(!thetaController.atSetpoint());
     }
 
     @Override

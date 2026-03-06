@@ -62,12 +62,12 @@ public class RobotContainer {
         ));
 
         driverController.rightTrigger().whileTrue(new AutoShootCommand(
-            swerveSubsystem, 
+            swerveSubsystem,
             ledSubsystem,
             shooterSubsystem,
             feederSubsystem,
-            () -> -driverController.getLeftY(),
-            () -> -driverController.getLeftX()
+            () -> -MathUtil.applyDeadband(driverController.getLeftY(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
+            () -> -MathUtil.applyDeadband(driverController.getLeftX(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND)
         ));
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());

@@ -108,15 +108,24 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
      * Drives the robot using field relative translative and angular velocities.
      * 
-     * @param translation The translational velocity of the robot in meters per second.
-     * @param rotation    The rotational velocity in radians per second.
+     * @param xMagnitude The velocity in the x direction, in terms on max linear velocity [-1, 1].
+     * @param yMagnitude The velocity in the y direction, in terms on max linear velocity [-1, 1].
+     * @param rotation    The rotational velocity, in terms of max rotational velocity [-1, 1].
      */
-    public void drive(Translation2d translation, double angularRotation) {
+    public void drive(double xMagnitude, double yMagnitude, double angularMagnitude) {
+        double magnitude = Math.pow(Math.hypot(xMagnitude, yMagnitude), SwerveConstants.SMOOTHING_EXPONENT);
+        double angle = Math.atan2(yMagnitude, xMagnitude);
+
+        Translation2d translation = new Translation2d(
+            Math.cos(angle) * magnitude * swerveDrive.getMaximumChassisVelocity(),
+            Math.sin(angle) * magnitude * swerveDrive.getMaximumChassisVelocity()
+        );
+
         if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
             translation = translation.rotateBy(Rotation2d.fromDegrees(180));
         }
 
-        swerveDrive.drive(translation, angularRotation, true, false);
+        swerveDrive.drive(translation, angularMagnitude * swerveDrive.getMaximumChassisAngularVelocity(), true, false);
     }
 
     /**
@@ -147,23 +156,6 @@ public class SwerveSubsystem extends SubsystemBase {
     public Pose2d getPose() {
         return swerveDrive.getPose();
     }
-
-    /**
-     * Converts normalized inputs [-1, 1] into a translational velocity for field relative driving.
-     * 
-     * @param xAxis X axis normalized input.
-     * @param yAxis Y axis normalized input.
-     */
-    public Translation2d inputToTranslation(double xAxis, double yAxis) {
-        double magnitude = Math.pow(Math.hypot(xAxis, yAxis), SwerveConstants.SMOOTHING_EXPONENT);
-        double angle = Math.atan2(yAxis, xAxis);
-
-        return new Translation2d(
-            Math.cos(angle) * magnitude * swerveDrive.getMaximumChassisVelocity(),
-            Math.sin(angle) * magnitude * swerveDrive.getMaximumChassisVelocity()
-        );
-    }
-
     
     /** Provides the closest pose that is the optimal distance away from the hub, to shoot from.
      * In other terms, it finds closest point to the robot on the semicricle formed at the optimal radius from the hub.
@@ -201,8 +193,9 @@ public class SwerveSubsystem extends SubsystemBase {
             ledSubsystem.setAligning(false);
 
             drive(
-                inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
-                Math.pow(rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT) * swerveDrive.getMaximumChassisAngularVelocity()
+                xAxis.getAsDouble(),
+                yAxis.getAsDouble(),
+                Math.pow(rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT)
             );
         });
     }

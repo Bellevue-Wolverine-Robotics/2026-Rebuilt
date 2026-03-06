@@ -34,6 +34,10 @@ public class ShooterConstants {
     public static final double MINIMUM_DISTANCE_METERS = Units.inchesToMeters(63.25);
     public static final double MAXIMUM_DISTANCE_METERS = Units.inchesToMeters(87.25);
 
+    public static final double ROTATIONAL_PID_KP = 8.0;
+    public static final double ROTATIONAL_PID_KI = 0.0;
+    public static final double ROTATIONAL_PID_KD = 0.0;
+
     /** 
      * For automatically shooting while moving, this is the number of iterations used to find the future position.
      */
@@ -51,7 +55,7 @@ public class ShooterConstants {
         DISTANCE_METERS_TO_RPM.put(Units.inchesToMeters(75.25), 1650.0);
         DISTANCE_METERS_TO_RPM.put(Units.inchesToMeters(87.25), 1775.0);
 
-        DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.put(63.25, 0.5);
-        DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.put(87.25, 1.0);
+        DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.put(63.25, 0.0);
+        DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS.put(87.25, 0.0);
     }
 }
