@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 1.5104772168681977,
-        "y": 5.9834349132518945
+        "y": 7.0165650867481055
       },
       "isLocked": false,
       "linkedName": "DEPOT"
@@ -17,15 +17,15 @@
     {
       "anchor": {
         "x": 3.0,
-        "y": 5.0
+        "y": 3.0519999999999996
       },
       "prevControl": {
         "x": 1.8442605449183855,
-        "y": 5.278108597643787
+        "y": 2.7738914023562122
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ALLIANCE"
+      "linkedName": "RIGHT_ALLIANCE"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -17.35
+    "rotation": 17.35
   },
   "reversed": false,
   "folder": null,
