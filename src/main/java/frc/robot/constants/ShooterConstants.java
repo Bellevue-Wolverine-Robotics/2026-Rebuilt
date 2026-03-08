@@ -40,6 +40,7 @@ public class ShooterConstants {
     public static final double ROTATIONAL_PID_KP = 8.0;
     public static final double ROTATIONAL_PID_KI = 0.0;
     public static final double ROTATIONAL_PID_KD = 0.0;
+    public static final double ROTATIONAL_TOLERANCE_RADIANS = Units.degreesToRadians(5);
 
     /** 
      * For automatically shooting while moving, this is the number of iterations used to find the future position.

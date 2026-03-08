@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import frc.robot.constants.AlignmentConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.FeederSubsystem;
@@ -46,7 +45,7 @@ public class AutoShootCommand extends Command {
         this.yAxis = yAxis;
         addRequirements(swerveSubsystem, shooterSubsystem, feederSubsystem);
 
-        thetaController.setTolerance(AlignmentConstants.ROTATIONAL_TOLERANCE_RADIANS);
+        thetaController.setTolerance(ShooterConstants.ROTATIONAL_TOLERANCE_RADIANS);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
