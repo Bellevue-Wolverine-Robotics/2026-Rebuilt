@@ -69,4 +69,9 @@ public class AlignPoseCommand extends Command {
     public void end(boolean interrupted) {
         ledSubsystem.setAligning(false);
     }
+
+    @Override
+    public boolean isFinished() {
+        return controller.atReference();
+    }
 }
