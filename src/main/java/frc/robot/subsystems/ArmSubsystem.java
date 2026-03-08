@@ -21,11 +21,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.constants.ArmConstants;
 
-/** Represents the arm mechanism, which moves the linkage intake */
+/** Represents the arm mechanism, which moves the linkage intake.    */
 public class ArmSubsystem extends SubsystemBase {
     private final SparkMax motor = new SparkMax(ArmConstants.MOTOR_ID, MotorType.kBrushless);
-    private final SparkMaxConfig motorConfig = new SparkMaxConfig();
-
     private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(ArmConstants.ENCODER_PORT);
     private final RelativeEncoder relativeEncoder = motor.getEncoder();
     private final SparkClosedLoopController controller = motor.getClosedLoopController();
@@ -34,10 +32,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     /** Constructs a new ArmSubsystem. */
     public ArmSubsystem() {
+        SparkMaxConfig motorConfig = new SparkMaxConfig();
+
         motorConfig.idleMode(IdleMode.kBrake);
         motorConfig.inverted(ArmConstants.MOTOR_INVERTED);
 
         motorConfig.encoder.positionConversionFactor((2.0 * Math.PI) /  ArmConstants.GEAR_RATIO);
+        // Divide by 60 so units are in radians per second instead of radians per minute
         motorConfig.encoder.velocityConversionFactor((2.0 * Math.PI) / ArmConstants.GEAR_RATIO / 60.0);
 
         motorConfig.closedLoop

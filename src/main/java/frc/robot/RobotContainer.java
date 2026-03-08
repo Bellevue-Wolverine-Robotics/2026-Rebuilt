@@ -35,7 +35,7 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
     private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
-    private boolean retract = true;
+    private boolean autoRetract = true;
 
     public RobotContainer() {
         configureBindings();
@@ -103,13 +103,13 @@ public class RobotContainer {
                 GenericHID.RumbleType.kRightRumble,
                 DriverStationConstants.OPERATOR_ARM_WARNING_RUMBLE_POWER
             )
-        ))).onFalse(armSubsystem.retractCommand().onlyIf(() -> retract).until(() -> !retract));
+        ))).onFalse(armSubsystem.retractCommand().onlyIf(() -> autoRetract).until(() -> !autoRetract));
 
         operatorController.leftTrigger().whileTrue(
             intakeSubsystem.runCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
         );
 
-        operatorController.rightBumper().onTrue(Commands.runOnce(() -> retract = !retract));
+        operatorController.rightBumper().onTrue(Commands.runOnce(() -> autoRetract = !autoRetract));
 
         new Trigger(
             () -> Math.abs(operatorController.getRightY()) > DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND

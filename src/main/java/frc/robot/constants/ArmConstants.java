@@ -22,9 +22,9 @@ public class ArmConstants {
     public static final boolean ABSOLUTE_ENCODER_INVERTED = false;
     
     /** The gear ratio between the motor and arm shaft. */
-    public static final double GEAR_RATIO =  12;
+    public static final double GEAR_RATIO = 12;
 
-    /** The reading from the absolute encoder when the arm is horizontal */
+    /** The reading from the absolute encoder when the arm is horizontal. */
     public static final double ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE = 0.0;
 
     /** The angle between the arm and the ground when extended. */
