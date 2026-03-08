@@ -59,11 +59,13 @@ public class AutoShootCommand extends Command {
     private Pose2d calculatePose(Pose2d current) {
         // By calculating the time of flight and current velocity, we are able
         // to estiamte where the robot will be when the launched fuel arrives at the hub.
-        // We can repeat the process by finding the time of flight
-        // at the new calculated future pose as many times as necessary to get an accurate estimate.
         Pose2d future = current;
         ChassisSpeeds velocity = swerveSubsystem.getVelocity();
     
+        // We need to know the time of flight from the position of the robot when the fuel lands
+        // But to know the position of the robot, we also need to know the time of flight
+        // To do this, we can repeat the process by finding the time of flight
+        // at the new calculated future pose as many times as necessary to get an accurate estimate.
         for (int i = 0; i < ShooterConstants.MOVEMENT_CALCULATION_ITERATIONS; i++) {
             double distance = future.getTranslation().getDistance(VisionConstants.HUB_POSE_SUPPLIER.get().getTranslation());
 

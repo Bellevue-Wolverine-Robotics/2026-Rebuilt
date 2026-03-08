@@ -108,9 +108,9 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
      * Drives the robot using field relative translative and angular velocities.
      * 
-     * @param xMagnitude The velocity in the x direction, in terms on max linear velocity [-1, 1].
-     * @param yMagnitude The velocity in the y direction, in terms on max linear velocity [-1, 1].
-     * @param rotation    The rotational velocity, in terms of max rotational velocity [-1, 1].
+     * @param xMagnitude The velocity in the x direction, in terms of max linear velocity from [-1, 1].
+     * @param yMagnitude The velocity in the y direction, in terms of max linear velocity from [-1, 1].
+     * @param rotation   The rotational velocity, in terms of max rotational velocity from [-1, 1].
      */
     public void drive(double xMagnitude, double yMagnitude, double angularMagnitude) {
         double magnitude = Math.pow(Math.hypot(xMagnitude, yMagnitude), SwerveConstants.SMOOTHING_EXPONENT);
@@ -168,15 +168,15 @@ public class SwerveSubsystem extends SubsystemBase {
 
         double theta = MathUtil.clamp(
             current.getTranslation().minus(target.getTranslation()).getAngle().getRadians(),
-            -ShooterConstants.MAXIMUM_ANGLE_RADIANS,
-            ShooterConstants.MAXIMUM_ANGLE_RADIANS
+            -ShooterConstants.MAXIMUM_ANGLE_MAGNITUDE_RADIANS,
+            ShooterConstants.MAXIMUM_ANGLE_MAGNITUDE_RADIANS
         );
 
         Translation2d translation = new Translation2d(ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS, theta).plus(target.getTranslation());
 
         return new Pose2d(
             translation,
-            Rotation2d.fromRadians(theta).plus(Rotation2d.fromDegrees(180))
+            Rotation2d.fromRadians(theta).plus(Rotation2d.fromDegrees(180.0))
         );
     }
 
@@ -214,13 +214,12 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public double getTranslationalVelocity() {
         ChassisSpeeds velocities = swerveDrive.getFieldVelocity();
-        return Math.sqrt(velocities.vxMetersPerSecond * velocities.vxMetersPerSecond +
-                         velocities.vyMetersPerSecond * velocities.vyMetersPerSecond);
+        return Math.hypot(velocities.vxMetersPerSecond, velocities.vyMetersPerSecond);
     }
 
     /** Provides the rotational velocity, in radians per second.
      * 
-     * @return The rotational velocity, in radians in persecond.
+     * @return The rotational velocity, in radians in per second.
      */
     public double getRotationalVelocity() {
         return swerveDrive.getRobotVelocity().omegaRadiansPerSecond;
@@ -266,7 +265,7 @@ public class SwerveSubsystem extends SubsystemBase {
         ledSubsystem.setInRange(
             distance > ShooterConstants.MINIMUM_DISTANCE_METERS
             && distance < ShooterConstants.MAXIMUM_DISTANCE_METERS
-            && Math.abs(theta) < ShooterConstants.MAXIMUM_ANGLE_RADIANS
+            && Math.abs(theta) < ShooterConstants.MAXIMUM_ANGLE_MAGNITUDE_RADIANS
         );
 
         SmartDashboard.putNumber("Swerve/Hub Distance", distance);
