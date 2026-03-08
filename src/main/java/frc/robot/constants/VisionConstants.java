@@ -61,6 +61,26 @@ public class VisionConstants {
         return tagPose.transformBy(transform);
     }
 
+    public static final Supplier<Pose2d> LEFT_TOWER_APPROACH_POSE_SUPPLIER = () -> {
+        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(41.886), Units.inchesToMeters(38)), Rotation2d.fromDegrees(0));
+        return getAllianceSpecificTagPose(15, 31, transform);
+    };
+
+    public static final Supplier<Pose2d> LEFT_TOWER_FINAL_POSE_SUPPLIER = () -> {
+        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(41.886), Units.inchesToMeters(26)), Rotation2d.fromDegrees(0));
+        return getAllianceSpecificTagPose(15, 31, transform);
+    };
+
+    public static final Supplier<Pose2d> RIGHT_TOWER_APPROACH_POSE_SUPPLIER = () -> {
+        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(45.075), Units.inchesToMeters(-38)), Rotation2d.fromDegrees(180));
+        return getAllianceSpecificTagPose(15, 31, transform);
+    };
+
+    public static final Supplier<Pose2d> RIGHT_TOWER_FINAL_POSE_SUPPLIER = () -> {
+        Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(45.075), Units.inchesToMeters(-26)), Rotation2d.fromDegrees(180));
+        return getAllianceSpecificTagPose(15, 31, transform);
+    };
+
     public static final Supplier<Pose2d> HUB_POSE_SUPPLIER = () -> {
         Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(-23.5), 0.0), new Rotation2d());
         return getAllianceSpecificTagPose(4, 20, transform);
