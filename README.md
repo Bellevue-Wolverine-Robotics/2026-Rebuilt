@@ -6,10 +6,10 @@
 
 | Module           | Drive Motor ID | Angle Motor ID | Encoder ID |
 |------------------|----------------|----------------|------------|
-| Front Left (FL)  | 1              | 2              | 3          |
-| Front Right (FR) | 4              | 5              | 6          |
-| Back Left (BL)   | 7              | 8              | 9          |
-| Back Right (BR)  | 10             | 11             | 12         |
+| Front Left (FL)  | 10             | 11             | 12         |
+| Front Right (FR) | 7              | 8              | 9          |
+| Back Left (BL)   | 4              | 5              | 6          |
+| Back Right (BR)  | 1              | 2              | 3          |
 
 ### Mechanism Motors (IDs 21-25)
 
