@@ -157,7 +157,8 @@ public class SwerveSubsystem extends SubsystemBase {
         return swerveDrive.getPose();
     }
     
-    /** Provides the closest pose that is the optimal distance away from the hub, to shoot from.
+    /**
+     * Provides the closest pose that is the optimal distance away from the hub, to shoot from.
      * In other terms, it finds closest point to the robot on the semicricle formed at the optimal radius from the hub.
      * 
      * @return The optimal shooting pose.
@@ -200,7 +201,8 @@ public class SwerveSubsystem extends SubsystemBase {
         });
     }
 
-    /** Provides the field relative robot velocity.
+    /**
+     * Provides the field relative robot velocity.
      * 
      * @return The field relative velocity.
      */
@@ -208,7 +210,8 @@ public class SwerveSubsystem extends SubsystemBase {
         return swerveDrive.getFieldVelocity();
     }
 
-    /** Provides the magnitude, or overall linear speed, of field relative robot velocity.
+    /**
+     * Provides the magnitude, or overall linear speed, of field relative robot velocity.
      * 
      * @return The field relative translational velocity in meters per second.
      */
@@ -217,7 +220,8 @@ public class SwerveSubsystem extends SubsystemBase {
         return Math.hypot(velocities.vxMetersPerSecond, velocities.vyMetersPerSecond);
     }
 
-    /** Provides the rotational velocity, in radians per second.
+    /**
+     * Provides the rotational velocity, in radians per second.
      * 
      * @return The rotational velocity, in radians in per second.
      */

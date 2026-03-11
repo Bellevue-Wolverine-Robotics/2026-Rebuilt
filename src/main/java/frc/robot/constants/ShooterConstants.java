@@ -12,7 +12,7 @@ public class ShooterConstants {
     /** The gear ratio between the motor shaft and shooter shaft. */
     public static final double GEAR_RATIO = 2.0;
 
-    /**Acceptable tolerance between the target and current RPS on the shooter shaft for the feeder to engage. */
+    /** Acceptable tolerance between the target and current RPS on the shooter shaft for the feeder to engage. */
     public static final double RPS_TOLERANCE = 0.5;
 
     /** The voltage required per RPS of the shooter shaft. */
@@ -47,7 +47,8 @@ public class ShooterConstants {
      */
     public static final int MOVEMENT_CALCULATION_ITERATIONS = 3;
 
-    /** A mapping of distances in meters to RPM setpoints.
+    /**
+     * A mapping of distances in meters to RPM setpoints.
      * The distances are measured from the center of the robot to the center of the hub.
      * It represents a piecewise function, with linear interpoolation between known points.
      */
