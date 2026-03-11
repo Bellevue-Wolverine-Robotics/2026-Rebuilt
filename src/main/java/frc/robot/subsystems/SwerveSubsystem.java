@@ -40,7 +40,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         File swerveJsonDirectory = new File(
             Filesystem.getDeployDirectory(),
-            Preferences.getString("swerveDirectory", "swervePractice")
+            Preferences.getString("swerveDirectory", "swerve")
         );
 
         try {
