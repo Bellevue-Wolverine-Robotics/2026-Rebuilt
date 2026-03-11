@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -26,6 +28,8 @@ import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.VisionConstants;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
@@ -34,6 +38,8 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
+    private final ArmSubsystem armSubsystem = new ArmSubsystem();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(armSubsystem);
     private final FeederSubsystem feederSubsystem = new FeederSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
@@ -46,6 +52,7 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
     private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
+    private boolean autoRetract = true;
 
     public RobotContainer() {
         configureBindings();
@@ -93,6 +100,26 @@ public class RobotContainer {
             VisionConstants.RIGHT_TOWER_APPROACH_POSE_SUPPLIER,
             VisionConstants.RIGHT_TOWER_FINAL_POSE_SUPPLIER
         ));
+
+
+        operatorController.rightTrigger().whileTrue(armSubsystem.extendCommand().andThen(armSubsystem.waitCommand(
+            () -> operatorController.setRumble(
+                GenericHID.RumbleType.kRightRumble,
+                DriverStationConstants.OPERATOR_ARM_WARNING_RUMBLE_POWER
+            )
+        ))).onFalse(armSubsystem.retractCommand().onlyIf(() -> autoRetract).until(() -> !autoRetract));
+
+        operatorController.leftTrigger().whileTrue(
+            intakeSubsystem.runCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
+        );
+
+        operatorController.rightBumper().onTrue(Commands.runOnce(() -> autoRetract = !autoRetract));
+
+        new Trigger(
+            () -> Math.abs(operatorController.getRightY()) > DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND
+        ).whileTrue(
+            armSubsystem.moveCommand(() -> -MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
+        );
 
         operatorController.pov(0).onTrue(climberSubsystem.extendCommand());
         operatorController.pov(180).onTrue(climberSubsystem.retractCommand());
