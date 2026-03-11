@@ -12,7 +12,7 @@ public class ArmConstants {
     public static final double DERIVATIVE_GAIN = 0.05;
 
     // TODO: Find actual values using SysId
-    public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.-;
+    public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.0;
     public static final double VOLTS_PER_RADIAN_PER_SECOND = 0.0;
     public static final double INTERTIA_OVERCOME_VOLTAGE = 0.0;
     public static final double GRAVITY_OVERCOME_VOLTAGE = 0.0;
