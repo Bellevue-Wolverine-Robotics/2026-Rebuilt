@@ -3,8 +3,8 @@ package frc.robot.subsystems;
 import java.io.File;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,9 +14,11 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -26,10 +28,11 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
-import frc.robot.commands.AimPoseCommand;
 import frc.robot.commands.AlignPoseCommand;
 import frc.robot.constants.PathPlannerConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
+import frc.robot.constants.VisionConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
     private final LEDSubsystem ledSubsystem;
@@ -48,6 +51,10 @@ public class SwerveSubsystem extends SubsystemBase {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        swerveDrive.chassisVelocityCorrection = true;
+        swerveDrive.setHeadingCorrection(true);
+        swerveDrive.setChassisDiscretization(true, 0.02);
 
         try {
             RobotConfig config = RobotConfig.fromGUISettings();
@@ -101,15 +108,24 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
      * Drives the robot using field relative translative and angular velocities.
      * 
-     * @param translation The translational velocity of the robot in meters per second.
-     * @param rotation    The rotational velocity in radians per second.
+     * @param xMagnitude The velocity in the x direction, in terms of max linear velocity from [-1, 1].
+     * @param yMagnitude The velocity in the y direction, in terms of max linear velocity from [-1, 1].
+     * @param rotation   The rotational velocity, in terms of max rotational velocity from [-1, 1].
      */
-    public void drive(Translation2d translation, double angularRotation) {
+    public void drive(double xMagnitude, double yMagnitude, double angularMagnitude) {
+        double magnitude = Math.pow(Math.hypot(xMagnitude, yMagnitude), SwerveConstants.SMOOTHING_EXPONENT);
+        double angle = Math.atan2(yMagnitude, xMagnitude);
+
+        Translation2d translation = new Translation2d(
+            Math.cos(angle) * magnitude * swerveDrive.getMaximumChassisVelocity(),
+            Math.sin(angle) * magnitude * swerveDrive.getMaximumChassisVelocity()
+        );
+
         if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
             translation = translation.rotateBy(Rotation2d.fromDegrees(180));
         }
 
-        swerveDrive.drive(translation, angularRotation, true, false);
+        swerveDrive.drive(translation, angularMagnitude * swerveDrive.getMaximumChassisAngularVelocity(), true, false);
     }
 
     /**
@@ -140,20 +156,28 @@ public class SwerveSubsystem extends SubsystemBase {
     public Pose2d getPose() {
         return swerveDrive.getPose();
     }
-
+    
     /**
-     * Converts normalized inputs [-1, 1] into a translational velocity for field relative driving.
+     * Provides the closest pose that is the optimal distance away from the hub, to shoot from.
+     * In other terms, it finds closest point to the robot on the semicricle formed at the optimal radius from the hub.
      * 
-     * @param xAxis X axis normalized input.
-     * @param yAxis Y axis normalized input.
+     * @return The optimal shooting pose.
      */
-    public Translation2d inputToTranslation(double xAxis, double yAxis) {
-        double magnitude = Math.pow(Math.hypot(xAxis, yAxis), SwerveConstants.SMOOTHING_EXPONENT);
-        double angle = Math.atan2(yAxis, xAxis);
+    private Pose2d getShootPose() {
+        Pose2d current = swerveDrive.getPose();
+        Pose2d target = VisionConstants.HUB_POSE_SUPPLIER.get();
 
-        return new Translation2d(
-            Math.cos(angle) * magnitude * swerveDrive.getMaximumChassisVelocity(),
-            Math.sin(angle) * magnitude * swerveDrive.getMaximumChassisVelocity()
+        double theta = MathUtil.clamp(
+            current.getTranslation().minus(target.getTranslation()).getAngle().getRadians(),
+            -ShooterConstants.MAXIMUM_ANGLE_MAGNITUDE_RADIANS,
+            ShooterConstants.MAXIMUM_ANGLE_MAGNITUDE_RADIANS
+        );
+
+        Translation2d translation = new Translation2d(ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS, theta).plus(target.getTranslation());
+
+        return new Pose2d(
+            translation,
+            Rotation2d.fromRadians(theta).plus(Rotation2d.fromDegrees(180.0))
         );
     }
 
@@ -170,22 +194,44 @@ public class SwerveSubsystem extends SubsystemBase {
             ledSubsystem.setAligning(false);
 
             drive(
-                inputToTranslation(xAxis.getAsDouble(), yAxis.getAsDouble()),
-                Math.pow(rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT) * swerveDrive.getMaximumChassisAngularVelocity()
+                xAxis.getAsDouble(),
+                yAxis.getAsDouble(),
+                Math.pow(rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT)
             );
         });
     }
 
     /**
-     * Provides a command to drive the robot using field relative translative values and heading as a target to point at.
-     *
-     * @param translationX     Translation in the X direction.
-     * @param translationY     Translation in the Y direction.
-     * @param aimTarget        The target to turn the front of the robot towards.
-     * @return Drive command.
+     * Provides the field relative robot velocity.
+     * 
+     * @return The field relative velocity.
      */
-    public Command driveCommand(DoubleSupplier xAxis, DoubleSupplier yAxis, Supplier<Pose2d> aimTarget) {
-        return new AimPoseCommand(this, ledSubsystem, xAxis, yAxis, aimTarget);
+    public ChassisSpeeds getVelocity() {
+        return swerveDrive.getFieldVelocity();
+    }
+
+    /**
+     * Provides the magnitude, or overall linear speed, of field relative robot velocity.
+     * 
+     * @return The field relative translational velocity in meters per second.
+     */
+    public double getTranslationalVelocity() {
+        ChassisSpeeds velocities = swerveDrive.getFieldVelocity();
+        return Math.hypot(velocities.vxMetersPerSecond, velocities.vyMetersPerSecond);
+    }
+
+    /**
+     * Provides the rotational velocity, in radians per second.
+     * 
+     * @return The rotational velocity, in radians in per second.
+     */
+    public double getRotationalVelocity() {
+        return swerveDrive.getRobotVelocity().omegaRadiansPerSecond;
+    }
+
+    /** Points the wheels towards the center of the chassis, making the robot more difficult to move. */
+    public void lock() {
+        swerveDrive.lockPose();
     }
 
     /**
@@ -194,8 +240,11 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param pose The pose to go to.
      * @return Command that aligns with the pose.
      */
-    public Command alignPoseCommand(Supplier<Pose2d> pose) {
-        return new AlignPoseCommand(this, ledSubsystem, pose);
+    public Command alignShootCommand() {
+        return Commands.deferredProxy(() -> {
+            Pose2d pose = getShootPose();
+            return new AlignPoseCommand(this, ledSubsystem, () -> pose);
+        });
     }
 
     /**
@@ -206,5 +255,24 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Command zeroGyro() {
         return runOnce(swerveDrive::zeroGyro);
+    }
+
+    @Override
+    public void periodic() {
+        Translation2d difference = VisionConstants.HUB_POSE_SUPPLIER.get().getTranslation().minus(
+            swerveDrive.getPose().getTranslation()
+        );
+
+        double distance = difference.getNorm();
+        double theta = MathUtil.angleModulus(difference.getAngle().getRadians() - Math.PI);
+
+        ledSubsystem.setInRange(
+            distance > ShooterConstants.MINIMUM_DISTANCE_METERS
+            && distance < ShooterConstants.MAXIMUM_DISTANCE_METERS
+            && Math.abs(theta) < ShooterConstants.MAXIMUM_ANGLE_MAGNITUDE_RADIANS
+        );
+
+        SmartDashboard.putNumber("Swerve/Hub Distance", distance);
+        SmartDashboard.putNumber("Swerve/Hub Angle", theta);
     }
 }

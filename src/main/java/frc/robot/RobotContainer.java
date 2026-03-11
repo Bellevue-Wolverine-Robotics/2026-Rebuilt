@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -13,20 +15,27 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-import java.util.function.Supplier;
-
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import frc.robot.commands.AlignPoseCommand;
+import frc.robot.commands.AutoShootCommand;
+import frc.robot.commands.FixedShootCommand;
+import frc.robot.constants.AutonomousConstants;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.DriverStationConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
+    private final FeederSubsystem feederSubsystem = new FeederSubsystem();
+    private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(ledSubsystem);
@@ -40,33 +49,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
-
-        sendableChooser.setDefaultOption(
-            "Left One Cycle",
-            new PathPlannerAuto("ONE_CYCLE")
-        );
-        sendableChooser.addOption(
-            "Left Two Cycle",
-            new PathPlannerAuto("TWO_CYCLE")
-        );
-        sendableChooser.setDefaultOption(
-            "Right One Cycle",
-            new PathPlannerAuto("ONE_CYCLE", true)
-        );
-        sendableChooser.addOption(
-            "Right Two Cycle",
-            new PathPlannerAuto("TWO_CYCLE", true)
-        );
-        sendableChooser.addOption(
-            "Depot Left Tower",
-            new PathPlannerAuto("DEPOT_LEFT_TOWER")
-        );
-        sendableChooser.addOption(
-            "Depot Right Tower",
-            new PathPlannerAuto("DEPOT_RIGHT_TOWER")
-        );
-
-        SmartDashboard.putData("Auto Chooser", sendableChooser);
+        configureAutonomous();
     }
 
     private void configureBindings() {
@@ -88,15 +71,20 @@ public class RobotContainer {
             () -> -MathUtil.applyDeadband(driverController.getRightX(), DriverStationConstants.DRIVER_CONTROLLER_RIGHT_DEADBAND)
         ));
 
-        driverController.rightTrigger().whileTrue(swerveSubsystem.driveCommand(
+        driverController.rightTrigger().whileTrue(new AutoShootCommand(
+            swerveSubsystem,
+            ledSubsystem,
+            shooterSubsystem,
+            feederSubsystem,
             () -> -MathUtil.applyDeadband(driverController.getLeftY(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
-            () -> -MathUtil.applyDeadband(driverController.getLeftX(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND),
-            VisionConstants.HUB_POSE_SUPPLIER
+            () -> -MathUtil.applyDeadband(driverController.getLeftX(), DriverStationConstants.DRIVER_CONTROLLER_LEFT_DEADBAND)
         ));
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
 
-        driverController.x().whileTrue(getAutoClimbCommand(
+        driverController.y().whileTrue(swerveSubsystem.alignShootCommand());
+
+                driverController.x().whileTrue(getAutoClimbCommand(
             VisionConstants.LEFT_TOWER_APPROACH_POSE_SUPPLIER,
             VisionConstants.LEFT_TOWER_FINAL_POSE_SUPPLIER
         ));
@@ -108,6 +96,53 @@ public class RobotContainer {
 
         operatorController.pov(0).onTrue(climberSubsystem.extendCommand());
         operatorController.pov(180).onTrue(climberSubsystem.retractCommand());
+
+        operatorController.a().whileTrue(new FixedShootCommand(
+            shooterSubsystem,
+            feederSubsystem,
+            ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS
+        ));
+
+        operatorController.b().whileTrue(new FixedShootCommand(
+            shooterSubsystem,
+            feederSubsystem,
+            ShooterConstants.PASS_SHOOT_DISTANCE_METERS
+        ));
+    }
+
+    private void configureAutonomous() {
+        NamedCommands.registerCommand("shoot", new FixedShootCommand(
+            shooterSubsystem,
+            feederSubsystem,
+            AutonomousConstants.SHOOT_DISTANCE_METERS
+        ));
+
+        sendableChooser.setDefaultOption(
+                "Left One Cycle",
+                new PathPlannerAuto("ONE_CYCLE")
+        );
+        sendableChooser.addOption(
+                "Left Two Cycle",
+                new PathPlannerAuto("TWO_CYCLE")
+        );
+        sendableChooser.addOption(
+                "Right One Cycle",
+                new PathPlannerAuto("ONE_CYCLE", true)
+        );
+        sendableChooser.addOption(
+                "Right Two Cycle",
+                new PathPlannerAuto("TWO_CYCLE", true)
+        );
+        sendableChooser.addOption(
+                "Depot Left Tower",
+                new PathPlannerAuto("DEPOT_LEFT_TOWER")
+        );
+        sendableChooser.addOption(
+                "Depot Right Tower",
+                new PathPlannerAuto("DEPOT_RIGHT_TOWER")
+        );
+
+        SmartDashboard.putData("Auto Chooser", sendableChooser);
     }
 
     public Command getAutonomousCommand() {
