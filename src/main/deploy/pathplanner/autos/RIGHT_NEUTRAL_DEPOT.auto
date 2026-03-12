@@ -65,12 +65,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RIGHT_ALLIANCE_TO_RIGHT_TOWER"
-          }
         }
       ]
     }

@@ -34,12 +34,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ALLIANCE_TO_LEFT_TOWER"
-          }
         }
       ]
     }
