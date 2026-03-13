@@ -38,13 +38,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_ALLIANCE_TO_DEPOT"
+            "pathName": "RIGHT_ALLIANCE_TO_OUTPOST"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_DEPOT_TO_ALLIANCE"
+            "pathName": "RIGHT_OUTPOST_TO_ALLIANCE"
           }
         },
         {
