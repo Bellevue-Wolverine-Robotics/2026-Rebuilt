@@ -29,6 +29,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import frc.robot.commands.AlignPoseCommand;
+import frc.robot.commands.FixedShootCommand;
 import frc.robot.constants.PathPlannerConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
@@ -240,10 +241,17 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param pose The pose to go to.
      * @return Command that aligns with the pose.
      */
-    public Command alignShootCommand() {
+    public Command alignAndShootCommand(ShooterSubsystem shooterSubsystem, FeederSubsystem feederSubsystem) {
         return Commands.deferredProxy(() -> {
             Pose2d pose = getShootPose();
-            return new AlignPoseCommand(this, ledSubsystem, () -> pose);
+            return new AlignPoseCommand(this, ledSubsystem, () -> pose)
+                .beforeStarting(() -> shooterSubsystem.run(ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS))    
+                .andThen(
+                    new FixedShootCommand(
+                        shooterSubsystem, 
+                        feederSubsystem, 
+                        ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS))
+                .finallyDo(() -> shooterSubsystem.stop());
         });
     }
 

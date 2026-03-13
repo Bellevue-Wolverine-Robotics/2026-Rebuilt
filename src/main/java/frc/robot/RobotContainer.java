@@ -89,7 +89,7 @@ public class RobotContainer {
 
         driverController.start().onTrue(swerveSubsystem.zeroGyro());
 
-        driverController.y().whileTrue(swerveSubsystem.alignShootCommand());
+        driverController.y().whileTrue(swerveSubsystem.alignAndShootCommand(shooterSubsystem, feederSubsystem));
 
                 driverController.x().whileTrue(getAutoClimbCommand(
             VisionConstants.LEFT_TOWER_APPROACH_POSE_SUPPLIER,
