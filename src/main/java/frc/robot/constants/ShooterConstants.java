@@ -15,15 +15,13 @@ public class ShooterConstants {
     public static final double GEAR_RATIO = 2.0;
 
     /** Acceptable tolerance between the target and current RPS on the shooter shaft for the feeder to engage. */
-    public static final double RPS_TOLERANCE = 0.5;
+    public static final double TOLERANCE_PERCENTAGE = 0.03;
 
     /** The voltage required per RPS of the shooter shaft. */
-    // The Kraken X60 motor generates about 504 RPM per volt, so the reciprocal is the volts per RPM
-    // We then multiply this value by 60, the number of seconds in a minute, to find the volts per RPS
-    public static final double VOLTS_PER_RPS = (GEAR_RATIO * 60) / 504.0;
+    public static final double VOLTS_PER_RPS = 0.23601;
 
     /** The voltage required to overcome the static friction of the shooter shaft. */
-    public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.3;
+    public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.20461;
 
     // TODO: Tune PID controller
     public static final double PROPORTIONAL_GAIN = 0.001;

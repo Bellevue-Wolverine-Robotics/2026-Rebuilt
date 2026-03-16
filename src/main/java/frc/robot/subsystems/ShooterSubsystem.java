@@ -44,12 +44,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public boolean atSpeed() {
         double currentRPS = leftMotor.getVelocity().getValueAsDouble();
-        return Math.abs(targetRPS - currentRPS) < ShooterConstants.RPS_TOLERANCE;
+        return Math.abs(targetRPS - currentRPS) < (ShooterConstants.TOLERANCE_PERCENTAGE * targetRPS);
     }
 
     public void run(double distance) {
         targetRPS = calculateSpeed(distance);
-        leftMotor.setControl(velocityRequest.withVelocity(targetRPS));
+        leftMotor.setControl(velocity
+        Request.withVelocity(targetRPS));
     }
 
     public void stop() {
