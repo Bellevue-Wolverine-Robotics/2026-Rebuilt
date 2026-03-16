@@ -10,7 +10,7 @@ import frc.robot.constants.FeederConstants;
 import frc.robot.constants.ShooterConstants;
 
 public class FeederSubsystem extends SubsystemBase {
-    private TalonFX motor = new TalonFX(FeederConstants.MOTOR_ID);
+    private TalonFX motor = new TalonFX(FeederConstants.MOTOR_ID, "canivore");
 
     public FeederSubsystem() {
         TalonFXConfiguration config = new TalonFXConfiguration();

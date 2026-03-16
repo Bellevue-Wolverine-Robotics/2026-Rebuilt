@@ -21,9 +21,9 @@ public class ShooterConstants {
     public static final double VOLTS_PER_RPS = (GEAR_RATIO * 60) / 504.0;
 
     /** The voltage required to overcome the static friction of the shooter shaft. */
-    public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.336;
+    public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.348;
 
-    public static final double PROPORTIONAL_GAIN = 0.01;
+    public static final double PROPORTIONAL_GAIN = 0.001;
     public static final double INTEGRAL_GAIN = 0.0;
     public static final double DERIVATIVE_GAIN = 0.0;
 
@@ -37,7 +37,7 @@ public class ShooterConstants {
     public static final double MINIMUM_DISTANCE_METERS = Units.inchesToMeters(63.25);
     public static final double MAXIMUM_DISTANCE_METERS = Units.inchesToMeters(87.25);
 
-    public static final double ROTATIONAL_PID_KP = 8.0;
+    public static final double ROTATIONAL_PID_KP = 2.5;
     public static final double ROTATIONAL_PID_KI = 0.0;
     public static final double ROTATIONAL_PID_KD = 0.0;
     public static final double ROTATIONAL_TOLERANCE_RADIANS = Units.degreesToRadians(5.0);

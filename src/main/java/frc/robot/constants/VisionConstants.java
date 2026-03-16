@@ -33,8 +33,7 @@ public class VisionConstants {
     }
 
     public static final List<CameraProperties> CAMERAS = List.of(
-       new CameraProperties("secondary", new Transform3d(new Translation3d(Units.inchesToMeters(15.825), Units.inchesToMeters(-3.5), Units.inchesToMeters(14.5)), new Rotation3d(0, Units.degreesToRadians(-30), 0))),
-       new CameraProperties("primary", new Transform3d(new Translation3d(Units.inchesToMeters(15.825), Units.inchesToMeters(-5.25), Units.inchesToMeters(13.625)), new Rotation3d(0, Units.degreesToRadians(0), 0)))
+       new CameraProperties("primary", new Transform3d(new Translation3d(Units.inchesToMeters(-1.923), 0, Units.inchesToMeters(28.86)), new Rotation3d(0, Units.degreesToRadians(-25), 0)))
     );
 
     // Used for simulaiton

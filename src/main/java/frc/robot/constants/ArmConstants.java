@@ -3,7 +3,7 @@ package frc.robot.constants;
 import edu.wpi.first.math.util.Units;
 
 public class ArmConstants {
-    public static final int MOTOR_ID = 23;
+    public static final int MOTOR_ID = 22;
     public static final int ENCODER_PORT = 0;
 
     // TODO: Tune PID constants\

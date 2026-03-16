@@ -94,6 +94,7 @@ public class AutoShootCommand extends Command {
 
         double currentHeading = current.getRotation().getRadians();
         double desiredHeading = difference.getAngle().getRadians();
+        double thetaVelocity = thetaController.calculate(currentHeading, desiredHeading);
 
         if (thetaController.atSetpoint() && xAxis.getAsDouble() == 0 && yAxis.getAsDouble() == 0) {
             swerveSubsystem.lock();
@@ -101,7 +102,7 @@ public class AutoShootCommand extends Command {
             swerveSubsystem.drive(
                 xAxis.getAsDouble(),
                 yAxis.getAsDouble(),
-                thetaController.calculate(currentHeading, desiredHeading)
+                thetaVelocity
             );
         }
 
