@@ -10,13 +10,13 @@ import frc.robot.constants.FeederConstants;
 import frc.robot.constants.ShooterConstants;
 
 public class FeederSubsystem extends SubsystemBase {
-    private TalonFX motor = new TalonFX(FeederConstants.MOTOR_ID, "canivore");
+    private TalonFX motor = new TalonFX(FeederConstants.MOTOR_ID, FeederConstants.CANBUS);
 
     public FeederSubsystem() {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         config.MotorOutput.Inverted = ShooterConstants.LEFT_MOTOR_INVERTED ? 
-        InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+            InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
         motor.getConfigurator().apply(config);
     }
 

@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
-    private final TalonFX leftMotor = new TalonFX(ShooterConstants.LEFT_MOTOR_ID, "canivore");
-    private final TalonFX rightMotor = new TalonFX(ShooterConstants.RIGHT_MOTOR_ID, "canivore");
+    private final TalonFX leftMotor = new TalonFX(ShooterConstants.LEFT_MOTOR_ID, ShooterConstants.CANBUS);
+    private final TalonFX rightMotor = new TalonFX(ShooterConstants.RIGHT_MOTOR_ID, ShooterConstants.CANBUS);
     private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
 
     // The internal setpoint of the motor controller does not clear when you stop the motor
