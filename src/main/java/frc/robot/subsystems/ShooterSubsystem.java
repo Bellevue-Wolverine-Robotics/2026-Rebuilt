@@ -49,8 +49,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void run(double distance) {
         targetRPS = calculateSpeed(distance);
-        leftMotor.setControl(velocity
-        Request.withVelocity(targetRPS));
+        leftMotor.setControl(velocityRequest.withVelocity(targetRPS));
     }
 
     public void stop() {
