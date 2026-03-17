@@ -25,7 +25,6 @@ public class FeederSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println(running);
         SmartDashboard.putBoolean("Feeder/Is Running", running);
     }
 
