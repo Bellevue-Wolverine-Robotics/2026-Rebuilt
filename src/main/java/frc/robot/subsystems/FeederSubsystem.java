@@ -19,7 +19,7 @@ public class FeederSubsystem extends SubsystemBase {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         config.MotorOutput.Inverted = ShooterConstants.LEFT_MOTOR_INVERTED ? 
-        InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+            InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
         motor.getConfigurator().apply(config);
     }
 

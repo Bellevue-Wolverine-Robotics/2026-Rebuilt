@@ -1,29 +1,30 @@
 package frc.robot.constants;
 
+import com.ctre.phoenix6.CANBus;
+
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 
-// TODO: Tune PID, feedforward, and lookup table
 public class ShooterConstants {
     public static final int LEFT_MOTOR_ID = 24;
     public static final int RIGHT_MOTOR_ID = 25;
+    public static final CANBus CANBUS = new CANBus("canivore");
     public static final boolean LEFT_MOTOR_INVERTED = true;
 
     /** The gear ratio between the motor shaft and shooter shaft. */
     public static final double GEAR_RATIO = 2.0;
 
     /** Acceptable tolerance between the target and current RPS on the shooter shaft for the feeder to engage. */
-    public static final double RPS_TOLERANCE = 0.5;
+    public static final double TOLERANCE_PERCENTAGE = 0.03;
 
     /** The voltage required per RPS of the shooter shaft. */
-    // The Kraken X60 motor generates about 504 RPM per volt, so the reciprocal is the volts per RPM
-    // We then multiply this value by 60, the number of seconds in a minute, to find the volts per RPS
-    public static final double VOLTS_PER_RPS = (GEAR_RATIO * 60) / 504.0;
+    public static final double VOLTS_PER_RPS = 0.23601;
 
     /** The voltage required to overcome the static friction of the shooter shaft. */
-    public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.336;
+    public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.20461;
 
-    public static final double PROPORTIONAL_GAIN = 0.01;
+    // TODO: Tune PID controller
+    public static final double PROPORTIONAL_GAIN = 0.001;
     public static final double INTEGRAL_GAIN = 0.0;
     public static final double DERIVATIVE_GAIN = 0.0;
 
@@ -33,11 +34,12 @@ public class ShooterConstants {
     /** The maximum velocity that the feeder can run at. Set this lower to disable shooting on the go. */
     public static final double MAXIMUM_SHOOT_SPEED_METERS_PER_SECOND = 5.0;
 
-    public static final double MAXIMUM_ANGLE_MAGNITUDE_RADIANS = Units.degreesToRadians(45.0);
+    public static final double MAXIMUM_ANGLE_MAGNITUDE_RADIANS = Units.degreesToRadians(80.0);
     public static final double MINIMUM_DISTANCE_METERS = Units.inchesToMeters(63.25);
     public static final double MAXIMUM_DISTANCE_METERS = Units.inchesToMeters(87.25);
 
-    public static final double ROTATIONAL_PID_KP = 8.0;
+    // TODO: Tune PID controller
+    public static final double ROTATIONAL_PID_KP = 2.5;
     public static final double ROTATIONAL_PID_KI = 0.0;
     public static final double ROTATIONAL_PID_KD = 0.0;
     public static final double ROTATIONAL_TOLERANCE_RADIANS = Units.degreesToRadians(5.0);
@@ -46,6 +48,8 @@ public class ShooterConstants {
      * For automatically shooting while moving, this is the number of iterations used to find the future position.
      */
     public static final int MOVEMENT_CALCULATION_ITERATIONS = 3;
+
+    // TODO: Build lookup tables
 
     /**
      * A mapping of distances in meters to RPM setpoints.
