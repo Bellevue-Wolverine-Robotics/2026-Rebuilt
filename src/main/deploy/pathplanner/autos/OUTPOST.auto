@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RIGHT_BUMP_TO_NEUTRAL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RIGHT_NEUTRAL_TO_ALLIANCE"
+            "pathName": "RIGHT_BUMP_TO_ALLIANCE"
           }
         },
         {
@@ -39,12 +33,6 @@
           "type": "path",
           "data": {
             "pathName": "RIGHT_ALLIANCE_TO_OUTPOST"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.5
           }
         },
         {
