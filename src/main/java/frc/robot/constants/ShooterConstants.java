@@ -15,7 +15,7 @@ public class ShooterConstants {
     public static final double GEAR_RATIO = 2.0;
 
     /** Acceptable tolerance between the target and current RPS on the shooter shaft for the feeder to engage. */
-    public static final double TOLERANCE_PERCENTAGE = 0.03;
+    public static final double TOLERANCE_PERCENTAGE = 0.05;
 
     /** The voltage required per RPS of the shooter shaft. */
     public static final double VOLTS_PER_RPS = 0.23601;
@@ -24,7 +24,7 @@ public class ShooterConstants {
     public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.20461;
 
     // TODO: Tune PID controller
-    public static final double PROPORTIONAL_GAIN = 0.001;
+    public static final double PROPORTIONAL_GAIN = 0.3;
     public static final double INTEGRAL_GAIN = 0.0;
     public static final double DERIVATIVE_GAIN = 0.0;
 

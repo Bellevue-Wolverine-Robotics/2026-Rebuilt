@@ -39,7 +39,7 @@ import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
     private final ArmSubsystem armSubsystem = new ArmSubsystem();
-    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(armSubsystem);
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final FeederSubsystem feederSubsystem = new FeederSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
@@ -102,12 +102,7 @@ public class RobotContainer {
         ));
 
 
-        operatorController.rightTrigger().whileTrue(armSubsystem.extendCommand().andThen(armSubsystem.waitCommand(
-            () -> operatorController.setRumble(
-                GenericHID.RumbleType.kRightRumble,
-                DriverStationConstants.OPERATOR_ARM_WARNING_RUMBLE_POWER
-            )
-        ))).onFalse(armSubsystem.retractCommand().onlyIf(() -> autoRetract).until(() -> !autoRetract));
+        operatorController.rightTrigger().whileTrue(armSubsystem.extendCommand().andThen(intakeSubsystem.intakeCommand())).onFalse(armSubsystem.retractCommand().onlyIf(() -> autoRetract).until(() -> !autoRetract));
 
         operatorController.leftTrigger().whileTrue(
             intakeSubsystem.runCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
@@ -118,7 +113,7 @@ public class RobotContainer {
         new Trigger(
             () -> Math.abs(operatorController.getRightY()) > DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND
         ).whileTrue(
-            armSubsystem.moveCommand(() -> -MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
+            armSubsystem.moveCommand(() -> -MathUtil.applyDeadband(operatorController.getRightY(), DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND))
         );
 
         operatorController.pov(0).onTrue(climberSubsystem.extendCommand());
