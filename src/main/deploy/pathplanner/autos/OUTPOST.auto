@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BUMP_TO_NEUTRAL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NEUTRAL_TO_ALLIANCE"
+            "pathName": "RIGHT_BUMP_TO_ALLIANCE"
           }
         },
         {
@@ -29,7 +23,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
+                  "waitTime": 2.5
                 }
               }
             ]
@@ -38,7 +32,32 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ALLIANCE_TO_LEFT_TOWER"
+            "pathName": "RIGHT_ALLIANCE_TO_OUTPOST"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RIGHT_OUTPOST_TO_ALLIANCE"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.5
+                }
+              }
+            ]
           }
         }
       ]
