@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.419382796333553,
-        "y": 3.4600781876042976
+        "x": 3.4001759522062005,
+        "y": 3.4735324117089803
       },
       "isLocked": false,
       "linkedName": "RIGHT_ALLIANCE"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 0.45,
-        "y": 0.65
+        "y": 0.8
       },
       "prevControl": {
-        "x": 1.3856853698591312,
-        "y": 1.4951303637301212
+        "x": 1.178842059288788,
+        "y": 1.4574779983020556
       },
       "nextControl": null,
       "isLocked": false,
