@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4001759522062005,
-        "y": 3.4735324117089803
+        "x": 3.4578759929305423,
+        "y": 3.5401329405576543
       },
       "isLocked": false,
       "linkedName": "RIGHT_ALLIANCE"
@@ -20,8 +20,8 @@
         "y": 0.45
       },
       "prevControl": {
-        "x": 1.178842059288788,
-        "y": 1.1074779983020555
+        "x": 0.7472171749540901,
+        "y": 1.0752129489297015
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
