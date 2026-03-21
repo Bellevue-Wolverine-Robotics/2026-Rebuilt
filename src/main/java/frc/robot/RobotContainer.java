@@ -95,28 +95,28 @@ public class RobotContainer {
         ));
 
         sendableChooser.setDefaultOption(
-                "Left One Cycle",
-                new PathPlannerAuto("ONE_CYCLE")
+            "Default",
+            new PathPlannerAuto("DEFAULT")
         );
         sendableChooser.addOption(
-                "Left Two Cycle",
-                new PathPlannerAuto("TWO_CYCLE")
+            "Outpost",
+            new PathPlannerAuto("OUTPOST")
         );
         sendableChooser.addOption(
-                "Right One Cycle",
-                new PathPlannerAuto("ONE_CYCLE", true)
+            "Left Neutral Depot",
+            new PathPlannerAuto("NEUTRAL_DEPOT")
         );
         sendableChooser.addOption(
-                "Right Two Cycle",
-                new PathPlannerAuto("TWO_CYCLE", true)
+            "Right Neutral Depot",
+            new PathPlannerAuto("NEUTRAL_DPEOT", true)
         );
         sendableChooser.addOption(
-                "Depot Left Tower",
-                new PathPlannerAuto("DEPOT_LEFT_TOWER")
+            "Left Two Cycle",
+            new PathPlannerAuto("TWO_CYCLE")
         );
         sendableChooser.addOption(
-                "Depot Right Tower",
-                new PathPlannerAuto("DEPOT_RIGHT_TOWER")
+            "Right Two Cycle",
+            new PathPlannerAuto("TWO_CYCLE", true)
         );
 
         SmartDashboard.putData("Auto Chooser", sendableChooser);
