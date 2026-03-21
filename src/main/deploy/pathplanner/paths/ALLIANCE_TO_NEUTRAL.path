@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.484898564288774,
-        "y": 5.4758644812433195
+        "x": 4.8686962436774355,
+        "y": 5.365090974283386
       },
       "isLocked": false,
       "linkedName": "ALLIANCE"
     },
     {
       "anchor": {
-        "x": 5.268231098430813,
-        "y": 5.619985734664765
+        "x": 5.850470756062768,
+        "y": 5.555292439372327
       },
       "prevControl": {
-        "x": 4.921602894182721,
-        "y": 5.445913866856518
+        "x": 5.3695681810835065,
+        "y": 4.998041338091719
       },
       "nextControl": {
-        "x": 5.7443831061069535,
-        "y": 5.859102656833943
+        "x": 6.075955678176586,
+        "y": 5.816575550978697
       },
       "isLocked": false,
       "linkedName": null
@@ -36,12 +36,12 @@
         "y": 6.8434216867469875
       },
       "prevControl": {
-        "x": 6.108312154809734,
-        "y": 7.208947654448139
+        "x": 6.28060091707417,
+        "y": 6.954020840270222
       },
       "nextControl": {
-        "x": 7.81989507321319,
-        "y": 6.5091974869610345
+        "x": 7.95324778507914,
+        "y": 6.697720939561728
       },
       "isLocked": false,
       "linkedName": "MIDPOINT"
@@ -52,8 +52,8 @@
         "y": 4.5
       },
       "prevControl": {
-        "x": 7.758331670420885,
-        "y": 5.306347482102262
+        "x": 7.745777773074782,
+        "y": 4.7462353327604
       },
       "nextControl": null,
       "isLocked": false,
@@ -63,6 +63,9 @@
   "rotationTargets": [],
   "constraintZones": [
     {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 2.5,
+      "maxWaypointRelativePos": 3.0,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 3.0,
@@ -70,9 +73,7 @@
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
         "unlimited": false
-      },
-      "minWaypointRelativePos": 2.5,
-      "maxWaypointRelativePos": 3.0
+      }
     }
   ],
   "pointTowardsZones": [],
