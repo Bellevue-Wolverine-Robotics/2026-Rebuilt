@@ -100,6 +100,11 @@ public class RobotContainer {
             VisionConstants.RIGHT_TOWER_FINAL_POSE_SUPPLIER
         ));
 
+        driverController.a().whileTrue(new AlignPoseCommand(
+            swerveSubsystem, 
+            ledSubsystem, 
+            VisionConstants.OUTPOST_POSE_SUPPLIER));
+
 
         operatorController.rightTrigger().whileTrue(armSubsystem.extendCommand().andThen(intakeSubsystem.intakeCommand())).onFalse(armSubsystem.retractCommand().onlyIf(() -> autoRetract).until(() -> !autoRetract));
 
