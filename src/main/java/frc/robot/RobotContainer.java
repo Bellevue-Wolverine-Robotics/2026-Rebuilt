@@ -132,10 +132,13 @@ public class RobotContainer {
     }
 
     private void configureAutonomous() {
-        NamedCommands.registerCommand("shoot", new FixedShootCommand(
+        NamedCommands.registerCommand("shoot", new AutoShootCommand(
+            swerveSubsystem,
+            ledSubsystem,
             shooterSubsystem,
             feederSubsystem,
-            AutonomousConstants.SHOOT_DISTANCE_METERS
+            () -> 0,
+            () -> 0
         ));
 
 
