@@ -60,9 +60,13 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS = new InterpolatingDoubleTreeMap();
 
     static {
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(63.25), 26.25);
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(75.25), 27.5);
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(87.25), 29.583);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(55.75), 27.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(56.75), 27.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(57.75), 29.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(58.75), 30.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(59.75), 31.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(61.75), 34.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(63.75), 37.0);
 
         // These are temporary values so that the time of flight is always zero
         // We'll replace these with actual values during final testing
