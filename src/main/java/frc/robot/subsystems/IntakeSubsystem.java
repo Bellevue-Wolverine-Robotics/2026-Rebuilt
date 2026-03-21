@@ -34,7 +34,10 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public Command intakeCommand() {
         return runEnd(
-            () -> motor.set(IntakeConstants.INTAKE_SPEED),
+            () -> {
+                System.out.println("INTAKING");
+                motor.set(IntakeConstants.INTAKE_SPEED);
+            },
             motor::stopMotor
         );
     }

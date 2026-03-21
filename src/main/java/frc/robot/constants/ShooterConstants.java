@@ -32,7 +32,7 @@ public class ShooterConstants {
     public static final double PASS_SHOOT_DISTANCE_METERS = 3.0;
 
     /** The maximum velocity that the feeder can run at. Set this lower to disable shooting on the go. */
-    public static final double MAXIMUM_SHOOT_SPEED_METERS_PER_SECOND = 5.0;
+    public static final double MAXIMUM_SHOOT_SPEED_METERS_PER_SECOND = 0.5;
 
     public static final double MAXIMUM_ANGLE_MAGNITUDE_RADIANS = Units.degreesToRadians(80.0);
     public static final double MINIMUM_DISTANCE_METERS = Units.inchesToMeters(63.25);
@@ -60,13 +60,13 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS = new InterpolatingDoubleTreeMap();
 
     static {
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(55.75), 27.0);
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(56.75), 27.0);
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(57.75), 29.0);
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(58.75), 30.0);
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(59.75), 31.0);
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(61.75), 34.0);
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(63.75), 37.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(76.51), 27.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(88.51), 27.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(100.51), 29.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(112.51), 30.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(124.51), 31.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(148.51), 34.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(172.51), 37.0);
 
         // These are temporary values so that the time of flight is always zero
         // We'll replace these with actual values during final testing
