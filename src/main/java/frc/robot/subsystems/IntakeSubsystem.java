@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     /** Constructs a new IntakeSubsystem. */
     public IntakeSubsystem() {
-        motorConfig.idleMode(IdleMode.kBrake);
+        motorConfig.idleMode(IdleMode.kCoast);
         motorConfig.inverted(IntakeConstants.MOTOR_INVERTED);
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -34,10 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public Command intakeCommand() {
         return runEnd(
-            () -> {
-                System.out.println("INTAKING");
-                motor.set(IntakeConstants.INTAKE_SPEED);
-            },
+            () -> motor.set(IntakeConstants.INTAKE_SPEED),
             motor::stopMotor
         );
     }
@@ -52,7 +49,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command runCommand(DoubleSupplier speed) {
         return runEnd(
             () -> motor.set(speed.getAsDouble()),
-            () -> motor.stopMotor()
+            motor::stopMotor
         );
     }
 }
