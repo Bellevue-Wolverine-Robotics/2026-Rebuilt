@@ -60,6 +60,10 @@ public class ArmSubsystem extends SubsystemBase {
         synchronize();
     }
 
+    public boolean isExtended() {
+        return ArmConstants.RETRACTED_ANGLE_RADIANS - relativeEncoder.getPosition() > ArmConstants.ERROR_TOLERANCE_RADIANS;
+    }
+
     private void synchronize() {
         double position = (absoluteEncoder.get() - ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE + 1) % 1;
         relativeEncoder.setPosition(position * (2.0 * Math.PI));

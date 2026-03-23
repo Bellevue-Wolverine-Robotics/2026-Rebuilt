@@ -22,7 +22,6 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc.robot.commands.AlignPoseCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.FixedShootCommand;
-import frc.robot.constants.AutonomousConstants;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.constants.ShooterConstants;
@@ -106,7 +105,11 @@ public class RobotContainer {
             VisionConstants.OUTPOST_POSE_SUPPLIER));
 
 
-        operatorController.rightTrigger().whileTrue(armSubsystem.extendCommand().andThen(intakeSubsystem.intakeCommand())).onFalse(armSubsystem.retractCommand().onlyIf(() -> autoRetract).until(() -> !autoRetract));
+        operatorController.rightTrigger().whileTrue(
+            armSubsystem.extendCommand().andThen(intakeSubsystem.intakeCommand())
+        ).onFalse(
+            armSubsystem.retractCommand().alongWith(intakeSubsystem.intakeCommand().until(() -> !armSubsystem.isExtended()).onlyIf(() -> autoRetract).until(() -> !autoRetract))
+        );
 
         operatorController.leftTrigger().whileTrue(
             intakeSubsystem.runCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
