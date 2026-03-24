@@ -1,5 +1,8 @@
 package frc.robot.constants;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -18,6 +21,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
@@ -33,7 +38,8 @@ public class VisionConstants {
     }
 
     public static final List<CameraProperties> CAMERAS = List.of(
-       new CameraProperties("primary", new Transform3d(new Translation3d(Units.inchesToMeters(-1.923), 0.0, Units.inchesToMeters(28.86)), new Rotation3d(0.0, Units.degreesToRadians(-25.0), 0.0)))
+        new CameraProperties("primary", new Transform3d(new Translation3d(Units.inchesToMeters(-1.923), 0.0, Units.inchesToMeters(28.86)), new Rotation3d(0.0, Units.degreesToRadians(-25.0), 0.0))),
+        new CameraProperties("secondary", new Transform3d(new Translation3d(Units.inchesToMeters(13.5), 0.0, Units.inchesToMeters(26.358)), new Rotation3d(0.0, 0.0, 0.0)))
     );
 
     // Used for simulaiton
@@ -83,5 +89,14 @@ public class VisionConstants {
     public static final Supplier<Pose2d> HUB_POSE_SUPPLIER = () -> {
         Transform2d transform = new Transform2d(new Translation2d(Units.inchesToMeters(-23.5), 0.0), new Rotation2d());
         return getAllianceSpecificTagPose(4, 20, transform);
+    };
+
+    public static final Supplier<Pose2d> OUTPOST_POSE_SUPPLIER = () -> {
+        Transform2d transform = new Transform2d(
+            // Robot width / 2 = 17 inches
+            Distance.ofRelativeUnits(17.0, Inches),
+            Distance.ofRelativeUnits(0.0, Inches),
+            new Rotation2d(Angle.ofRelativeUnits(180.0, Degrees)));
+        return getAllianceSpecificTagPose(13, 29, transform);
     };
 }

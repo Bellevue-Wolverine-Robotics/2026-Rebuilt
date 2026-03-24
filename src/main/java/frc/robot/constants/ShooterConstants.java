@@ -15,7 +15,7 @@ public class ShooterConstants {
     public static final double GEAR_RATIO = 2.0;
 
     /** Acceptable tolerance between the target and current RPS on the shooter shaft for the feeder to engage. */
-    public static final double TOLERANCE_PERCENTAGE = 0.03;
+    public static final double TOLERANCE_PERCENTAGE = 0.05;
 
     /** The voltage required per RPS of the shooter shaft. */
     public static final double VOLTS_PER_RPS = 0.23601;
@@ -24,7 +24,7 @@ public class ShooterConstants {
     public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.20461;
 
     // TODO: Tune PID controller
-    public static final double PROPORTIONAL_GAIN = 0.001;
+    public static final double PROPORTIONAL_GAIN = 0.3;
     public static final double INTEGRAL_GAIN = 0.0;
     public static final double DERIVATIVE_GAIN = 0.0;
 
@@ -32,7 +32,7 @@ public class ShooterConstants {
     public static final double PASS_SHOOT_DISTANCE_METERS = 3.0;
 
     /** The maximum velocity that the feeder can run at. Set this lower to disable shooting on the go. */
-    public static final double MAXIMUM_SHOOT_SPEED_METERS_PER_SECOND = 5.0;
+    public static final double MAXIMUM_SHOOT_SPEED_METERS_PER_SECOND = 0.5;
 
     public static final double MAXIMUM_ANGLE_MAGNITUDE_RADIANS = Units.degreesToRadians(80.0);
     public static final double MINIMUM_DISTANCE_METERS = Units.inchesToMeters(63.25);
@@ -60,9 +60,13 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS = new InterpolatingDoubleTreeMap();
 
     static {
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(63.25), 26.25);
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(75.25), 27.5);
-        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(87.25), 29.583);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(76.51), 27.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(88.51), 27.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(100.51), 29.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(112.51), 30.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(124.51), 31.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(148.51), 34.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(172.51), 37.0);
 
         // These are temporary values so that the time of flight is always zero
         // We'll replace these with actual values during final testing

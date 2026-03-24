@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CENTER_TO_DEPOT"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DEPOT_TO_ALLIANCE"
+            "pathName": "DEFAULT"
           }
         },
         {
@@ -29,16 +23,10 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
+                  "waitTime": 3.5
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ALLIANCE_TO_LEFT_TOWER"
           }
         }
       ]

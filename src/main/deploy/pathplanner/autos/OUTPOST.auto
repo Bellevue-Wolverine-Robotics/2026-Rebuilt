@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BUMP_TO_NEUTRAL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NEUTRAL_TO_ALLIANCE"
+            "pathName": "RIGHT_BUMP_TO_ALLIANCE"
           }
         },
         {
@@ -29,7 +23,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 2.5
+                  "waitTime": 3.5
                 }
               }
             ]
@@ -38,13 +32,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ALLIANCE_TO_NEUTRAL"
+            "pathName": "RIGHT_ALLIANCE_TO_OUTPOST"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NEUTRAL_TO_ALLIANCE"
+            "pathName": "RIGHT_OUTPOST_TO_ALLIANCE"
           }
         },
         {
@@ -60,7 +60,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 2.5
+                  "waitTime": 3.5
                 }
               }
             ]

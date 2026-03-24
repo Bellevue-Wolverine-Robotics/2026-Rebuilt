@@ -36,9 +36,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
         rightMotor.setControl(new Follower(leftMotor.getDeviceID(), MotorAlignmentValue.Opposed));
         rightMotor.setNeutralMode(NeutralModeValue.Coast);
+
+        SmartDashboard.putNumber("Shooter RPS Override", -1);
     }
 
     private double calculateSpeed(double distance) {
+        double override = SmartDashboard.getNumber("Shooter RPS Override", -1);
+
+        if (override >= 0) {
+            return override;
+        }
         return ShooterConstants.DISTANCE_METERS_TO_RPS.get(distance);
     }
 

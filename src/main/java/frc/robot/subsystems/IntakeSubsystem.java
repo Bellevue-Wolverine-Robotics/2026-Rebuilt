@@ -20,12 +20,9 @@ public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax motor = new SparkMax(IntakeConstants.MOTOR_CAN_ID, MotorType.kBrushless);
     private final SparkMaxConfig motorConfig = new SparkMaxConfig();
 
-    private final ArmSubsystem armSubsystem;
-
     /** Constructs a new IntakeSubsystem. */
-    public IntakeSubsystem(ArmSubsystem armSubsystem) {
-        this.armSubsystem = armSubsystem;
-        motorConfig.idleMode(IdleMode.kBrake);
+    public IntakeSubsystem() {
+        motorConfig.idleMode(IdleMode.kCoast);
         motorConfig.inverted(IntakeConstants.MOTOR_INVERTED);
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -36,13 +33,10 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return The intake command.
      */
     public Command intakeCommand() {
-        return run(() -> {
-            if (armSubsystem.isExtended()) {
-                motor.set(IntakeConstants.INTAKE_SPEED);
-            } else {
-                motor.stopMotor();
-            }
-        });
+        return runEnd(
+            () -> motor.set(IntakeConstants.INTAKE_SPEED),
+            motor::stopMotor
+        );
     }
 
     /**
@@ -55,7 +49,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command runCommand(DoubleSupplier speed) {
         return runEnd(
             () -> motor.set(speed.getAsDouble()),
-            () -> motor.stopMotor()
+            motor::stopMotor
         );
     }
 }

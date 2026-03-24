@@ -28,8 +28,6 @@ public class ArmSubsystem extends SubsystemBase {
     private final RelativeEncoder relativeEncoder = motor.getEncoder();
     private final SparkClosedLoopController controller = motor.getClosedLoopController();
 
-    private boolean extended = false;
-
     /** Constructs a new ArmSubsystem. */
     public ArmSubsystem() {
         SparkMaxConfig motorConfig = new SparkMaxConfig();
@@ -62,6 +60,10 @@ public class ArmSubsystem extends SubsystemBase {
         synchronize();
     }
 
+    public boolean isExtended() {
+        return ArmConstants.RETRACTED_ANGLE_RADIANS - relativeEncoder.getPosition() > ArmConstants.ERROR_TOLERANCE_RADIANS;
+    }
+
     private void synchronize() {
         double position = (absoluteEncoder.get() - ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE + 1) % 1;
         relativeEncoder.setPosition(position * (2.0 * Math.PI));
@@ -70,15 +72,6 @@ public class ArmSubsystem extends SubsystemBase {
     private void set(double setpoint) {
         controller.setSetpoint(setpoint, ControlType.kPosition);
     }
-
-    /**
-     * Provides whether the arm is extended with regular controls.
-     * 
-     * @return Whether the arm is extended.
-     */
-    public boolean isExtended() {
-        return extended;
-    } 
 
     /**
      * Provides a command that extends the arm until finished.
@@ -117,9 +110,7 @@ public class ArmSubsystem extends SubsystemBase {
             double error = Math.abs(relativeEncoder.getPosition() - ArmConstants.EXTENDED_ANGLE_RADIANS);
             if (error > ArmConstants.WARN_THRESHOLD_RADIANS) {
                 warn.run();
-                extended = false;
             } else {
-                extended = true;
             }
         });
     }
@@ -133,7 +124,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public Command moveCommand(DoubleSupplier speed) {
         return runEnd(
-            () -> motor.set(speed.getAsDouble()),
+            () -> motor.set(speed.getAsDouble() * ArmConstants.MANUAL_CONTROL_COFFICIENT),
             () -> motor.stopMotor()
         );
     }

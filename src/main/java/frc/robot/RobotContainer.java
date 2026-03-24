@@ -7,7 +7,6 @@ package frc.robot;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,7 +22,6 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc.robot.commands.AlignPoseCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.FixedShootCommand;
-import frc.robot.constants.AutonomousConstants;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.constants.ShooterConstants;
@@ -39,7 +37,7 @@ import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
     private final ArmSubsystem armSubsystem = new ArmSubsystem();
-    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(armSubsystem);
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final FeederSubsystem feederSubsystem = new FeederSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
@@ -101,13 +99,17 @@ public class RobotContainer {
             VisionConstants.RIGHT_TOWER_FINAL_POSE_SUPPLIER
         ));
 
+        driverController.a().whileTrue(new AlignPoseCommand(
+            swerveSubsystem, 
+            ledSubsystem, 
+            VisionConstants.OUTPOST_POSE_SUPPLIER));
 
-        operatorController.rightTrigger().whileTrue(armSubsystem.extendCommand().andThen(armSubsystem.waitCommand(
-            () -> operatorController.setRumble(
-                GenericHID.RumbleType.kRightRumble,
-                DriverStationConstants.OPERATOR_ARM_WARNING_RUMBLE_POWER
-            )
-        ))).onFalse(armSubsystem.retractCommand().onlyIf(() -> autoRetract).until(() -> !autoRetract));
+
+        operatorController.rightTrigger().whileTrue(
+            armSubsystem.extendCommand().andThen(intakeSubsystem.intakeCommand())
+        ).onFalse(
+            armSubsystem.retractCommand().alongWith(intakeSubsystem.intakeCommand().until(() -> !armSubsystem.isExtended()).onlyIf(() -> autoRetract).until(() -> !autoRetract))
+        );
 
         operatorController.leftTrigger().whileTrue(
             intakeSubsystem.runCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
@@ -118,7 +120,7 @@ public class RobotContainer {
         new Trigger(
             () -> Math.abs(operatorController.getRightY()) > DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND
         ).whileTrue(
-            armSubsystem.moveCommand(() -> -MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
+            armSubsystem.moveCommand(() -> -MathUtil.applyDeadband(operatorController.getRightY(), DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND))
         );
 
         operatorController.pov(0).onTrue(climberSubsystem.extendCommand());
@@ -138,35 +140,34 @@ public class RobotContainer {
     }
 
     private void configureAutonomous() {
-        NamedCommands.registerCommand("shoot", new FixedShootCommand(
+        NamedCommands.registerCommand("shoot", new AutoShootCommand(
+            swerveSubsystem,
+            ledSubsystem,
             shooterSubsystem,
             feederSubsystem,
-            AutonomousConstants.SHOOT_DISTANCE_METERS
+            () -> 0,
+            () -> 0
         ));
 
         sendableChooser.setDefaultOption(
-                "Left One Cycle",
-                new PathPlannerAuto("ONE_CYCLE")
+            "Default",
+            new PathPlannerAuto("DEFAULT")
         );
         sendableChooser.addOption(
-                "Left Two Cycle",
-                new PathPlannerAuto("TWO_CYCLE")
+            "Outpost",
+            new PathPlannerAuto("OUTPOST")
         );
         sendableChooser.addOption(
-                "Right One Cycle",
-                new PathPlannerAuto("ONE_CYCLE", true)
+            "Neutral Depot",
+            new PathPlannerAuto("NEUTRAL")
         );
         sendableChooser.addOption(
-                "Right Two Cycle",
-                new PathPlannerAuto("TWO_CYCLE", true)
+            "Left Two Cycle",
+            new PathPlannerAuto("TWO_CYCLE")
         );
         sendableChooser.addOption(
-                "Depot Left Tower",
-                new PathPlannerAuto("DEPOT_LEFT_TOWER")
-        );
-        sendableChooser.addOption(
-                "Depot Right Tower",
-                new PathPlannerAuto("DEPOT_RIGHT_TOWER")
+            "Right Two Cycle",
+            new PathPlannerAuto("TWO_CYCLE", true)
         );
 
         SmartDashboard.putData("Auto Chooser", sendableChooser);
