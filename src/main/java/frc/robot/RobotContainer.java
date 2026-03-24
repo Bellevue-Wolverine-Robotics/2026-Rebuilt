@@ -149,7 +149,6 @@ public class RobotContainer {
             () -> 0
         ));
 
-
         sendableChooser.setDefaultOption(
             "Default",
             new PathPlannerAuto("DEFAULT")
@@ -159,12 +158,8 @@ public class RobotContainer {
             new PathPlannerAuto("OUTPOST")
         );
         sendableChooser.addOption(
-            "Left Neutral Depot",
-            new PathPlannerAuto("NEUTRAL_DEPOT")
-        );
-        sendableChooser.addOption(
-            "Right Neutral Depot",
-            new PathPlannerAuto("NEUTRAL_DPEOT", true)
+            "Neutral Depot",
+            new PathPlannerAuto("NEUTRAL")
         );
         sendableChooser.addOption(
             "Left Two Cycle",

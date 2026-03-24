@@ -7,5 +7,4 @@ public class FeederConstants {
     public static final CANBus CANBUS = new CANBus("canivore");
 
     public static final double FEED_SPEED = 1;
-    public static final double MAXIMUM_ACCEPTABLE_ROBOT_SPEED = 0.01; // TOOD: Find actual speed
 }
