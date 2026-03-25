@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "BUMP_TO_NEUTRAL"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BUMP_TO_NEUTRAL"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -36,9 +49,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "ALLIANCE_TO_NEUTRAL"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ALLIANCE_TO_NEUTRAL"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              }
+            ]
           }
         },
         {
