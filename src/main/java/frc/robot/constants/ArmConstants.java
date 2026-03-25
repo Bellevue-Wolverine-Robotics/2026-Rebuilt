@@ -31,7 +31,7 @@ public class ArmConstants {
     public static final double EXTENDED_ANGLE_RADIANS = Units.degreesToRadians(0);
 
     /** The angle betwen the arm and ground when retracted. */
-    public static final double RETRACTED_ANGLE_RADIANS = (0.232 - 0.063) * Math.PI * 2.0;
+    public static final double RETRACTED_ANGLE_RADIANS = (0.218 - 0.063) * Math.PI * 2.0;
 
     /** The required accuracy of the arm, in order to finish moving it. */
     public static final double ERROR_TOLERANCE_RADIANS = Units.degreesToRadians(1.0);

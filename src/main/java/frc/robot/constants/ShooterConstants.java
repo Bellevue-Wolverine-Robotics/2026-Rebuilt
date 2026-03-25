@@ -39,7 +39,7 @@ public class ShooterConstants {
     public static final double MAXIMUM_DISTANCE_METERS = Units.inchesToMeters(87.25);
 
     // TODO: Tune PID controller
-    public static final double ROTATIONAL_PID_KP = 2.5;
+    public static final double ROTATIONAL_PID_KP = 1.0;
     public static final double ROTATIONAL_PID_KI = 0.0;
     public static final double ROTATIONAL_PID_KD = 0.0;
     public static final double ROTATIONAL_TOLERANCE_RADIANS = Units.degreesToRadians(5.0);
