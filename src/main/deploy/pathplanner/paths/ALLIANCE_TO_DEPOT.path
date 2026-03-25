@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0,
-        "y": 5.0
+        "x": 2.414811111111111,
+        "y": 5.214099999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.057935161563482,
-        "y": 5.700504100317502
+        "x": 1.3667222222222224,
+        "y": 5.103244444444445
       },
       "isLocked": false,
       "linkedName": "ALLIANCE"
     },
     {
       "anchor": {
-        "x": 1.0,
-        "y": 5.1
+        "x": 0.5,
+        "y": 5.0327
       },
       "prevControl": {
-        "x": 1.5372985646110844,
-        "y": 4.764994553533175
+        "x": 0.5113893851079592,
+        "y": 4.782959570940421
       },
       "nextControl": {
-        "x": 0.5268650878166921,
-        "y": 5.3949994340851095
+        "x": 0.4745986044837687,
+        "y": 5.589688402341623
       },
       "isLocked": false,
       "linkedName": null
@@ -50,8 +50,33 @@
       "rotationDegrees": 90.0
     }
   ],
-  "constraintZones": [],
-  "pointTowardsZones": [],
+  "constraintZones": [
+    {
+      "name": "Intake Slowzone",
+      "minWaypointRelativePos": 1.0981308411214958,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 0.4,
+        "y": 5.5
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.2507788161993816,
+      "maxWaypointRelativePos": 0.75,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
@@ -69,7 +94,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -17.35
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

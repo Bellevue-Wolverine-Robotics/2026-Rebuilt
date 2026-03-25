@@ -16,36 +16,71 @@
     },
     {
       "anchor": {
-        "x": 4.576433734939759,
-        "y": 5.532096385542169
+        "x": 5.5489999999999995,
+        "y": 5.214099999999999
       },
       "prevControl": {
-        "x": 5.996831907943376,
-        "y": 5.212638570428809
+        "x": 6.823899598393574,
+        "y": 5.248825836680052
       },
       "nextControl": {
-        "x": 4.283240340419954,
-        "y": 5.5980376990408365
+        "x": 5.248594157199556,
+        "y": 5.205917517043721
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 5.0
+        "x": 3.4326666666666665,
+        "y": 5.214099999999999
       },
       "prevControl": {
-        "x": 2.7878541791631246,
-        "y": 4.8677345445649225
+        "x": 3.6812979248309605,
+        "y": 5.240224652411855
+      },
+      "nextControl": {
+        "x": 3.1840354085023725,
+        "y": 5.187975347588144
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.414811111111111,
+        "y": 5.214099999999999
+      },
+      "prevControl": {
+        "x": 2.2026652902742354,
+        "y": 5.081834544564922
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "ALLIANCE"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Bump Slowdown Zone",
+      "minWaypointRelativePos": 1.9369158878504673,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -58,7 +93,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -17.35
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,

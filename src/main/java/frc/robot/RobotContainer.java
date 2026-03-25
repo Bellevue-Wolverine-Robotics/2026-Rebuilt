@@ -140,6 +140,7 @@ public class RobotContainer {
     }
 
     private void configureAutonomous() {
+        NamedCommands.registerCommand("intake", intakeSubsystem.intakeCommand());
         NamedCommands.registerCommand("shoot", new AutoShootCommand(
             swerveSubsystem,
             ledSubsystem,
@@ -168,6 +169,10 @@ public class RobotContainer {
         sendableChooser.addOption(
             "Right Two Cycle",
             new PathPlannerAuto("TWO_CYCLE", true)
+        );
+        sendableChooser.addOption(
+            "Preload Depot",
+            new PathPlannerAuto("PRELOAD_DEPOT")
         );
 
         SmartDashboard.putData("Auto Chooser", sendableChooser);
