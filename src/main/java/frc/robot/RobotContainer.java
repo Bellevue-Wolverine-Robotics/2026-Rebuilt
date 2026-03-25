@@ -170,6 +170,9 @@ public class RobotContainer {
             "Right Two Cycle",
             new PathPlannerAuto("TWO_CYCLE", true)
         );
+        sendableChooser.addOption("Preload Depot",
+            new PathPlannerAuto("PRELOAD_DEPOT")
+        );
 
         SmartDashboard.putData("Auto Chooser", sendableChooser);
     }

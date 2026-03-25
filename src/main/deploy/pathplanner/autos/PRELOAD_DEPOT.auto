@@ -5,28 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "BUMP_TO_NEUTRAL"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "NEUTRAL_TO_ALLIANCE"
+            "pathName": "CENTER_TO_ALLIANCE"
           }
         },
         {
@@ -49,28 +30,15 @@
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "ALLIANCE_TO_NEUTRAL"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              }
-            ]
+            "name": "extendIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NEUTRAL_TO_ALLIANCE"
+            "pathName": "ALLIANCE_TO_DEPOT"
           }
         },
         {
@@ -90,6 +58,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DEPOT_TO_ALLIANCE"
           }
         }
       ]

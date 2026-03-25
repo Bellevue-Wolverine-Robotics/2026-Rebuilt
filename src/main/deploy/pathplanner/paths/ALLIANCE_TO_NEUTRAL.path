@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0,
-        "y": 5.0
+        "x": 2.414811111111111,
+        "y": 5.214099999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.8686962436774355,
-        "y": 5.365090974283386
+        "x": 4.283507354788546,
+        "y": 5.579190974283385
       },
       "isLocked": false,
       "linkedName": "ALLIANCE"
     },
     {
       "anchor": {
-        "x": 5.850470756062768,
-        "y": 5.555292439372327
+        "x": 6.032733333333333,
+        "y": 5.959855555555555
       },
       "prevControl": {
-        "x": 5.3695681810835065,
-        "y": 4.998041338091719
+        "x": 5.551830758354072,
+        "y": 5.402604454274947
       },
       "nextControl": {
-        "x": 6.075955678176586,
-        "y": 5.816575550978697
+        "x": 6.258218255447152,
+        "y": 6.221138667161925
       },
       "isLocked": false,
       "linkedName": null
@@ -64,10 +64,23 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.5,
+      "minWaypointRelativePos": 2.5677570093457964,
       "maxWaypointRelativePos": 3.0,
       "constraints": {
-        "maxVelocity": 1.5,
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Bump Slowdown Zone",
+      "minWaypointRelativePos": 0.6892523364485923,
+      "maxWaypointRelativePos": 1.362149532710284,
+      "constraints": {
+        "maxVelocity": 2.0,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -94,7 +107,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -17.35
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
