@@ -140,6 +140,7 @@ public class RobotContainer {
     }
 
     private void configureAutonomous() {
+        NamedCommands.registerCommand("extend", armSubsystem.extendCommand());
         NamedCommands.registerCommand("intake", intakeSubsystem.intakeCommand());
         NamedCommands.registerCommand("shoot", new AutoShootCommand(
             swerveSubsystem,
