@@ -19,6 +19,6 @@
     "drive": 0.25,
     "angle": 0.25
   },
-  "robotMass": 115,
+  "robotMass": 111,
   "wheelGripCoefficientOfFriction": 1.19
 }
