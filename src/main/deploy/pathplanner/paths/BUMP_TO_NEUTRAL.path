@@ -12,7 +12,7 @@
         "y": 5.246998583531937
       },
       "isLocked": false,
-      "linkedName": "LEFT_BUMP"
+      "linkedName": "BUMP"
     },
     {
       "anchor": {
@@ -48,16 +48,16 @@
     },
     {
       "anchor": {
-        "x": 7.789,
-        "y": 4.552
+        "x": 7.589,
+        "y": 4.5
       },
       "prevControl": {
-        "x": 7.714320066667623,
-        "y": 4.0090904248341435
+        "x": 7.514320066667624,
+        "y": 3.957090424834144
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LEFT_NEUTRAL"
+      "linkedName": "NEUTRAL"
     }
   ],
   "rotationTargets": [],
@@ -68,19 +68,6 @@
       "maxWaypointRelativePos": 3.0,
       "constraints": {
         "maxVelocity": 1.0,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    },
-    {
-      "name": "Bump Slowzone",
-      "minWaypointRelativePos": 0.5257009345794444,
-      "maxWaypointRelativePos": 1.1985981308411255,
-      "constraints": {
-        "maxVelocity": 2.0,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,

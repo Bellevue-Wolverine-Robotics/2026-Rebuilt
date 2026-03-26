@@ -32,15 +32,15 @@
     },
     {
       "anchor": {
-        "x": 7.002385542168676,
+        "x": 6.802,
         "y": 6.8434216867469875
       },
       "prevControl": {
-        "x": 6.28060091707417,
+        "x": 6.080215374905494,
         "y": 6.954020840270222
       },
       "nextControl": {
-        "x": 7.95324778507914,
+        "x": 7.752862242910464,
         "y": 6.697720939561728
       },
       "isLocked": false,
@@ -48,11 +48,11 @@
     },
     {
       "anchor": {
-        "x": 7.789,
+        "x": 7.589,
         "y": 4.5
       },
       "prevControl": {
-        "x": 7.745777773074782,
+        "x": 7.545777773074783,
         "y": 4.7462353327604
       },
       "nextControl": null,
@@ -68,19 +68,6 @@
       "maxWaypointRelativePos": 3.0,
       "constraints": {
         "maxVelocity": 1.0,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    },
-    {
-      "name": "Bump Slowdown Zone",
-      "minWaypointRelativePos": 0.6892523364485923,
-      "maxWaypointRelativePos": 1.362149532710284,
-      "constraints": {
-        "maxVelocity": 2.0,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
