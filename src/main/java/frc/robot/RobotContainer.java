@@ -105,11 +105,7 @@ public class RobotContainer {
             VisionConstants.OUTPOST_POSE_SUPPLIER));
 
 
-        operatorController.rightTrigger().whileTrue(
-            armSubsystem.extendCommand().andThen(intakeSubsystem.intakeCommand())
-        ).onFalse(
-            armSubsystem.retractCommand().alongWith(intakeSubsystem.intakeCommand().until(() -> !armSubsystem.isExtended()).onlyIf(() -> autoRetract).until(() -> !autoRetract))
-        );
+        operatorController.rightTrigger().whileTrue(intakeSubsystem.intakeCommand());
 
         operatorController.leftTrigger().whileTrue(
             intakeSubsystem.runCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
@@ -140,6 +136,7 @@ public class RobotContainer {
     }
 
     private void configureAutonomous() {
+        NamedCommands.registerCommand("extend", armSubsystem.extendCommand());
         NamedCommands.registerCommand("intake", intakeSubsystem.intakeCommand());
         NamedCommands.registerCommand("shoot", new AutoShootCommand(
             swerveSubsystem,
@@ -160,7 +157,7 @@ public class RobotContainer {
         );
         sendableChooser.addOption(
             "Neutral Depot",
-            new PathPlannerAuto("NEUTRAL")
+            new PathPlannerAuto("NEUTRAL_DEPOT")
         );
         sendableChooser.addOption(
             "Left Two Cycle",

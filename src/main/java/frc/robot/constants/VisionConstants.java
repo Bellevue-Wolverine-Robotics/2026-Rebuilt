@@ -25,6 +25,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Preferences;
 
 public class VisionConstants {
     public static class CameraProperties {
@@ -57,7 +58,9 @@ public class VisionConstants {
     public static final double SINGLE_TAG_DISTANCE_THRESHOLD = 4.0;
     public static final double STD_DEVS_SCALING_FACTOR = 30.0;
 
-    public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+    public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(
+        Preferences.getBoolean("practiceField", true) ? AprilTagFields.k2026RebuiltWelded : AprilTagFields.k2026RebuiltAndymark
+    );
     private static final Pose3d ORIGIN_POSE = TAG_LAYOUT.getOrigin();
 
     private static final Pose2d getAllianceSpecificTagPose(int redTagId, int blueTagId, Transform2d transform) {

@@ -30,15 +30,41 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "extendIntake"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ALLIANCE_TO_DEPOT"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "extend"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ALLIANCE_TO_DEPOT"
+            "pathName": "DEPOT_TO_ALLIANCE"
           }
         },
         {
@@ -58,12 +84,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DEPOT_TO_ALLIANCE"
           }
         }
       ]
