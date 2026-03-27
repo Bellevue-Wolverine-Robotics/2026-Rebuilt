@@ -169,6 +169,14 @@ public class RobotContainer {
             new PathPlannerAuto("TWO_CYCLE", true)
         );
         sendableChooser.addOption(
+            "Left Two Cycle Loop",
+            new PathPlannerAuto("TWO_CYCLE_LOOP")
+        );
+        sendableChooser.addOption(
+            "Right Two Cycle Loop",
+            new PathPlannerAuto("TWO_CYCLE_LOOP", true)
+        );
+        sendableChooser.addOption(
             "Preload Depot",
             new PathPlannerAuto("PRELOAD_DEPOT")
         );
