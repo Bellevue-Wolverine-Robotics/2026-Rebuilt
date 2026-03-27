@@ -40,4 +40,5 @@ public class ArmConstants {
     public static final double WARN_THRESHOLD_RADIANS = Units.degreesToRadians(10.0);
 
     public static final double MANUAL_CONTROL_COFFICIENT = 0.25;
+    public static final double EXTENSION_DURATION_SECONDS = 0.75;
 }

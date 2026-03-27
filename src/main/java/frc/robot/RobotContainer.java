@@ -22,6 +22,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc.robot.commands.AlignPoseCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.FixedShootCommand;
+import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.constants.ShooterConstants;
@@ -137,7 +138,7 @@ public class RobotContainer {
     }
 
     private void configureAutonomous() {
-        NamedCommands.registerCommand("extend", armSubsystem.extendCommand());
+        NamedCommands.registerCommand("extend", armSubsystem.extendCommand().withTimeout(ArmConstants.EXTENSION_DURATION_SECONDS));
         NamedCommands.registerCommand("intake", intakeSubsystem.intakeCommand());
         NamedCommands.registerCommand("shoot", new AutoShootCommand(
             swerveSubsystem,
