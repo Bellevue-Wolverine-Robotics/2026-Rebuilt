@@ -59,7 +59,7 @@ public class VisionConstants {
     public static final double STD_DEVS_SCALING_FACTOR = 30.0;
 
     public static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(
-        Preferences.getBoolean("practiceField", false) ? AprilTagFields.k2026RebuiltWelded : AprilTagFields.k2026RebuiltAndymark
+        Preferences.getBoolean("practiceField", true) ? AprilTagFields.k2026RebuiltWelded : AprilTagFields.k2026RebuiltAndymark
     );
     private static final Pose3d ORIGIN_POSE = TAG_LAYOUT.getOrigin();
 
