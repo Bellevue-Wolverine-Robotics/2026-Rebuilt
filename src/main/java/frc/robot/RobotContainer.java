@@ -50,7 +50,6 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
     private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
-    private boolean autoRetract = true;
 
     public RobotContainer() {
         configureBindings();
@@ -102,16 +101,18 @@ public class RobotContainer {
         driverController.a().whileTrue(new AlignPoseCommand(
             swerveSubsystem, 
             ledSubsystem, 
-            VisionConstants.OUTPOST_POSE_SUPPLIER));
+            VisionConstants.OUTPOST_POSE_SUPPLIER
+        ));
 
-
+        operatorController.leftBumper().whileTrue(armSubsystem.extendCommand());
+        operatorController.rightBumper().whileTrue(armSubsystem.extendCommand());
         operatorController.rightTrigger().whileTrue(intakeSubsystem.intakeCommand());
 
-        operatorController.leftTrigger().whileTrue(
+        new Trigger(
+            () -> Math.abs(operatorController.getLeftY()) > DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND
+        ).whileTrue(
             intakeSubsystem.runCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
         );
-
-        operatorController.rightBumper().onTrue(Commands.runOnce(() -> autoRetract = !autoRetract));
 
         new Trigger(
             () -> Math.abs(operatorController.getRightY()) > DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND
