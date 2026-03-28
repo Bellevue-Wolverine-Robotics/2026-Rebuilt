@@ -62,6 +62,11 @@ public class ArmSubsystem extends SubsystemBase {
 
     private void synchronize() {
         double position = (absoluteEncoder.get() - ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE + 1) % 1;
+
+        if (position < 0) {
+            position = 0;
+        }
+
         relativeEncoder.setPosition(position * (2.0 * Math.PI));
     }
 
@@ -76,7 +81,10 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public Command extendCommand() {
         return runEnd(
-            () -> set(ArmConstants.EXTENDED_ANGLE_RADIANS),
+            () -> {
+                synchronize();
+                set(ArmConstants.EXTENDED_ANGLE_RADIANS);
+            },
             motor::stopMotor
         ).beforeStarting(this::synchronize).until(controller::isAtSetpoint);
     }
@@ -88,7 +96,10 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public Command retractCommand() {
         return runEnd(
-            () -> set(ArmConstants.RETRACTED_ANGLE_RADIANS),
+            () -> {
+                synchronize();
+                set(ArmConstants.RETRACTED_ANGLE_RADIANS);
+            },
             motor::stopMotor
         ).beforeStarting(this::synchronize).until(controller::isAtSetpoint);
     }

@@ -101,11 +101,11 @@ public class RobotContainer {
 
         driverController.a().whileTrue(new AlignPoseCommand(
             swerveSubsystem, 
-            ledSubsystem, 
+            ledSubsystem,
             VisionConstants.OUTPOST_POSE_SUPPLIER
         ));
 
-        operatorController.leftBumper().whileTrue(armSubsystem.extendCommand());
+        operatorController.leftBumper().whileTrue(armSubsystem.retractCommand());
         operatorController.rightBumper().whileTrue(armSubsystem.extendCommand());
         operatorController.rightTrigger().whileTrue(intakeSubsystem.intakeCommand());
 
