@@ -29,7 +29,7 @@ public class ShooterConstants {
     public static final double DERIVATIVE_GAIN = 0.0;
 
     public static final double MANUAL_SHOOT_DISTANCE_METERS = Units.inchesToMeters(75.25);
-    public static final double PASS_SHOOT_DISTANCE_METERS = 3.0;
+    public static final double PASS_SHOOT_DISTANCE_METERS = 4.25;
 
     /** The maximum velocity that the feeder can run at. Set this lower to disable shooting on the go. */
     public static final double MAXIMUM_SHOOT_SPEED_METERS_PER_SECOND = 0.5;
