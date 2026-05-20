@@ -48,7 +48,9 @@ public class SwerveSubsystem extends SubsystemBase {
         );
 
         try {
-            swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(SwerveConstants.MAXIMUM_SPEED_METERS);
+            swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(
+                Preferences.getBoolean("safety", false) ? SwerveConstants.MAXIMUM_SAFETY_SPEED_METERS : SwerveConstants.MAXIMUM_SPEED_METERS
+            );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
