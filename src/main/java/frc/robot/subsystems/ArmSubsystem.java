@@ -60,12 +60,13 @@ public class ArmSubsystem extends SubsystemBase {
         synchronize();
     }
 
-    public boolean isExtended() {
-        return ArmConstants.RETRACTED_ANGLE_RADIANS - relativeEncoder.getPosition() > ArmConstants.ERROR_TOLERANCE_RADIANS;
-    }
-
     private void synchronize() {
         double position = (absoluteEncoder.get() - ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE + 1) % 1;
+
+        if (position < 0) {
+            position = 0;
+        }
+
         relativeEncoder.setPosition(position * (2.0 * Math.PI));
     }
 
@@ -80,7 +81,10 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public Command extendCommand() {
         return runEnd(
-            () -> set(ArmConstants.EXTENDED_ANGLE_RADIANS),
+            () -> {
+                synchronize();
+                set(ArmConstants.EXTENDED_ANGLE_RADIANS);
+            },
             motor::stopMotor
         ).beforeStarting(this::synchronize).until(controller::isAtSetpoint);
     }
@@ -92,27 +96,12 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public Command retractCommand() {
         return runEnd(
-            () -> set(ArmConstants.RETRACTED_ANGLE_RADIANS),
+            () -> {
+                synchronize();
+                set(ArmConstants.RETRACTED_ANGLE_RADIANS);
+            },
             motor::stopMotor
         ).beforeStarting(this::synchronize).until(controller::isAtSetpoint);
-    }
-
-    /**
-     * Provides a command that waits for the extension to be released.
-     * It warns the controller when the arm passively moves beyond the normal expecteded range.
-     * This indicates something hitting and pushing the arm back, meaning it needs to be manually extended again by the driver.
-     * 
-     * @param warn This is called when it is time to warn the controller.
-     * @return The command that warns when necessary.
-     */
-    public Command waitCommand(Runnable warn) {
-        return run(() -> {
-            double error = Math.abs(relativeEncoder.getPosition() - ArmConstants.EXTENDED_ANGLE_RADIANS);
-            if (error > ArmConstants.WARN_THRESHOLD_RADIANS) {
-                warn.run();
-            } else {
-            }
-        });
     }
 
     /**

@@ -22,6 +22,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc.robot.commands.AlignPoseCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.FixedShootCommand;
+import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.DriverStationConstants;
 import frc.robot.constants.ShooterConstants;
@@ -50,7 +51,6 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(DriverStationConstants.OPERATOR_CONTROLLER_PORT);
 
     private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
-    private boolean autoRetract = true;
 
     public RobotContainer() {
         configureBindings();
@@ -101,17 +101,19 @@ public class RobotContainer {
 
         driverController.a().whileTrue(new AlignPoseCommand(
             swerveSubsystem, 
-            ledSubsystem, 
-            VisionConstants.OUTPOST_POSE_SUPPLIER));
+            ledSubsystem,
+            VisionConstants.OUTPOST_POSE_SUPPLIER
+        ));
 
-
+        operatorController.leftBumper().whileTrue(armSubsystem.retractCommand());
+        operatorController.rightBumper().whileTrue(armSubsystem.extendCommand());
         operatorController.rightTrigger().whileTrue(intakeSubsystem.intakeCommand());
 
-        operatorController.leftTrigger().whileTrue(
+        new Trigger(
+            () -> Math.abs(operatorController.getLeftY()) > DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND
+        ).whileTrue(
             intakeSubsystem.runCommand(() -> MathUtil.applyDeadband(operatorController.getLeftY(), DriverStationConstants.OPERATOR_CONTROLLER_LEFT_DEADBAND))
         );
-
-        operatorController.rightBumper().onTrue(Commands.runOnce(() -> autoRetract = !autoRetract));
 
         new Trigger(
             () -> Math.abs(operatorController.getRightY()) > DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND
@@ -136,7 +138,7 @@ public class RobotContainer {
     }
 
     private void configureAutonomous() {
-        NamedCommands.registerCommand("extend", armSubsystem.extendCommand());
+        NamedCommands.registerCommand("extend", armSubsystem.extendCommand().withTimeout(ArmConstants.EXTENSION_DURATION_SECONDS));
         NamedCommands.registerCommand("intake", intakeSubsystem.intakeCommand());
         NamedCommands.registerCommand("shoot", new AutoShootCommand(
             swerveSubsystem,
@@ -166,6 +168,14 @@ public class RobotContainer {
         sendableChooser.addOption(
             "Right Two Cycle",
             new PathPlannerAuto("TWO_CYCLE", true)
+        );
+        sendableChooser.addOption(
+            "Left Two Cycle Loop",
+            new PathPlannerAuto("TWO_CYCLE_LOOP")
+        );
+        sendableChooser.addOption(
+            "Right Two Cycle Loop",
+            new PathPlannerAuto("TWO_CYCLE_LOOP", true)
         );
         sendableChooser.addOption(
             "Preload Depot",
