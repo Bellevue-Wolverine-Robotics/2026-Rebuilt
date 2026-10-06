@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,6 +40,11 @@ public class ArmSubsystem extends SubsystemBase {
         // Divide by 60 so units are in radians per second instead of radians per minute
         motorConfig.encoder.velocityConversionFactor((2.0 * Math.PI) / ArmConstants.GEAR_RATIO / 60.0);
 
+        motorConfig.closedLoop.maxMotion
+            .cruiseVelocity(ArmConstants.CRUISE_VELOCITY_RADIANS_PER_SECOND)
+            .maxAcceleration(ArmConstants.MAXIMUM_ACCELERATION_RADIANS_PER_SECOND_SQUARED)
+            .allowedProfileError(ArmConstants.ALLOWED_PROFILE_ERROR_RADIANS);
+
         motorConfig.closedLoop
             .p(ArmConstants.PROPORTIONAL_GAIN)
             .i(ArmConstants.INTEGRAL_GAIN)
@@ -52,21 +58,16 @@ public class ArmSubsystem extends SubsystemBase {
             .kCosRatio(1.0);
 
         motorConfig.closedLoop.allowedClosedLoopError(ArmConstants.ERROR_TOLERANCE_RADIANS, ClosedLoopSlot.kSlot0);
-
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
         absoluteEncoder.setInverted(ArmConstants.ABSOLUTE_ENCODER_INVERTED);
-
         synchronize();
+
+        
+        SmartDashboard.putNumber("Arm/Gravity Gain Test Power", -1);
     }
 
     private void synchronize() {
-        double position = (absoluteEncoder.get() - ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE + 1) % 1;
-
-        if (position < 0) {
-            position = 0;
-        }
-
+        double position = MathUtil.inputModulus(absoluteEncoder.get() - ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE, -0.5, 0.5);
         relativeEncoder.setPosition(position * (2.0 * Math.PI));
     }
 
@@ -77,31 +78,40 @@ public class ArmSubsystem extends SubsystemBase {
     /**
      * Provides a command that extends the arm until finished.
      * 
+     * @return The extension until finished command.
+     */
+    public Command extendUntilFinishedCommand() {
+        return extendCommand().until(controller::isAtSetpoint).withTimeout(ArmConstants.EXTENSION_DURATION_SECONDS);
+    }
+
+    /**
+     * Provides a command that extends the arm until interrupted.
+     * 
      * @return The extension command.
      */
     public Command extendCommand() {
-        return runEnd(
+        return startEnd(
             () -> {
                 synchronize();
                 set(ArmConstants.EXTENDED_ANGLE_RADIANS);
             },
             motor::stopMotor
-        ).beforeStarting(this::synchronize).until(controller::isAtSetpoint);
+        );
     }
 
     /**
-     * Provides a command that retracts the arm until finished.
+     * Provides a command that retracts the arm until interrupted.
      * 
      * @return The retraction command.
      */
     public Command retractCommand() {
-        return runEnd(
+        return startEnd(
             () -> {
                 synchronize();
                 set(ArmConstants.RETRACTED_ANGLE_RADIANS);
             },
             motor::stopMotor
-        ).beforeStarting(this::synchronize).until(controller::isAtSetpoint);
+        );
     }
 
     /**
@@ -116,6 +126,16 @@ public class ArmSubsystem extends SubsystemBase {
             () -> motor.set(speed.getAsDouble() * ArmConstants.MANUAL_CONTROL_COFFICIENT),
             () -> motor.stopMotor()
         );
+    }
+
+    public Command testGravityCommand() {
+        return run(() -> {
+            double power = SmartDashboard.getNumber("Arm/Gravity Gain Test Power", -1);
+
+            if (power >= 0) {
+                motor.set(power);
+            }
+        });
     }
 
     @Override

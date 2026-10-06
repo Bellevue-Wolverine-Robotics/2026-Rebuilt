@@ -23,7 +23,6 @@ public class ShooterConstants {
     /** The voltage required to overcome the static friction of the shooter shaft. */
     public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.20461;
 
-    // TODO: Tune PID controller
     public static final double PROPORTIONAL_GAIN = 0.3;
     public static final double INTEGRAL_GAIN = 0.0;
     public static final double DERIVATIVE_GAIN = 0.0;
@@ -38,7 +37,6 @@ public class ShooterConstants {
     public static final double MINIMUM_DISTANCE_METERS = Units.inchesToMeters(63.25);
     public static final double MAXIMUM_DISTANCE_METERS = Units.inchesToMeters(87.25);
 
-    // TODO: Tune PID controller
     public static final double ROTATIONAL_PID_KP = 1.0;
     public static final double ROTATIONAL_PID_KI = 0.0;
     public static final double ROTATIONAL_PID_KD = 0.0;
@@ -48,8 +46,6 @@ public class ShooterConstants {
      * For automatically shooting while moving, this is the number of iterations used to find the future position.
      */
     public static final int MOVEMENT_CALCULATION_ITERATIONS = 3;
-
-    // TODO: Build lookup tables
 
     /**
      * A mapping of distances in meters to RPM setpoints.
