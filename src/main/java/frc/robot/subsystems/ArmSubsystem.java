@@ -129,13 +129,16 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public Command testGravityCommand() {
-        return run(() -> {
+        return runEnd(
+            () -> {
             double power = SmartDashboard.getNumber("Arm/Gravity Gain Test Power", -1);
 
             if (power >= 0) {
                 motor.set(power);
             }
-        });
+            },
+            motor::stopMotor
+        );
     }
 
     @Override
