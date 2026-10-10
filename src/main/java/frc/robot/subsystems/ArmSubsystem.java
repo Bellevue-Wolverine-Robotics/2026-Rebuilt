@@ -80,7 +80,7 @@ public class ArmSubsystem extends LoggedSubsystemBase {
      * @return The extension until finished command.
      */
     public Command extendUntilFinishedCommand() {
-        return extendCommand().until(controller::isAtSetpoint).withTimeout(ArmConstants.EXTENSION_DURATION_SECONDS);
+        return extendCommand().withTimeout(ArmConstants.EXTENSION_DURATION_SECONDS);
     }
 
     /**
