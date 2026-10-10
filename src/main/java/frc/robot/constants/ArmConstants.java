@@ -43,5 +43,5 @@ public class ArmConstants {
 
     // TODO: Find more optimal manual control speed
     public static final double MANUAL_CONTROL_COFFICIENT = 0.5;
-    public static final double EXTENSION_DURATION_SECONDS = 0.75;
+    public static final double EXTENSION_DURATION_SECONDS = 1.5;
 }
