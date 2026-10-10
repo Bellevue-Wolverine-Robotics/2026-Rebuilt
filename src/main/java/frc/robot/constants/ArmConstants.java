@@ -29,14 +29,14 @@ public class ArmConstants {
     public static final double GEAR_RATIO = 36;
 
     /** The reading from the absolute encoder when the arm is horizontal. */
-    // Encoder reads 0.877 at extended state, and the angle of the side plate is 15 degrees relative to horizontal, while the center of mass line is 6.30873581464 degrees relative to horizontal.
-    public static final double ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE = 0.85285759948;
+    // Encoder reads 0.835 at extended state, and the angle of the side plate is 13 degrees relative to horizontal, while the center of mass line is 6.30873581464 degrees relative to horizontal.
+    public static final double ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE = 0.81085759948511111111;
     
     /** The angle between the arm and the ground when extended. */
-    public static final double EXTENDED_ANGLE_RADIANS = 0.152;
+    public static final double EXTENDED_ANGLE_RADIANS = 0.586;
 
     /** The angle betwen the arm and ground when retracted. */
-    public static final double RETRACTED_ANGLE_RADIANS = 2.007;
+    public static final double RETRACTED_ANGLE_RADIANS = 1.937;
 
     /** The required accuracy of the arm, in order to finish moving it. */
     public static final double ERROR_TOLERANCE_RADIANS = Units.degreesToRadians(3.6);
