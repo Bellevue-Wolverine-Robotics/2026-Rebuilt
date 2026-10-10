@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ClimberConstants;
 
 /* Represents the climber mechanism, allowing the robot to climb on the tower. */
-public class ClimberSubsystem extends SubsystemBase {
+public class ClimberSubsystem extends LoggedSubsystemBase {
     private final DoubleSolenoid solenoid = new DoubleSolenoid(
         PneumaticsModuleType.CTREPCM,
         ClimberConstants.FORWARD_CHANNEL,

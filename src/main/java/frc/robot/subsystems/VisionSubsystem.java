@@ -25,7 +25,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import frc.robot.Robot;
 import frc.robot.constants.VisionConstants;
 
-public class VisionSubsystem extends SubsystemBase {
+public class VisionSubsystem extends LoggedSubsystemBase {
     private static class Camera {
         private final PhotonCamera photonCamera;
         private final PhotonPoseEstimator photonPoseEstimator;

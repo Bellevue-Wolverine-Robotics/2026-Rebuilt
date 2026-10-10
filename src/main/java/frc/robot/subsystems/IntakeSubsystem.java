@@ -16,7 +16,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.constants.IntakeConstants;
 
 /** Represents the intake mechanism, which draws fuel into the hopper. */
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends LoggedSubsystemBase {
     private final SparkMax motor = new SparkMax(IntakeConstants.MOTOR_CAN_ID, MotorType.kBrushless);
     private final SparkMaxConfig motorConfig = new SparkMaxConfig();
 

@@ -35,7 +35,7 @@ import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
 import frc.robot.constants.VisionConstants;
 
-public class SwerveSubsystem extends SubsystemBase {
+public class SwerveSubsystem extends LoggedSubsystemBase {
     private final LEDSubsystem ledSubsystem;
     private final SwerveDrive swerveDrive;
 

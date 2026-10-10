@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.FeederConstants;
 import frc.robot.constants.ShooterConstants;
 
-public class FeederSubsystem extends SubsystemBase {
+public class FeederSubsystem extends LoggedSubsystemBase {
     private boolean running = false;
 
     private TalonFX motor = new TalonFX(FeederConstants.MOTOR_ID, FeederConstants.CANBUS);
