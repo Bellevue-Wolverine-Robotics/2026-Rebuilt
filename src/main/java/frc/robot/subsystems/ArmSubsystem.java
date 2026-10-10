@@ -23,7 +23,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.constants.ArmConstants;
 
 /** Represents the arm mechanism, which moves the linkage intake. */
-public class ArmSubsystem extends SubsystemBase {
+public class ArmSubsystem extends LoggedSubsystemBase {
     private final SparkMax motor = new SparkMax(ArmConstants.MOTOR_ID, MotorType.kBrushless);
     private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(ArmConstants.ENCODER_PORT);
     private final RelativeEncoder relativeEncoder = motor.getEncoder();
