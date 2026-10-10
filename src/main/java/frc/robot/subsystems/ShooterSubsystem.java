@@ -9,10 +9,9 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ShooterConstants;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends LoggedSubsystemBase {
     private final TalonFX leftMotor = new TalonFX(ShooterConstants.LEFT_MOTOR_ID, ShooterConstants.CANBUS);
     private final TalonFX rightMotor = new TalonFX(ShooterConstants.RIGHT_MOTOR_ID, ShooterConstants.CANBUS);
     private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
