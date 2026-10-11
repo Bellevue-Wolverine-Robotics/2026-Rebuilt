@@ -20,14 +20,13 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         m_robotContainer = new RobotContainer();
-
-        SmartDashboard.putData(CommandScheduler.getInstance());
     }
 
     @Override
     public void robotInit() {
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
+        SmartDashboard.putData(CommandScheduler.getInstance());
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     }
 

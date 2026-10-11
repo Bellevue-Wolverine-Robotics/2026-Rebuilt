@@ -22,11 +22,6 @@ public class FeederSubsystem extends LoggedSubsystemBase {
         motor.getConfigurator().apply(config);
     }
 
-    @Override
-    public void periodic() {
-        SmartDashboard.putBoolean("Feeder/Is Running", running);
-    }
-
     public void run() {
         running = true;
         motor.set(FeederConstants.FEED_SPEED);
@@ -35,5 +30,12 @@ public class FeederSubsystem extends LoggedSubsystemBase {
     public void stop() {
         running = false;
         motor.stopMotor();
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("Feeder/Is Running", running);
+        SmartDashboard.putNumber("Feeder/Motor Voltage", motor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Feeder/Motor Current", motor.getSupplyCurrent().getValueAsDouble());
     }
 }

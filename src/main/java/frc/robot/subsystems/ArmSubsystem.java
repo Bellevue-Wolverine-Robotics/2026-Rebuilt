@@ -145,6 +145,7 @@ public class ArmSubsystem extends LoggedSubsystemBase {
         SmartDashboard.putNumber("Arm/Absolute Encoder Position", absoluteEncoder.get());
         SmartDashboard.putNumber("Arm/Relative Encoder Position", relativeEncoder.getPosition());
         SmartDashboard.putNumber("Arm/Relative Encoder Velocity", relativeEncoder.getVelocity());
-        SmartDashboard.putNumber("Arm/Applied Motor Voltage", motor.getAppliedOutput() * motor.getBusVoltage());
+        SmartDashboard.putNumber("Arm/Motor Voltage", motor.getAppliedOutput() * motor.getBusVoltage());
+        SmartDashboard.putNumber("Arm/Motor Current", motor.getOutputCurrent());
     }
 }

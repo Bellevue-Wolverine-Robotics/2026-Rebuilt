@@ -67,7 +67,9 @@ public class ShooterSubsystem extends LoggedSubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Shooter/Target Flywheel RPS", targetRPS);
         SmartDashboard.putNumber("Shooter/Current Flywheel RPS", leftMotor.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/Applied Voltage", leftMotor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/Supply Current", leftMotor.getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter/Left Motor Voltage", leftMotor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter/Left Motor Current", leftMotor.getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter/Right Motor Voltage", rightMotor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter/Right Motor Current", rightMotor.getSupplyCurrent().getValueAsDouble());
     }
 }

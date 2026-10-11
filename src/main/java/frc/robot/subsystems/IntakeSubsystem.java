@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -51,4 +52,10 @@ public class IntakeSubsystem extends LoggedSubsystemBase {
             motor::stopMotor
         );
     }
-}
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Intake/Motor Voltage", motor.getAppliedOutput() * motor.getBusVoltage());
+        SmartDashboard.putNumber("Intake/Motor Current", motor.getOutputCurrent());
+    }
+} 
