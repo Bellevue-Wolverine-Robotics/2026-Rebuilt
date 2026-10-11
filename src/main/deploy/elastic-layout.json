@@ -9,10 +9,10 @@
         "containers": [
           {
             "title": "Field",
-            "x": 448.0,
-            "y": 0.0,
-            "width": 512.0,
-            "height": 256.0,
+            "x": 0.0,
+            "y": 384.0,
+            "width": 896.0,
+            "height": 448.0,
             "type": "Field",
             "properties": {
               "topic": "/SmartDashboard/Field",
@@ -29,22 +29,10 @@
             }
           },
           {
-            "title": "FMS",
-            "x": 832.0,
-            "y": 256.0,
-            "width": 384.0,
-            "height": 128.0,
-            "type": "FMSInfo",
-            "properties": {
-              "topic": "/FMSInfo",
-              "period": 0.06
-            }
-          },
-          {
             "title": "Tracking April Tag",
-            "x": 448.0,
+            "x": 960.0,
             "y": 256.0,
-            "width": 384.0,
+            "width": 192.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
@@ -59,10 +47,10 @@
           },
           {
             "title": "Swerve",
-            "x": 960.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
+            "x": 896.0,
+            "y": 384.0,
+            "width": 448.0,
+            "height": 448.0,
             "type": "YAGSL Swerve Drive",
             "properties": {
               "topic": "/SmartDashboard/swerve",
@@ -74,9 +62,9 @@
           },
           {
             "title": "Auto Chooser",
-            "x": 0.0,
-            "y": 384.0,
-            "width": 448.0,
+            "x": 960.0,
+            "y": 0.0,
+            "width": 384.0,
             "height": 128.0,
             "type": "ComboBox Chooser",
             "properties": {
@@ -99,16 +87,57 @@
             }
           },
           {
-            "title": "Enable Vision Localization",
-            "x": 448.0,
-            "y": 384.0,
-            "width": 256.0,
+            "title": "Enable Vision",
+            "x": 1152.0,
+            "y": 256.0,
+            "width": 192.0,
             "height": 128.0,
             "type": "Toggle Switch",
             "properties": {
               "topic": "/SmartDashboard/Vision/Enabled",
               "period": 0.06,
               "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Forward Camera",
+            "x": 448.0,
+            "y": 0.0,
+            "width": 512.0,
+            "height": 384.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/photonvision_Port_1184_Output_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "Current Flywheel RPS",
+            "x": 960.0,
+            "y": 128.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Shooter/Current Flywheel RPS",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Target Flywheel RPS",
+            "x": 1152.0,
+            "y": 128.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Shooter/Target Flywheel RPS",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
             }
           }
         ]
