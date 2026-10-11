@@ -12,7 +12,7 @@
             "x": 0.0,
             "y": 384.0,
             "width": 896.0,
-            "height": 448.0,
+            "height": 384.0,
             "type": "Field",
             "properties": {
               "topic": "/SmartDashboard/Field",
@@ -30,7 +30,7 @@
           },
           {
             "title": "Tracking April Tag",
-            "x": 960.0,
+            "x": 896.0,
             "y": 256.0,
             "width": 192.0,
             "height": 128.0,
@@ -49,8 +49,8 @@
             "title": "Swerve",
             "x": 896.0,
             "y": 384.0,
-            "width": 448.0,
-            "height": 448.0,
+            "width": 384.0,
+            "height": 384.0,
             "type": "YAGSL Swerve Drive",
             "properties": {
               "topic": "/SmartDashboard/swerve",
@@ -62,7 +62,7 @@
           },
           {
             "title": "Auto Chooser",
-            "x": 960.0,
+            "x": 896.0,
             "y": 0.0,
             "width": 384.0,
             "height": 128.0,
@@ -75,7 +75,7 @@
           },
           {
             "title": "Hub Camera",
-            "x": 0.0,
+            "x": 448.0,
             "y": 0.0,
             "width": 448.0,
             "height": 384.0,
@@ -88,7 +88,7 @@
           },
           {
             "title": "Enable Vision",
-            "x": 1152.0,
+            "x": 1088.0,
             "y": 256.0,
             "width": 192.0,
             "height": 128.0,
@@ -101,9 +101,9 @@
           },
           {
             "title": "Forward Camera",
-            "x": 448.0,
+            "x": 0.0,
             "y": 0.0,
-            "width": 512.0,
+            "width": 448.0,
             "height": 384.0,
             "type": "Camera Stream",
             "properties": {
@@ -114,7 +114,7 @@
           },
           {
             "title": "Current Flywheel RPS",
-            "x": 960.0,
+            "x": 896.0,
             "y": 128.0,
             "width": 192.0,
             "height": 128.0,
@@ -128,7 +128,7 @@
           },
           {
             "title": "Target Flywheel RPS",
-            "x": 1152.0,
+            "x": 1088.0,
             "y": 128.0,
             "width": 192.0,
             "height": 128.0,
