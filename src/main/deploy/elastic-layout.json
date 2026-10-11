@@ -74,7 +74,7 @@
             }
           },
           {
-            "title": "Hub Camera",
+            "title": "Forward Camera",
             "x": 448.0,
             "y": 0.0,
             "width": 448.0,
@@ -100,7 +100,7 @@
             }
           },
           {
-            "title": "Forward Camera",
+            "title": "Hub Camera",
             "x": 0.0,
             "y": 0.0,
             "width": 448.0,
