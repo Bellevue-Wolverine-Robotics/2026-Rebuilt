@@ -8,7 +8,6 @@ import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,12 +15,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
+
     private final RobotContainer m_robotContainer;
-    private final PowerDistribution m_pdh;
 
     public Robot() {
         m_robotContainer = new RobotContainer();
-        m_pdh = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
     }
 
     @Override
@@ -34,7 +32,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        SmartDashboard.putData("Power Distribution Hub", m_pdh);
         CommandScheduler.getInstance().run();
     }
 
