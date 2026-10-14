@@ -47,6 +47,8 @@ public class AutoShootCommand extends Command {
 
         thetaController.setTolerance(ShooterConstants.ROTATIONAL_TOLERANCE_RADIANS);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+        setName("Auto Shoot Command");
     }
 
     /**

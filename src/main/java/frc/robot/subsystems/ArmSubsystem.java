@@ -1,9 +1,9 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -22,7 +22,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.constants.ArmConstants;
 
 /** Represents the arm mechanism, which moves the linkage intake. */
-public class ArmSubsystem extends SubsystemBase {
+public class ArmSubsystem extends LoggedSubsystemBase {
     private final SparkMax motor = new SparkMax(ArmConstants.MOTOR_ID, MotorType.kBrushless);
     private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(ArmConstants.ENCODER_PORT);
     private final RelativeEncoder relativeEncoder = motor.getEncoder();
@@ -39,6 +39,11 @@ public class ArmSubsystem extends SubsystemBase {
         // Divide by 60 so units are in radians per second instead of radians per minute
         motorConfig.encoder.velocityConversionFactor((2.0 * Math.PI) / ArmConstants.GEAR_RATIO / 60.0);
 
+        motorConfig.closedLoop.maxMotion
+            .cruiseVelocity(ArmConstants.CRUISE_VELOCITY_RADIANS_PER_SECOND)
+            .maxAcceleration(ArmConstants.MAXIMUM_ACCELERATION_RADIANS_PER_SECOND_SQUARED)
+            .allowedProfileError(ArmConstants.ALLOWED_PROFILE_ERROR_RADIANS);
+
         motorConfig.closedLoop
             .p(ArmConstants.PROPORTIONAL_GAIN)
             .i(ArmConstants.INTEGRAL_GAIN)
@@ -52,21 +57,16 @@ public class ArmSubsystem extends SubsystemBase {
             .kCosRatio(1.0);
 
         motorConfig.closedLoop.allowedClosedLoopError(ArmConstants.ERROR_TOLERANCE_RADIANS, ClosedLoopSlot.kSlot0);
-
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
         absoluteEncoder.setInverted(ArmConstants.ABSOLUTE_ENCODER_INVERTED);
-
         synchronize();
+
+        
+        SmartDashboard.putNumber("Arm/Gravity Gain Test Power", -1);
     }
 
     private void synchronize() {
-        double position = (absoluteEncoder.get() - ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE + 1) % 1;
-
-        if (position < 0) {
-            position = 0;
-        }
-
+        double position = MathUtil.inputModulus(absoluteEncoder.get() - ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE, -0.5, 0.5);
         relativeEncoder.setPosition(position * (2.0 * Math.PI));
     }
 
@@ -77,31 +77,42 @@ public class ArmSubsystem extends SubsystemBase {
     /**
      * Provides a command that extends the arm until finished.
      * 
+     * @return The extension until finished command.
+     */
+    public Command extendUntilFinishedCommand() {
+        return extendCommand()
+            .withTimeout(ArmConstants.EXTENSION_DURATION_SECONDS)
+            .withName("Extend Arm Until Finished");
+    }
+
+    /**
+     * Provides a command that extends the arm until interrupted.
+     * 
      * @return The extension command.
      */
     public Command extendCommand() {
-        return runEnd(
+        return startEnd(
             () -> {
                 synchronize();
                 set(ArmConstants.EXTENDED_ANGLE_RADIANS);
             },
             motor::stopMotor
-        ).beforeStarting(this::synchronize).until(controller::isAtSetpoint);
+        ).withName("Extend Arm");
     }
 
     /**
-     * Provides a command that retracts the arm until finished.
+     * Provides a command that retracts the arm until interrupted.
      * 
      * @return The retraction command.
      */
     public Command retractCommand() {
-        return runEnd(
+        return startEnd(
             () -> {
                 synchronize();
                 set(ArmConstants.RETRACTED_ANGLE_RADIANS);
             },
             motor::stopMotor
-        ).beforeStarting(this::synchronize).until(controller::isAtSetpoint);
+        ).withName("Retract Arm");
     }
 
     /**
@@ -115,7 +126,20 @@ public class ArmSubsystem extends SubsystemBase {
         return runEnd(
             () -> motor.set(speed.getAsDouble() * ArmConstants.MANUAL_CONTROL_COFFICIENT),
             () -> motor.stopMotor()
-        );
+        ).withName("Move Arm");
+    }
+
+    public Command testGravityCommand() {
+        return runEnd(
+            () -> {
+            double power = SmartDashboard.getNumber("Arm/Gravity Gain Test Power", -1);
+
+            if (power >= 0) {
+                motor.set(power);
+            }
+            },
+            motor::stopMotor
+        ).withName("Test Arm Gravity");
     }
 
     @Override
@@ -123,6 +147,7 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Arm/Absolute Encoder Position", absoluteEncoder.get());
         SmartDashboard.putNumber("Arm/Relative Encoder Position", relativeEncoder.getPosition());
         SmartDashboard.putNumber("Arm/Relative Encoder Velocity", relativeEncoder.getVelocity());
-        SmartDashboard.putNumber("Arm/Applied Motor Voltage", motor.getAppliedOutput() * motor.getBusVoltage());
+        SmartDashboard.putNumber("Arm/Motor Voltage", motor.getAppliedOutput() * motor.getBusVoltage());
+        SmartDashboard.putNumber("Arm/Motor Current", motor.getOutputCurrent());
     }
 }

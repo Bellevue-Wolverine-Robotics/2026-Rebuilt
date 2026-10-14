@@ -19,6 +19,8 @@ public class FixedShootCommand extends Command {
         this.feederSubsystem = feederSubsystem;
         this.distance = distance;
 
+        setName("Fixed Shoot Command");
+
         addRequirements(shooterSubsystem, feederSubsystem);
     }
 

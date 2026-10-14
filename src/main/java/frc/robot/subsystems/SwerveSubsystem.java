@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -35,7 +34,7 @@ import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
 import frc.robot.constants.VisionConstants;
 
-public class SwerveSubsystem extends SubsystemBase {
+public class SwerveSubsystem extends LoggedSubsystemBase {
     private final LEDSubsystem ledSubsystem;
     private final SwerveDrive swerveDrive;
 
@@ -199,7 +198,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 yAxis.getAsDouble(),
                 Math.pow(rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT)
             );
-        });
+        }).withName("Drive");
     }
 
     /**
@@ -252,7 +251,7 @@ public class SwerveSubsystem extends SubsystemBase {
                         feederSubsystem, 
                         ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS))
                 .finallyDo(() -> shooterSubsystem.stop());
-        });
+        }).withName("Align And Shot");
     }
 
     /**
@@ -262,7 +261,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * @return Command that zeros the gyro.
      */
     public Command zeroGyro() {
-        return runOnce(swerveDrive::zeroGyro);
+        return runOnce(swerveDrive::zeroGyro).withName("Zero Gyroscope");
     }
 
     @Override
