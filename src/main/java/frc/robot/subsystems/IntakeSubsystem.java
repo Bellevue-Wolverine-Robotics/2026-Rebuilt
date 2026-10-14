@@ -36,7 +36,7 @@ public class IntakeSubsystem extends LoggedSubsystemBase {
         return runEnd(
             () -> motor.set(IntakeConstants.INTAKE_SPEED),
             motor::stopMotor
-        );
+        ).withName("Run Intake");
     }
 
     /**
@@ -50,7 +50,7 @@ public class IntakeSubsystem extends LoggedSubsystemBase {
         return runEnd(
             () -> motor.set(speed.getAsDouble()),
             motor::stopMotor
-        );
+        ).withName("Run Intake Motor Manual");
     }
 
     @Override
@@ -58,4 +58,4 @@ public class IntakeSubsystem extends LoggedSubsystemBase {
         SmartDashboard.putNumber("Intake/Motor Voltage", motor.getAppliedOutput() * motor.getBusVoltage());
         SmartDashboard.putNumber("Intake/Motor Current", motor.getOutputCurrent());
     }
-} 
+}

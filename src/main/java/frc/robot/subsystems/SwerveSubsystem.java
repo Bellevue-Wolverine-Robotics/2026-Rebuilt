@@ -198,7 +198,7 @@ public class SwerveSubsystem extends LoggedSubsystemBase {
                 yAxis.getAsDouble(),
                 Math.pow(rotationAxis.getAsDouble(), SwerveConstants.SMOOTHING_EXPONENT)
             );
-        });
+        }).withName("Drive");
     }
 
     /**
@@ -251,7 +251,7 @@ public class SwerveSubsystem extends LoggedSubsystemBase {
                         feederSubsystem, 
                         ShooterConstants.MANUAL_SHOOT_DISTANCE_METERS))
                 .finallyDo(() -> shooterSubsystem.stop());
-        });
+        }).withName("Align And Shot");
     }
 
     /**
@@ -261,7 +261,7 @@ public class SwerveSubsystem extends LoggedSubsystemBase {
      * @return Command that zeros the gyro.
      */
     public Command zeroGyro() {
-        return runOnce(swerveDrive::zeroGyro);
+        return runOnce(swerveDrive::zeroGyro).withName("Zero Gyroscope");
     }
 
     @Override

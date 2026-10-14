@@ -80,7 +80,9 @@ public class ArmSubsystem extends LoggedSubsystemBase {
      * @return The extension until finished command.
      */
     public Command extendUntilFinishedCommand() {
-        return extendCommand().withTimeout(ArmConstants.EXTENSION_DURATION_SECONDS);
+        return extendCommand()
+            .withTimeout(ArmConstants.EXTENSION_DURATION_SECONDS)
+            .withName("Extend Arm Until Finished");
     }
 
     /**
@@ -95,7 +97,7 @@ public class ArmSubsystem extends LoggedSubsystemBase {
                 set(ArmConstants.EXTENDED_ANGLE_RADIANS);
             },
             motor::stopMotor
-        );
+        ).withName("Extend Arm");
     }
 
     /**
@@ -110,7 +112,7 @@ public class ArmSubsystem extends LoggedSubsystemBase {
                 set(ArmConstants.RETRACTED_ANGLE_RADIANS);
             },
             motor::stopMotor
-        );
+        ).withName("Retract Arm");
     }
 
     /**
@@ -124,7 +126,7 @@ public class ArmSubsystem extends LoggedSubsystemBase {
         return runEnd(
             () -> motor.set(speed.getAsDouble() * ArmConstants.MANUAL_CONTROL_COFFICIENT),
             () -> motor.stopMotor()
-        );
+        ).withName("Move Arm");
     }
 
     public Command testGravityCommand() {
@@ -137,7 +139,7 @@ public class ArmSubsystem extends LoggedSubsystemBase {
             }
             },
             motor::stopMotor
-        );
+        ).withName("Test Arm Gravity");
     }
 
     @Override
