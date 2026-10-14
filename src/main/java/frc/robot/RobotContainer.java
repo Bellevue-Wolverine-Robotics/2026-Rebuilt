@@ -88,7 +88,6 @@ public class RobotContainer {
 
         operatorController.leftBumper().whileTrue(armSubsystem.retractCommand());
         operatorController.rightBumper().whileTrue(armSubsystem.extendCommand());
-        operatorController.leftTrigger().whileTrue(armSubsystem.extendUntilFinishedCommand());
         operatorController.rightTrigger().whileTrue(intakeSubsystem.intakeCommand());
 
         new Trigger(
