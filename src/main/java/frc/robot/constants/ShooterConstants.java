@@ -15,7 +15,7 @@ public class ShooterConstants {
     public static final double GEAR_RATIO = 2.0;
 
     /** Acceptable tolerance between the target and current RPS on the shooter shaft for the feeder to engage. */
-    public static final double TOLERANCE_PERCENTAGE = 0.03;
+    public static final double TOLERANCE_PERCENTAGE = 0.05;
 
     /** The voltage required per RPS of the shooter shaft. */
     public static final double VOLTS_PER_RPS = 0.23601;
@@ -27,7 +27,7 @@ public class ShooterConstants {
     public static final double INTEGRAL_GAIN = 0.0;
     public static final double DERIVATIVE_GAIN = 0.0;
 
-    public static final double MANUAL_SHOOT_DISTANCE_METERS = Units.inchesToMeters(75.25);
+    public static final double MANUAL_SHOOT_DISTANCE_METERS = Units.inchesToMeters(76.51);
     public static final double PASS_SHOOT_DISTANCE_METERS = 4.25;
 
     /** The maximum velocity that the feeder can run at. Set this lower to disable shooting on the go. */
@@ -56,10 +56,13 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap DISTANCE_METERS_TO_TIME_OF_FLIGHT_SECONDS = new InterpolatingDoubleTreeMap();
 
     static {
-        DISTANCE_METERS_TO_RPS.put(2.0, 29.0);
-        DISTANCE_METERS_TO_RPS.put(2.5, 31.0);
-        DISTANCE_METERS_TO_RPS.put(3.0, 33.0);
-        DISTANCE_METERS_TO_RPS.put(3.5, 36.5);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(76.51), 27.5);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(88.51), 28.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(100.51), 29.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(112.51), 30.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(124.51), 31.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(148.51), 34.0);
+        DISTANCE_METERS_TO_RPS.put(Units.inchesToMeters(172.51), 37.0);
 
         // These are temporary values so that the time of flight is always zero
         // We'll replace these with actual values during final testing
