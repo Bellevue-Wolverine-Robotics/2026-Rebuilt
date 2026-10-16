@@ -58,9 +58,6 @@ public class ArmSubsystem extends LoggedSubsystemBase {
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         absoluteEncoder.setInverted(ArmConstants.ABSOLUTE_ENCODER_INVERTED);
         synchronize();
-
-        
-        SmartDashboard.putNumber("Arm/Gravity Gain Test Power", -1);
     }
 
     private void synchronize() {
@@ -125,19 +122,6 @@ public class ArmSubsystem extends LoggedSubsystemBase {
             () -> motor.set(speed.getAsDouble() * ArmConstants.MANUAL_CONTROL_COFFICIENT),
             () -> motor.stopMotor()
         ).withName("Move Arm");
-    }
-
-    public Command testGravityCommand() {
-        return runEnd(
-            () -> {
-            double power = SmartDashboard.getNumber("Arm/Gravity Gain Test Power", -1);
-
-            if (power >= 0) {
-                motor.set(power);
-            }
-            },
-            motor::stopMotor
-        ).withName("Test Arm Gravity");
     }
 
     @Override
