@@ -1,12 +1,10 @@
 package frc.robot.constants;
 
-import edu.wpi.first.math.util.Units;
-
 public class ArmConstants {
     public static final int MOTOR_ID = 22;
     public static final int ENCODER_PORT = 0;
 
-    public static final double PROPORTIONAL_GAIN = 0.5;
+    public static final double PROPORTIONAL_GAIN = 0.15;
     public static final double INTEGRAL_GAIN = 0.0;
     public static final double DERIVATIVE_GAIN = 0.0;
 
@@ -14,13 +12,10 @@ public class ArmConstants {
     public static final double STATIC_FRICTION_OVERCOME_VOLTAGE = 0.0;
     public static final double VOLTS_PER_RADIAN_PER_SECOND = 0.0;
     public static final double INTERTIA_OVERCOME_VOLTAGE = 0.0;
+    public static final double GRAVITY_OVERCOME_VOLTAGE = 0.0;
 
-    // Calculated with holding test and sanity checked with theoretical torque exerted on motor
-    public static final double GRAVITY_OVERCOME_VOLTAGE = 2.0;
-
-    public static final double CRUISE_VELOCITY_RADIANS_PER_SECOND = Math.PI * 3.0;
-    public static final double MAXIMUM_ACCELERATION_RADIANS_PER_SECOND_SQUARED = Math.PI * 3.0;
-    public static final double ALLOWED_PROFILE_ERROR_RADIANS = Units.degreesToRadians(10.0);
+    public static final double MAXIMUM_VELOCITY = Math.PI * 2.0;
+    public static final double MAXIMUM_ACCELERATION = Math.PI * 4.0;
 
     public static final boolean MOTOR_INVERTED = false;
     public static final boolean ABSOLUTE_ENCODER_INVERTED = true;
@@ -36,12 +31,8 @@ public class ArmConstants {
     public static final double EXTENDED_ANGLE_RADIANS = 0.115;
 
     /** The angle betwen the arm and gropund when retracted. */
-    public static final double RETRACTED_ANGLE_RADIANS = 1.054;
+    public static final double RETRACTED_ANGLE_RADIANS = 1.792;
 
-    /** The required accuracy of the arm, in order to finish moving it. */
-    public static final double ERROR_TOLERANCE_RADIANS = Units.degreesToRadians(5.0);
-
-    // TODO: Find more optimal manual control speed
     public static final double MANUAL_CONTROL_COFFICIENT = 0.25;
     public static final double EXTENSION_DURATION_SECONDS = 1.5;
 }

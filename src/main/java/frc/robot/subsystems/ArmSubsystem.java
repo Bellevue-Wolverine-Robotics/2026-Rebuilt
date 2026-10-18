@@ -1,20 +1,18 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.PersistMode;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -22,51 +20,33 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.constants.ArmConstants;
 
 public class ArmSubsystem extends LoggedSubsystemBase {
+    private final ProfiledPIDController controller = new ProfiledPIDController(
+        ArmConstants.PROPORTIONAL_GAIN,
+        ArmConstants.INTEGRAL_GAIN,
+        ArmConstants.DERIVATIVE_GAIN,
+        new TrapezoidProfile.Constraints(
+            ArmConstants.MAXIMUM_VELOCITY,
+            ArmConstants.MAXIMUM_ACCELERATION
+        )
+    );
+
     private final SparkMax motor = new SparkMax(ArmConstants.MOTOR_ID, MotorType.kBrushless);
     private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(ArmConstants.ENCODER_PORT);
-    private final RelativeEncoder relativeEncoder = motor.getEncoder();
-    private final SparkClosedLoopController controller = motor.getClosedLoopController();
 
     public ArmSubsystem() {
         SparkMaxConfig motorConfig = new SparkMaxConfig();
-
         motorConfig.idleMode(IdleMode.kBrake);
         motorConfig.inverted(ArmConstants.MOTOR_INVERTED);
-
-        motorConfig.encoder.positionConversionFactor((2.0 * Math.PI) /  ArmConstants.GEAR_RATIO);
-        // Divide by 60 so units are in radians per second instead of radians per minute
-        motorConfig.encoder.velocityConversionFactor((2.0 * Math.PI) / ArmConstants.GEAR_RATIO / 60.0);
-
-        motorConfig.closedLoop.maxMotion
-            .cruiseVelocity(ArmConstants.CRUISE_VELOCITY_RADIANS_PER_SECOND)
-            .maxAcceleration(ArmConstants.MAXIMUM_ACCELERATION_RADIANS_PER_SECOND_SQUARED)
-            .allowedProfileError(ArmConstants.ALLOWED_PROFILE_ERROR_RADIANS);
-
-        motorConfig.closedLoop
-            .p(ArmConstants.PROPORTIONAL_GAIN)
-            .i(ArmConstants.INTEGRAL_GAIN)
-            .d(ArmConstants.DERIVATIVE_GAIN);
-
-        motorConfig.closedLoop.feedForward
-            .kS(ArmConstants.STATIC_FRICTION_OVERCOME_VOLTAGE)
-            .kV(ArmConstants.VOLTS_PER_RADIAN_PER_SECOND)
-            .kA(ArmConstants.INTERTIA_OVERCOME_VOLTAGE)
-            .kCos(ArmConstants.GRAVITY_OVERCOME_VOLTAGE)
-            .kCosRatio(1.0);
-
-        motorConfig.closedLoop.allowedClosedLoopError(ArmConstants.ERROR_TOLERANCE_RADIANS, ClosedLoopSlot.kSlot0);
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         absoluteEncoder.setInverted(ArmConstants.ABSOLUTE_ENCODER_INVERTED);
-        synchronize();
     }
 
-    private void synchronize() {
-        double position = MathUtil.inputModulus(absoluteEncoder.get() - ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE, -0.5, 0.5);
-        relativeEncoder.setPosition(position * (2.0 * Math.PI));
+    private double getPosition() {
+        return MathUtil.inputModulus(absoluteEncoder.get() - ArmConstants.ABSOLUTE_ENCODER_OFFSET_DUTY_CYCLE, -0.5, 0.5) * (2.0 * Math.PI);
     }
 
     private void set(double setpoint) {
-        controller.setSetpoint(setpoint, ControlType.kPosition);
+        motor.set(controller.calculate(getPosition(), setpoint));
     }
 
     /**
@@ -87,10 +67,7 @@ public class ArmSubsystem extends LoggedSubsystemBase {
      */
     public Command extendCommand() {
         return startEnd(
-            () -> {
-                synchronize();
-                set(ArmConstants.EXTENDED_ANGLE_RADIANS);
-            },
+            () ->  set(ArmConstants.EXTENDED_ANGLE_RADIANS),
             motor::stopMotor
         ).withName("Extend Arm");
     }
@@ -102,10 +79,7 @@ public class ArmSubsystem extends LoggedSubsystemBase {
      */
     public Command retractCommand() {
         return startEnd(
-            () -> {
-                synchronize();
-                set(ArmConstants.RETRACTED_ANGLE_RADIANS);
-            },
+            () -> set(ArmConstants.RETRACTED_ANGLE_RADIANS),
             motor::stopMotor
         ).withName("Retract Arm");
     }
@@ -120,15 +94,14 @@ public class ArmSubsystem extends LoggedSubsystemBase {
     public Command moveCommand(DoubleSupplier speed) {
         return runEnd(
             () -> motor.set(speed.getAsDouble() * ArmConstants.MANUAL_CONTROL_COFFICIENT),
-            () -> motor.stopMotor()
+            motor::stopMotor
         ).withName("Move Arm");
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Arm/Absolute Encoder Position", absoluteEncoder.get());
-        SmartDashboard.putNumber("Arm/Relative Encoder Position", relativeEncoder.getPosition());
-        SmartDashboard.putNumber("Arm/Relative Encoder Velocity", relativeEncoder.getVelocity());
+        SmartDashboard.putNumber("Arm/Absolute Encoder Position Raw", absoluteEncoder.get());
+        SmartDashboard.putNumber("Arm/Absolute Encoder Position Adjusted", getPosition());
         SmartDashboard.putNumber("Arm/Motor Voltage", motor.getAppliedOutput() * motor.getBusVoltage());
         SmartDashboard.putNumber("Arm/Motor Current", motor.getOutputCurrent());
     }
