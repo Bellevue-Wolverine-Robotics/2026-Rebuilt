@@ -102,10 +102,6 @@ public class RobotContainer {
             armSubsystem.moveCommand(() -> -MathUtil.applyDeadband(operatorController.getRightY(), DriverStationConstants.OPERATOR_CONTROLLER_RIGHT_DEADBAND))
         );
 
-        operatorController.x().whileTrue(
-            armSubsystem.testGravityCommand()
-        );
-
         operatorController.a().whileTrue(new FixedShootCommand(
             shooterSubsystem,
             feederSubsystem,
